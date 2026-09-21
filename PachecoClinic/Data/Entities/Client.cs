@@ -13,7 +13,6 @@ namespace PachecoClinic.Data.Entities
         [MaxLength(20)]
         public string? Nif { get; set; }
 
-
         [Required]
         public string UserId { get; set; }
 

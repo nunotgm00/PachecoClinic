@@ -6,7 +6,6 @@ namespace PachecoClinic.Data.Entities
     {
         public int Id { get; set; }
 
-
         [Required]
         public string UserId { get; set; }
 
@@ -14,7 +13,6 @@ namespace PachecoClinic.Data.Entities
         public User User { get; set; }
 
 
-        [Required]
         public int SpecialtyId { get; set; }
 
 
@@ -24,5 +22,7 @@ namespace PachecoClinic.Data.Entities
         public bool Active { get; set; }
 
         public ICollection<DoctorSchedule> Schedules { get; set; }
+
+        public ICollection<Appointment> Appointments { get; set; }
     }
 }

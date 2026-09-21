@@ -30,9 +30,10 @@ namespace PachecoClinic.Data.Entities
         [Required]
         public string ImageUrl { get; set; }
 
-        [Required]
         public int ClientId { get; set; }
 
         public Client Client { get; set; }
+
+        public ICollection<Appointment> Appointments { get; set; }
     }
 }

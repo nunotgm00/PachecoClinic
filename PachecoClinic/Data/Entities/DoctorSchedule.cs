@@ -7,7 +7,6 @@ namespace PachecoClinic.Data.Entities
         public int Id { get; set; }
 
 
-        [Required]
         public int DoctorId { get; set; }
 
 
