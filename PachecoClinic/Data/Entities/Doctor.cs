@@ -22,5 +22,7 @@ namespace PachecoClinic.Data.Entities
 
 
         public bool Active { get; set; }
+
+        public ICollection<DoctorSchedule> Schedules { get; set; }
     }
 }
