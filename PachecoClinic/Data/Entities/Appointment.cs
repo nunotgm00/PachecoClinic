@@ -31,5 +31,7 @@ namespace PachecoClinic.Data.Entities
         public AppointmentStatus Status { get; set; }
 
         public ICollection<Intervention> Interventions { get; set; } = new List<Intervention>();
+
+        public ICollection<AppointmentRequest> Requests { get; set; } = new List<AppointmentRequest>();
     }
 }
