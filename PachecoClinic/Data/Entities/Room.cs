@@ -22,6 +22,6 @@ namespace PachecoClinic.Data.Entities
         [Display(Name = "Under Maintenance")]
         public bool UnderMaintenance { get; set; }
 
-        public ICollection<Appointment> Appointments { get; set; }
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

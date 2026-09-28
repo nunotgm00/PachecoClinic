@@ -21,8 +21,8 @@ namespace PachecoClinic.Data.Entities
 
         public bool Active { get; set; }
 
-        public ICollection<DoctorSchedule> Schedules { get; set; }
+        public ICollection<DoctorSchedule> Schedules { get; set; } = new List<DoctorSchedule>();
 
-        public ICollection<Appointment> Appointments { get; set; }
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

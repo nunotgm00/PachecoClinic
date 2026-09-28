@@ -29,5 +29,7 @@ namespace PachecoClinic.Data.Entities
         public TimeSpan EndTime { get; set; }
 
         public AppointmentStatus Status { get; set; }
+
+        public ICollection<Intervention> Interventions { get; set; } = new List<Intervention>();
     }
 }

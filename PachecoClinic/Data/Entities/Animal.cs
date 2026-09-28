@@ -34,6 +34,6 @@ namespace PachecoClinic.Data.Entities
 
         public Client Client { get; set; }
 
-        public ICollection<Appointment> Appointments { get; set; }
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

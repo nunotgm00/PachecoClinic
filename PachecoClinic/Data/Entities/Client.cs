@@ -20,6 +20,6 @@ namespace PachecoClinic.Data.Entities
         public User User { get; set; }
 
 
-        public ICollection<Animal> Animals { get; set; }
+        public ICollection<Animal> Animals { get; set; } = new List<Animal>();
     }
 }
