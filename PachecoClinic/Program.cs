@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using PachecoClinic.Data;
+using PachecoClinic.Data.Entities;
+
 namespace PachecoClinic
 {
     public class Program
@@ -5,6 +10,14 @@ namespace PachecoClinic
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<DataContext>(options =>
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<DataContext>()
+                .AddDefaultTokenProviders();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
