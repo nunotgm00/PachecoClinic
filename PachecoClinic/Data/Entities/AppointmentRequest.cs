@@ -2,7 +2,7 @@
 
 namespace PachecoClinic.Data.Entities
 {
-    public class AppointmentRequest
+    public class AppointmentRequest : IEntity
     {
         public int Id { get; set; }
 

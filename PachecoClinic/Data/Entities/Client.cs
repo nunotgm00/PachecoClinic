@@ -2,7 +2,7 @@
 
 namespace PachecoClinic.Data.Entities
 {
-    public class Client
+    public class Client : IEntity
     {
         public int Id { get; set; }
 
