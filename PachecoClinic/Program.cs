@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PachecoClinic.Data;
 using PachecoClinic.Data.Entities;
+using PachecoClinic.Data.Helpers;
 using System.Threading.Tasks;
 
 namespace PachecoClinic
@@ -24,6 +25,8 @@ namespace PachecoClinic
                 typeof(IGenericRepository<>),
                 typeof(GenericRepository<>));
 
+            builder.Services.AddScoped<IUserHelper, UserHelper>();
+
             builder.Services.AddTransient<SeedDB>();
 
             // Add services to the container.
@@ -44,6 +47,7 @@ namespace PachecoClinic
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
