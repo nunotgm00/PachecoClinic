@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PachecoClinic.Data;
 using PachecoClinic.Data.Entities;
-using PachecoClinic.Data.Helpers;
+using PachecoClinic.Helpers;
 using System.Threading.Tasks;
 
 namespace PachecoClinic

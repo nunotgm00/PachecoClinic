@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PachecoClinic.Data.Entities;
 
-namespace PachecoClinic.Data.Helpers
+namespace PachecoClinic.Helpers
 {
     public class UserHelper : IUserHelper
     {
