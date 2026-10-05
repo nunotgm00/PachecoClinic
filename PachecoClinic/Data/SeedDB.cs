@@ -42,7 +42,7 @@ namespace PachecoClinic.Data
                 };
 
                 IdentityResult result =
-                    await _userManager.CreateAsync(admin, "123456");
+                    await _userManager.CreateAsync(admin, "Admin123!");
 
                 if (result.Succeeded)
                 {
