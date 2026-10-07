@@ -47,6 +47,8 @@ namespace PachecoClinic.Controllers
 
 
         [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _userHelper.LogoutAsync();
