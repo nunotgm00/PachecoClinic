@@ -6,11 +6,11 @@ using PachecoClinic.Data.Entities;
 namespace PachecoClinic.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class RoomController : Controller
+    public class RoomsController : Controller
     {
         private readonly IGenericRepository<Room> _repository;
 
-        public RoomController(IGenericRepository<Room> repository)
+        public RoomsController(IGenericRepository<Room> repository)
         {
             _repository = repository;
         }
