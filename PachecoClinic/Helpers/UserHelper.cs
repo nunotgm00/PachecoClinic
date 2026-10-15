@@ -33,5 +33,15 @@ namespace PachecoClinic.Helpers
         {
             return await _userManager.IsInRoleAsync(user, roleName);
         }
+
+        public async Task<IdentityResult> AddUserAsync(User user, string password)
+        {
+            return await _userManager.CreateAsync(user, password);
+        }
+
+        public async Task<IdentityResult> AddUserToRoleAsync(User user, string roleName)
+        {
+            return await _userManager.AddToRoleAsync(user, roleName);
+        }
     }
 }

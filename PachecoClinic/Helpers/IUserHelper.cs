@@ -12,5 +12,9 @@ namespace PachecoClinic.Helpers
         Task LogoutAsync();
 
         Task<bool> IsUserInRoleAsync(User user, string roleName);
+
+        Task<IdentityResult> AddUserAsync(User user, string password);
+
+        Task<IdentityResult> AddUserToRoleAsync(User user, string roleName);
     }
 }
