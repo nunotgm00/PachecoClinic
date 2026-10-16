@@ -21,6 +21,7 @@ namespace PachecoClinic.Models
         public string? PhoneNumber { get; set; }
 
         [Display(Name = "Specialty")]
+        [Range(1, int.MaxValue, ErrorMessage = "Please select a Specialty")]
         public int SpecialtyId { get; set; }
 
         public bool Active { get; set; } = true;
