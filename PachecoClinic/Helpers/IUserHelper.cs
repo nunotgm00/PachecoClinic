@@ -16,5 +16,9 @@ namespace PachecoClinic.Helpers
         Task<IdentityResult> AddUserAsync(User user, string password);
 
         Task<IdentityResult> AddUserToRoleAsync(User user, string roleName);
+
+        Task<User?> GetUserByIdAsync(string id);
+
+        Task<IdentityResult> UpdatedUserAsync(User user);
     }
 }
