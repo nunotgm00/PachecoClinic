@@ -113,6 +113,120 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByIdWithUserAndSpecialtyAsync(id.Value);
+
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+
+            return View(doctor);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByIdWithUserAndSpecialtyAsync(id.Value);
+
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+
+            EditDoctorViewModel model = new EditDoctorViewModel
+            {
+                Id = doctor.Id,
+                UserId = doctor.UserId,
+                FirstName = doctor.User.FirstName,
+                Email = doctor.User.Email!,
+                PhoneNumber = doctor.User.PhoneNumber,
+                SpecialtyId = doctor.SpecialtyId,
+                Active = doctor.Active,
+                Specialties = GetSpecialties()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, EditDoctorViewModel model)
+        {
+            if(id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Specialties = GetSpecialties();
+                return View(model);
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByIdAsync(id);
+
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+
+            User? user = await _userHelper.GetUserByIdAsync(doctor.UserId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            User? existingUser = await _userHelper.GetUserByEmailAsync(model.Email);
+
+            if(existingUser != null && existingUser.Id != user.Id)
+            {
+                ModelState.AddModelError("Email", "There is already a user with this email.");
+
+                model.Specialties = GetSpecialties();
+
+                return View(model);
+            }
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Email = model.Email;
+            user.UserName = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+
+            IdentityResult userResult = await _userHelper.UpdatedUserAsync(user);
+
+            if (!userResult.Succeeded)
+            {
+                foreach(IdentityError error in userResult.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                model.Specialties = GetSpecialties();
+
+                return View(model);
+            }
+
+            doctor.SpecialtyId = model.SpecialtyId;
+            doctor.Active = model.Active;
+
+            await _doctorRepository.UpdateAsync(doctor);
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private IEnumerable<SelectListItem> GetSpecialties()
         {
             List<SelectListItem> items = new List<SelectListItem>();
