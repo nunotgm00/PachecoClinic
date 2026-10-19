@@ -49,9 +49,14 @@ namespace PachecoClinic.Helpers
             return await _userManager.FindByIdAsync(id);
         }
 
-        public async Task<IdentityResult> UpdatedUserAsync(User user)
+        public async Task<IdentityResult> UpdateUserAsync(User user)
         {
             return await _userManager.UpdateAsync(user);
+        }
+
+        public async Task<IdentityResult> DeleteUserAsync(User user)
+        {
+            return await _userManager.DeleteAsync(user);
         }
     }
 }

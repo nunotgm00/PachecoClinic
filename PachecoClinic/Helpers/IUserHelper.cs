@@ -19,6 +19,8 @@ namespace PachecoClinic.Helpers
 
         Task<User?> GetUserByIdAsync(string id);
 
-        Task<IdentityResult> UpdatedUserAsync(User user);
+        Task<IdentityResult> UpdateUserAsync(User user);
+
+        Task<IdentityResult> DeleteUserAsync(User user);
     }
 }

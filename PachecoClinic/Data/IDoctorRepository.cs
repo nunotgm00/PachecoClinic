@@ -7,5 +7,7 @@ namespace PachecoClinic.Data
         IQueryable<Doctor> GetAllWithUsersAndSpecialties();
 
         Task<Doctor?> GetByIdWithUserAndSpecialtyAsync(int id);
+
+        Task<bool> HasAppointmentAsync(int id);
     }
 }

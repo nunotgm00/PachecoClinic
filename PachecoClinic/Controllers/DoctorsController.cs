@@ -26,6 +26,7 @@ namespace PachecoClinic.Controllers
             _userHelper = userHelper;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View(_doctorRepository.GetAllWithUsersAndSpecialties());
@@ -113,6 +114,7 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
@@ -206,7 +208,7 @@ namespace PachecoClinic.Controllers
             user.UserName = model.Email;
             user.PhoneNumber = model.PhoneNumber;
 
-            IdentityResult userResult = await _userHelper.UpdatedUserAsync(user);
+            IdentityResult userResult = await _userHelper.UpdateUserAsync(user);
 
             if (!userResult.Succeeded)
             {
@@ -224,6 +226,57 @@ namespace PachecoClinic.Controllers
             doctor.Active = model.Active;
 
             await _doctorRepository.UpdateAsync(doctor);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByIdWithUserAndSpecialtyAsync(id.Value);
+
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+
+            return View(doctor);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            Doctor? doctor = await _doctorRepository.GetByIdAsync(id);
+
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+
+            if(await _doctorRepository.HasAppointmentAsync(id))
+            {
+                Doctor? doctorWithData = await _doctorRepository.GetByIdWithUserAndSpecialtyAsync(id);
+
+                ModelState.AddModelError(string.Empty,
+                    "This Doctor cannot be deleted because there are appointments associated with them. " +
+                    "You can deactivate this doctor by editing it.");
+
+                return View("Delete", doctor);
+            }
+
+            User? user = await _userHelper.GetUserByIdAsync(doctor.UserId);
+
+            await _doctorRepository.DeleteAsync(doctor);
+
+            if (user != null)
+            {
+                await _userHelper.DeleteUserAsync(user);
+            }
 
             return RedirectToAction(nameof(Index));
         }
