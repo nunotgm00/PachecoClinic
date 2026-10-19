@@ -25,6 +25,7 @@ namespace PachecoClinic
                 typeof(IGenericRepository<>),
                 typeof(GenericRepository<>));
             builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+            builder.Services.AddScoped<IDoctorScheduleRepository, DoctorScheduleRepository>();
 
             builder.Services.AddScoped<IUserHelper, UserHelper>();
 
