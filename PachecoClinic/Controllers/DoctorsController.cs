@@ -149,6 +149,7 @@ namespace PachecoClinic.Controllers
                 Id = doctor.Id,
                 UserId = doctor.UserId,
                 FirstName = doctor.User.FirstName,
+                LastName = doctor.User.LastName,
                 Email = doctor.User.Email!,
                 PhoneNumber = doctor.User.PhoneNumber,
                 SpecialtyId = doctor.SpecialtyId,
