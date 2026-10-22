@@ -20,6 +20,8 @@ namespace PachecoClinic.Controllers
             _scheduleRepository = scheduleRepository;
             _doctorRepository = doctorRepository;
         }
+
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View(_scheduleRepository.GetAllWithDoctors());
@@ -76,6 +78,105 @@ namespace PachecoClinic.Controllers
             };
 
             await _scheduleRepository.CreateAsync(shcedule);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            DoctorSchedule? schedule = await _scheduleRepository.GetByIdWithDoctorsAsync(id.Value);
+
+            if(schedule == null)
+            {
+                return NotFound();
+            }
+
+            return View(schedule);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            
+            DoctorSchedule? schedule = await _scheduleRepository.GetByIdAsync(id.Value);
+
+            if(schedule == null)
+            {
+                return NotFound();
+            }
+
+            DoctorScheduleViewModel model = new DoctorScheduleViewModel
+            {
+                Id = schedule.Id,
+                DoctorId = schedule.DoctorId,
+                DayOfWeek = schedule.DayOfWeek,
+                StartTime = schedule.StartTime,
+                EndTime = schedule.EndTime,
+                Doctors = GetDoctors()
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, DoctorScheduleViewModel model)
+        {
+            if(id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if(model.EndTime <= model.StartTime)
+            {
+                ModelState.AddModelError("EndTime", "End time must be later than start time.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                bool overlap = await _scheduleRepository.HasOverlapAsync(
+                    model.DoctorId,
+                    model.DayOfWeek,
+                    model.StartTime,
+                    model.EndTime,
+                    model.Id);
+
+                if (overlap)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "This schedule overlaps with another schedule for this doctor.");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Doctors = GetDoctors();
+
+                return View(model);
+            }
+
+            DoctorSchedule? schedule = await _scheduleRepository.GetByIdAsync(id);
+
+            if (schedule == null)
+            {
+                return NotFound();
+            }
+
+            schedule.DoctorId = model.DoctorId;
+            schedule.DayOfWeek = model.DayOfWeek;
+            schedule.StartTime = model.StartTime;
+            schedule.EndTime = model.EndTime;
+
+            await _scheduleRepository.UpdateAsync(schedule);
 
             return RedirectToAction(nameof(Index));
         }

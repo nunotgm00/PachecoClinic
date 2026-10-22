@@ -266,7 +266,7 @@ namespace PachecoClinic.Controllers
                     "This Doctor cannot be deleted because there are appointments associated with them. " +
                     "You can deactivate this doctor by editing it.");
 
-                return View("Delete", doctor);
+                return View("Delete", doctorWithData);
             }
 
             User? user = await _userHelper.GetUserByIdAsync(doctor.UserId);

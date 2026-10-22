@@ -2,7 +2,7 @@
 {
     public enum AppointmentStatus
     {
-        Schedule,
+        Scheduled,
         Cancelled,
         Completed
     }
