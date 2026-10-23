@@ -181,6 +181,39 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            DoctorSchedule? schedule = await _scheduleRepository.GetByIdWithDoctorsAsync(id.Value);
+
+            if(schedule == null)
+            {
+                return NotFound();
+            }
+
+            return View(schedule);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            DoctorSchedule? schedule = await _scheduleRepository.GetByIdAsync(id);
+
+            if(schedule == null)
+            {
+                return NotFound();
+            }
+
+            await _scheduleRepository.DeleteAsync(schedule);
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private IEnumerable<SelectListItem> GetDoctors()
         {
             List<SelectListItem> items = new List<SelectListItem>();
