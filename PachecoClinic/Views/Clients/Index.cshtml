@@ -1,0 +1,79 @@
+﻿@model IEnumerable<PachecoClinic.Data.Entities.Client>
+
+@{
+    ViewData["Title"] = "Clients";
+}
+
+<h1>Clients</h1>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Phone Number
+            </th>
+            <th>
+                NIF
+            </th>
+            <th>
+                Address
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.User.FullName
+                </td>
+
+                <td>
+                    @item.User.Email
+                </td>
+
+                <td>
+                    @item.User.PhoneNumber
+                </td>
+
+                <td>
+                    @item.Nif
+                </td>
+
+                <td>
+                    @item.Address
+                </td>
+
+                <td>
+                    <a asp-action="Details"
+                       asp-route-id="@item.Id">Details</a>
+
+                    <span> | </span>
+
+                    <a asp-action="Edit"
+                       asp-route-id="@item.Id">Edit</a>
+
+                    <span> | </span>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
