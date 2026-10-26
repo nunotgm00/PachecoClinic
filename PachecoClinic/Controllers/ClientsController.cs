@@ -101,5 +101,23 @@ namespace PachecoClinic.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Client? client = await _clientRepository.GetByIdWithUserAsync(id.Value);
+
+            if(client == null)
+            {
+                return NotFound();
+            }
+
+            return View(client);
+        }
     }
 }
