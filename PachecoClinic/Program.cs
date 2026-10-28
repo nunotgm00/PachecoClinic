@@ -27,6 +27,7 @@ namespace PachecoClinic
             builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
             builder.Services.AddScoped<IDoctorScheduleRepository, DoctorScheduleRepository>();
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
+            builder.Services.AddScoped<IAnimalRepository, AnimalRepository>();
 
             builder.Services.AddScoped<IUserHelper, UserHelper>();
 
