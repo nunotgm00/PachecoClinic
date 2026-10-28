@@ -213,5 +213,57 @@ namespace PachecoClinic.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Client? client = await _clientRepository.GetByIdWithUserAsync(id.Value);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            return View(client);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            Client? client = await _clientRepository.GetByIdAsync(id);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            if(await _clientRepository.HasAnimalsAsync(id))
+            {
+                Client? clientWithUser = await _clientRepository.GetByIdWithUserAsync(id);
+
+                ModelState.AddModelError(string.Empty,
+                    "This client cannot be deleted because there are animals associated with them.");
+
+                return View("Delete", clientWithUser);
+            }
+
+            User? user = await _userHelper.GetUserByIdAsync(client.UserId);
+
+            await _clientRepository.DeleteAsync(client);
+
+            if(user != null)
+            {
+                await _userHelper.DeleteUserAsync(user);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
