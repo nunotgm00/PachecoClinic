@@ -1,0 +1,79 @@
+﻿@model IEnumerable<PachecoClinic.Data.Entities.Animal>
+
+@{
+    ViewData["Title"] = "Animals";
+}
+
+<h1>Animals</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Species
+            </th>
+            <th>
+                Breed
+            </th>
+            <th>
+                Owner
+            </th>
+            <th>
+                Birth Date
+            </th>
+            <th>
+                Weight
+            </th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Species
+                </td>
+                <td>
+                    @item.Breed
+                </td>
+                <td>
+                    @item.Client.User.FullName
+                </td>
+                <td>
+                    @item.BirthDate?.ToString("dd/MM/yyyy")
+                </td>
+                <td>
+                    @item.Weight
+                </td>
+                
+                <td>
+                    <a asp-action="Details"
+                        asp-route-id="@item.Id">Details</a>
+
+                    <span> | </span>
+
+                    <a asp-action="Edit"
+                       asp-route-id="@item.Id">Edit</a>
+
+                    <span> | </span>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@item.Id">Delete</a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
