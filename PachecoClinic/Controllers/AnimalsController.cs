@@ -30,6 +30,24 @@ namespace PachecoClinic.Controllers
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Animal? animal = await _animalRepository.GetByIdWithClientAsync(id.Value);
+
+            if(animal == null)
+            {
+                return NotFound();
+            }
+
+            return View(animal);
+        }
+
+        [Authorize(Roles = "Admin,Employee,Doctor")]
         public IActionResult Create()
         {
             CreateAnimalViewModel model = new CreateAnimalViewModel
