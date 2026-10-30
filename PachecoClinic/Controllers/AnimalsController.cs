@@ -212,6 +212,64 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Animal? animal = await _animalRepository.GetByIdWithClientAsync(id.Value);
+
+            if(animal == null)
+            {
+                return NotFound();
+            }
+
+            return View(animal);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            Animal? animal = await _animalRepository.GetByIdAsync(id);
+
+            if(animal == null)
+            {
+                return NotFound();
+            }
+
+            if(await _animalRepository.HasAppointmentsAsync(id))
+            {
+                Animal? animalWithClient = await _animalRepository.GetByIdWithClientAsync(id);
+
+                ModelState.AddModelError(string.Empty, "This animal cannot be deleted because there are appointments associated with it.");
+
+                return View("Delete", animalWithClient);
+            }
+
+            string? imageUrl = animal.ImageUrl;
+
+            await _animalRepository.DeleteAsync(animal);
+
+            if (!string.IsNullOrEmpty(imageUrl))
+            {
+                string imagePath = Path.Combine(_webHostEnvironment.WebRootPath,imageUrl
+                    .TrimStart('/')
+                    .Replace('/', Path.DirectorySeparatorChar));
+
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private IEnumerable<SelectListItem> GetClients()
         {
             List<SelectListItem> items = new List<SelectListItem>();
