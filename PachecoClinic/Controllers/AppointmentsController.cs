@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PachecoClinic.Data;
 using PachecoClinic.Data.Entities;
+using PachecoClinic.Models;
 
 namespace PachecoClinic.Controllers
 {
@@ -28,6 +29,25 @@ namespace PachecoClinic.Controllers
             _roomRepository = roomRepository;
             _scheduleRepository = scheduleRepository;
         }
+
+        public IActionResult Index()
+        {
+            return View(_appointmentRepository.GetAllWithDetails);
+        }
+
+        public IActionResult Create()
+        {
+            CreateAppointmentViewModel model = new CreateAppointmentViewModel()
+            {
+                Animals = GetAnimals(),
+                Doctors = GetDoctors(),
+                Rooms = GetRooms(),
+            };
+
+            return View(model);
+        }
+
+        pu
 
         private IEnumerable<SelectListItem> GetAnimals()
         {

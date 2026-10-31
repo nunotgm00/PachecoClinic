@@ -14,5 +14,11 @@ namespace PachecoClinic.Data
             TimeSpan startTime,
             TimeSpan endTime,
             int? excludeId = null);
+
+        Task<bool> IsDoctorAvailableAsync(
+            int doctorId,
+            DayOfWeek dayOfWeek,
+            TimeSpan startTime,
+            TimeSpan endTime);
     }
 }

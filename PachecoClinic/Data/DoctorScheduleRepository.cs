@@ -43,5 +43,18 @@ namespace PachecoClinic.Data
 
             return await schedules.AnyAsync();
         }
+
+        public async Task<bool> IsDoctorAvailableAsync(
+            int doctorId,
+            DayOfWeek dayOfWeek,
+            TimeSpan startTime,
+            TimeSpan endTime)
+        {
+            return await _context.DoctorSchedules
+                .AnyAsync(s => s.DoctorId == doctorId
+                    && s.DayOfWeek == dayOfWeek
+                    && startTime >= s.StartTime
+                    && endTime <= s.EndTime);
+        }
     }
 }
