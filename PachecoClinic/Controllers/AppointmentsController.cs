@@ -47,7 +47,77 @@ namespace PachecoClinic.Controllers
             return View(model);
         }
 
-        pu
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateAppointmentViewModel model)
+        {
+            if(model.Date.HasValue && model.Date.Value.Date < DateTime.Today)
+            {
+                ModelState.AddModelError("Date", "The appointment date cannot be in the past");
+            }
+
+            if(model.StartTime.HasValue && model.EndTime.HasValue && model.EndTime.Value <= model.StartTime.Value)
+            {
+                ModelState.AddModelError("EndTime", "End time must be later than start time");
+            }
+
+            if (ModelState.IsValid)
+            {
+                bool doctorAvailable = await _scheduleRepository.IsDoctorAvailableAsync(
+                    model.DoctorId,
+                    model.Date!.Value.DayOfWeek,
+                    model.StartTime!.Value,
+                    model.EndTime!.Value);
+
+                if (!doctorAvailable)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "The doctor is not available during the selected date and time");
+                }
+            }
+
+            if (ModelState.IsValid)
+            {
+                bool conflict =
+                    await _appointmentRepository.HasConflictAsync(
+                        model.DoctorId,
+                        model.RoomId,
+                        model.AnimalId,
+                        model.Date!.Value,
+                        model.StartTime!.Value,
+                        model.EndTime!.Value);
+
+                if (conflict)
+                {
+                    ModelState.AddModelError(string.Empty, "There is already an appointment conflicting with the selected doctor, room or animal.");
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Animals = GetAnimals();
+                model.Doctors = GetDoctors();
+                model.Rooms = GetRooms();
+
+                return View(model);
+            }
+
+            Appointment appointment = new Appointment
+            {
+                AnimalId = model.AnimalId,
+                DoctorId = model.DoctorId,
+                RoomId = model.RoomId,
+                Date = model.Date!.Value,
+                StartTime = model.StartTime!.Value,
+                EndTime = model.EndTime!.Value,
+                Motive = model.Motive,
+                Status = AppointmentStatus.Scheduled
+            };
+
+            await _appointmentRepository.CreateAsync(appointment);
+
+            return RedirectToAction(nameof(Index));
+        }
 
         private IEnumerable<SelectListItem> GetAnimals()
         {
