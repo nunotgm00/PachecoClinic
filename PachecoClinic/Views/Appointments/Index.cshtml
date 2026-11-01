@@ -1,0 +1,108 @@
+﻿@model IEnumerable<PachecoClinic.Data.Entities.Appointment>
+
+@{
+    ViewData["Title"] = "Appointments";
+}
+
+
+<h1>Appointments</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Animal
+            </th>
+
+            <th>
+                Owner
+            </th>
+
+            <th>
+                Doctor
+            </th>
+
+            <th>
+                Room
+            </th>
+
+            <th>
+                Date
+            </th>
+
+            <th>
+                Time
+            </th>
+
+            <th>
+                Motive
+            </th>
+
+            <th>
+                Status
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Animal.Name
+                </td>
+
+                <td>
+                    @item.Animal.Client.User.FullName
+                </td>
+
+                <td>
+                    @item.Doctor.User.FullName
+                </td>
+
+                <td>
+                    @item.Room.Name
+                </td>
+
+                <td>
+                    @item.Date.ToString("dd/MM/yyyy")
+                </td>
+
+                <td>
+                    @item.StartTime.ToString(@"hh\:mm")
+                    -
+                    @item.EndTime.ToString(@"hh\:mm")
+                </td>
+
+                <td>
+                    @item.Motive
+                </td>
+
+                <td>
+                    @item.Status
+                </td>
+
+                <td>
+                    <a asp-action="Details"
+                        asp-route-id="@item.Id">Details</a>
+
+                    <span> | </span>
+
+                    <a asp-action="Edit"
+                        asp-route-id="@item.Id">Edit</a>
+
+                    <span> | </span>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

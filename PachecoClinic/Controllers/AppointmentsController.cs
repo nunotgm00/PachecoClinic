@@ -32,7 +32,7 @@ namespace PachecoClinic.Controllers
 
         public IActionResult Index()
         {
-            return View(_appointmentRepository.GetAllWithDetails);
+            return View(_appointmentRepository.GetAllWithDetails());
         }
 
         public IActionResult Create()
