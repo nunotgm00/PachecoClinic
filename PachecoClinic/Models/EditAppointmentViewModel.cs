@@ -20,6 +20,10 @@ namespace PachecoClinic.Models
         public int RoomId { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
+        public DateTime? Date { get; set; }
+
+        [Required]
         [Display(Name = "Start Time")]
         public TimeSpan? StartTime { get; set; }
 
