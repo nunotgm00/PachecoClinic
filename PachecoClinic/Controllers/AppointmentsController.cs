@@ -119,6 +119,23 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Details(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Appointment? appointment = await _appointmentRepository.GetByIdWithDetailsAsync(id.Value);
+
+            if(appointment == null)
+            {
+                return NotFound();
+            }
+
+            return View(appointment);
+        }
+
         private IEnumerable<SelectListItem> GetAnimals()
         {
             List<SelectListItem> items = new List<SelectListItem>();
