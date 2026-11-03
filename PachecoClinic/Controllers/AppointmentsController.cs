@@ -178,7 +178,15 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
-            if(model.Date.HasValue && model.Date.Value.Date > DateTime.Today)
+            Appointment? appointment = await _appointmentRepository.GetByIdAsync(id);
+
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            if (model.Date.HasValue && model.Date.Value.Date < DateTime.Today
+                && model.Date.Value.Date != appointment.Date.Date)
             {
                 ModelState.AddModelError("Date", "The appointment date cannot be in the past.");
             }
@@ -227,13 +235,6 @@ namespace PachecoClinic.Controllers
                 model.Rooms = GetRooms();
 
                 return View(model);
-            }
-
-            Appointment? appointment = await _appointmentRepository.GetByIdAsync(id);
-
-            if(appointment == null)
-            {
-                return NotFound();
             }
 
             appointment.AnimalId = model.AnimalId;
