@@ -1,0 +1,84 @@
+﻿@model PachecoClinic.Data.Entities.Appointment
+
+@{
+    ViewData["Title"] = "Cancel Appointment";
+}
+
+<h1>Cancel Appointment</h1>
+
+<h3>Are you sure you want to cancel this appointment?</h3>
+
+<div asp-validation-summary="ModelOnly"
+    class="text-danger"></div>
+
+<dl class="row">
+    <dt class="col-sm-2">
+        Animal
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Animal.Name
+    </dd>
+
+    <dt class="col-sm-2">
+        Owner
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Animal.Client.User.FullName
+    </dd>
+
+    <dt class="col-sm-2">
+        Doctor
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Doctor.User.FullName
+    </dd>
+
+    <dt class="col-sm-2">
+        Room
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Room.Name
+    </dd>
+
+    <dt class="col-sm-2">
+        Date
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Date.ToString("dd/MM/yyyy")
+    </dd>
+
+    <dt class="col-sm-2">
+        Time
+    </dt>
+    <dd class="col-sm-10">
+        @Model.StartTime.ToString(@"hh\:mm")
+        -
+        @Model.EndTime.ToString(@"hh\:mm")
+    </dd>
+
+    <dt class="col-sm-2">
+        Motive
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Motive
+    </dd>
+
+    <dt class="col-sm-2">
+        Status
+    </dt>
+    <dd class="col-sm-10">
+        @Model.Status
+    </dd>
+</dl>
+
+<form asp-action="Cancel" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <input type="submit"
+           value="Cancel Appointment"
+           class="btn btn-danger" />
+
+    <a asp-action="Index">Back to List</a>
+
+</form>

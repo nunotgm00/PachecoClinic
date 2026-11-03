@@ -250,6 +250,66 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Cancel(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Appointment? appointment = await _appointmentRepository.GetByIdWithDetailsAsync(id.Value);
+
+            if(appointment == null)
+            {
+                return NotFound();
+            }
+
+            if(appointment.Status != AppointmentStatus.Scheduled)
+            {
+                return RedirectToAction(nameof(Details), new { id = appointment.Id });
+            }
+
+            return View(appointment);
+        }
+
+        [HttpPost, ActionName("Cancel")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelConfirmed(int id)
+        {
+            Appointment? appointment = await _appointmentRepository.GetByIdAsync(id);
+
+            if(appointment == null)
+            {
+                return NotFound();
+            }
+
+            if(appointment.Status != AppointmentStatus.Scheduled)
+            {
+                ModelState.AddModelError(string.Empty, "Only scheduled appointments can be cancelled");
+
+                Appointment? appointmentWithDetails = await _appointmentRepository.GetByIdWithDetailsAsync(id);
+
+                return View("Cancel", appointmentWithDetails);
+            }
+
+            DateTime appointmentDateTime = appointment.Date.Date + appointment.StartTime;
+
+            if(appointmentDateTime <= DateTime.Now)
+            {
+                ModelState.AddModelError(string.Empty, "Past appointments cannot be cancelled");
+
+                Appointment? appointmentWithDetails = await _appointmentRepository.GetByIdWithDetailsAsync(id);
+
+                return View("Cancel", appointmentWithDetails);
+            }
+
+            appointment.Status = AppointmentStatus.Cancelled;
+
+            await _appointmentRepository.UpdateAsync(appointment);
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private IEnumerable<SelectListItem> GetAnimals()
         {
             List<SelectListItem> items = new List<SelectListItem>();

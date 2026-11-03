@@ -1,4 +1,5 @@
-﻿@model IEnumerable<PachecoClinic.Data.Entities.Appointment>
+﻿@using PachecoClinic.Data.Entities
+@model IEnumerable<PachecoClinic.Data.Entities.Appointment>
 
 @{
     ViewData["Title"] = "Appointments";
@@ -99,8 +100,11 @@
 
                     <span> | </span>
 
-                    <a asp-action="Delete"
-                       asp-route-id="@item.Id">Delete</a>
+                    @if (item.Status == AppointmentStatus.Scheduled)
+                    {
+                        <a asp-action="Cancel"
+                           asp-route-id="@item.Id">Cancel</a>
+                    }
                 </td>
             </tr>
         }
