@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PachecoClinic.Data;
+using PachecoClinic.Data.Entities;
 using PachecoClinic.Helpers;
 
 namespace PachecoClinic.Controllers
@@ -28,6 +29,24 @@ namespace PachecoClinic.Controllers
         public IActionResult Index()
         {
             return View(_requestRepository.GetAllWithAppointmentDetails());
+        }
+
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            AppointmentRequest? request = await _requestRepository.GetByIdWithAppointmentDetailsAsync(id.Value);
+
+            if(request == null)
+            {
+                return NotFound();
+            }
+
+            return View(request);
         }
     }
 }

@@ -1,0 +1,122 @@
+﻿@model PachecoClinic.Data.Entities.AppointmentRequest
+
+@{
+    ViewData["Title"] = "Appointment Request Details";
+}
+
+<h1>Details</h1>
+
+<h4>Appointment Request</h4>
+<hr />
+
+<dl class="row">
+
+    <dt class="col-sm-2">
+        Client
+    </dt>
+
+    <dd class="col-sm-10">
+        @Model.Appointment.Animal.Client.User.FullName
+    </dd>
+
+    <dt class="col-sm-2">
+        Animal
+    </dt>
+
+    <dd class="col-sm-10">
+        @Model.Appointment.Animal.Name
+    </dd>
+
+    <dt class="col-sm-2">
+        Doctor
+    </dt>
+
+    <dd class="col-sm-10">
+        @Model.Appointment.Doctor.User.FullName
+    </dd>
+
+    <dt class="col-sm-2">
+        Current Date
+    </dt>
+
+    <dd class="col-sm-10">
+        @Model.Appointment.Date.ToString("dd/MM/yyyy")
+    </dd>
+
+    <dt class="col-sm-2">
+        Current Time
+    </dt>
+
+    <dd class="col-sm-10">
+        @Model.Appointment.StartTime.ToString(@"hh\:mm")
+        -
+        @Model.Appointment.EndTime.ToString(@"hh\:mm")
+    </dd>
+
+    <dt class="col-sm-2">
+        Request Type
+    </dt>
+
+    <dd class="col-sm-10">
+        @Model.Type
+    </dd>
+
+    <dt class="col-sm-2">
+        Requested Date
+    </dt>
+
+    <dd class="col-sm-10">
+        @if (Model.RequestedDate.HasValue)
+        {
+            @Model.RequestedDate.Value.ToString("dd/MM/yyyy")
+        }
+        else
+        {
+            <span>-</span>
+        }
+    </dd>
+
+    <dt class="col-sm-2">
+        Requested Time
+    </dt>
+
+    <dd class="col-sm-10">
+        @if (Model.RequestedStartTime.HasValue)
+        {
+            @Model.RequestedStartTime.Value.ToString(@"hh\:mm")
+        }
+        else
+        {
+            <span>-</span>
+        }
+    </dd>
+
+    <dt class="col-sm-2">
+        Message
+    </dt>
+
+    <dd class="col-sm-10">
+        @Model.Message
+    </dd>
+
+    <dt class="col-sm-2">
+        Status
+    </dt>
+
+    <dd class="col-sm-10">
+        @Model.Status
+    </dd>
+
+    <dt class="col-sm-2">
+        Created At
+    </dt>
+
+    <dd class="col-sm-10">
+        @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+    </dd>
+
+</dl>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
