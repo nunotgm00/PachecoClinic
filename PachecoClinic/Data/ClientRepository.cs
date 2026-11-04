@@ -27,6 +27,13 @@ namespace PachecoClinic.Data
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
+        public async Task<Client?> GetByUserIdAsync(string userId)
+        {
+            return await _context.Clients
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+        }
+
         public async Task<bool> HasAnimalsAsync(int clientId)
         {
             return await _context.Animals

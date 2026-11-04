@@ -1,0 +1,91 @@
+﻿@model IEnumerable<PachecoClinic.Data.Entities.AppointmentRequest>
+
+@{
+    ViewData["Title"] = "Appointment Requests";
+}
+
+<h1> Appointment Requests</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Client
+            </th>
+            <th>
+                Animal
+            </th>
+            <th>
+                Doctor
+            </th>
+            <th>
+                Appointment Date
+            </th>
+            <th>
+                Request Type
+            </th>
+            <th>
+                Requested Date
+            </th>
+            <th>
+                Requested Time
+            </th>
+            <th>
+                Status
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Appointment.Animal.Client.User.FullName
+                </td>
+                <td>
+                    @item.Appointment.Animal.Name
+                </td>
+                <td>
+                    @item.Appointment.Doctor.User.FullName
+                </td>
+                <td>
+                    @item.Appointment.Date.ToString("dd/MM/yyyy")
+                    -
+                    @item.Appointment.StartTime.ToString(@"hh\:mm")
+                </td>
+                <td>
+                    @item.Type
+                </td>
+                <td>
+                    @if (item.RequestedDate.HasValue)
+                    {
+                        @item.RequestedDate.Value.ToString("dd/MM/yyyy")
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @if (item.RequestedStartTime.HasValue)
+                    {
+                        @item.RequestedStartTime.Value.ToString(@"hh\:mm")
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @item.Status
+                </td>
+                <td>
+                    <a asp-action="Details"
+                        asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

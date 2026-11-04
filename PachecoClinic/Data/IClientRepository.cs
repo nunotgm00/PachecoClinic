@@ -9,5 +9,7 @@ namespace PachecoClinic.Data
         Task<Client?> GetByIdWithUserAsync(int id);
 
         Task<bool> HasAnimalsAsync(int clientId);
+
+        Task<Client?> GetByUserIdAsync(string userId);
     }
 }
