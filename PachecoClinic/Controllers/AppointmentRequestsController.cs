@@ -32,6 +32,30 @@ namespace PachecoClinic.Controllers
             return View(_requestRepository.GetAllWithAppointmentDetails());
         }
 
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> MyRequests()
+        {
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            Client? client = await _clientRepository.GetByUserIdAsync(user.Id);
+
+            if(client == null)
+            {
+                return NotFound();
+            }
+
+            IQueryable<AppointmentRequest> requests = _requestRepository
+                .GetAllWithAppointmentDetails()
+                .Where(r => r.Appointment.Animal.ClientId == client.Id);
+
+            return View(requests);
+        }
+
         [Authorize(Roles = "Admin,Employee,Doctor")]
         public async Task<IActionResult> Details(int? id)
         {
@@ -198,7 +222,7 @@ namespace PachecoClinic.Controllers
 
             await _requestRepository.CreateAsync(request);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(MyRequests));
         }
     }
 }
