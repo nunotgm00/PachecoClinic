@@ -13,17 +13,20 @@ namespace PachecoClinic.Controllers
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IClientRepository _clientRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IDoctorScheduleRepository _doctorScheduleRepository;
 
         public AppointmentRequestsController(
             IAppointmentRequestRepository requestRepository,
             IAppointmentRepository appointmentRepository,
             IClientRepository clientRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IDoctorScheduleRepository doctorScheduleRepository)
         {
             _requestRepository = requestRepository;
             _appointmentRepository = appointmentRepository;
             _clientRepository = clientRepository;
             _userHelper = userHelper;
+            _doctorScheduleRepository = doctorScheduleRepository;
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
@@ -223,6 +226,103 @@ namespace PachecoClinic.Controllers
             await _requestRepository.CreateAsync(request);
 
             return RedirectToAction(nameof(MyRequests));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Approve(int id)
+        {
+            AppointmentRequest? request = await _requestRepository.GetByIdAsync(id);
+
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            if(request.Status != AppointmentRequestStatus.Pending)
+            {
+                return BadRequest("Only pending requests can be approved.");
+            }
+
+            Appointment? appointment = await _appointmentRepository.GetByIdAsync(request.AppointmentId);
+
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            if(appointment.Status != AppointmentStatus.Scheduled)
+            {
+                return BadRequest("Only scheduled appointments can be changed.");
+            }
+
+            if(request.Type == AppointmentRequestType.Cancellation)
+            {
+                appointment.Status = AppointmentStatus.Cancelled;
+                request.Status = AppointmentRequestStatus.Approved;
+
+                await _appointmentRepository.UpdateAsync(appointment);
+                await _requestRepository.UpdateAsync(request);
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            if(!request.RequestedDate.HasValue || !request.RequestedStartTime.HasValue)
+            {
+                return BadRequest("A reschedule request must contain a date and start time.");
+            }
+
+            TimeSpan duration = appointment.EndTime - appointment.StartTime;
+
+            DateTime requestedDate = request.RequestedDate.Value.Date;
+
+            TimeSpan requestedStartTime = request.RequestedStartTime.Value;
+
+            TimeSpan requestedEndTime = requestedStartTime + duration;
+
+            DateTime requestedDateTime = requestedDate + requestedStartTime;
+
+            if(requestedDateTime <= DateTime.Now)
+            {
+                return BadRequest("The requested appointment date and time must be in the future.");
+            }
+
+            bool doctorAvailable = await _doctorScheduleRepository.IsDoctorAvailableAsync(
+                appointment.DoctorId,
+                requestedDate.DayOfWeek,
+                requestedStartTime,
+                requestedEndTime);
+
+            if (!doctorAvailable)
+            {
+                return BadRequest("The doctor is not available at the requested time.");
+            }
+
+            bool hasConflict = await _appointmentRepository.HasConflictAsync(
+                appointment.DoctorId,
+                appointment.RoomId,
+                appointment.AnimalId,
+                requestedDate,
+                requestedStartTime,
+                requestedEndTime,
+                appointment.Id);
+
+            if (hasConflict)
+            {
+                return BadRequest("The requested time conflicts with another appointment.");
+            }
+
+            appointment.Date = requestedDate;
+            appointment.StartTime = requestedStartTime;
+            appointment.EndTime = requestedEndTime;
+
+            request.Status = AppointmentRequestStatus.Approved;
+
+            await _appointmentRepository.UpdateAsync(appointment);
+            await _requestRepository.UpdateAsync(request);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
