@@ -9,7 +9,7 @@ namespace PachecoClinic.Models
 
         [Required]
         [Display(Name = "Request Type")]
-        public AppointmentRequestType Type { get; set; }
+        public AppointmentRequestType? Type { get; set; }
 
         [MaxLength(500)]
         public string? Message { get; set; }
