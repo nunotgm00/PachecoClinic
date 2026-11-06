@@ -59,7 +59,7 @@ namespace PachecoClinic.Controllers
             return View(requests);
         }
 
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Admin,Employee,Doctor,Client")]
         public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
@@ -72,6 +72,28 @@ namespace PachecoClinic.Controllers
             if(request == null)
             {
                 return NotFound();
+            }
+
+            if (User.IsInRole("Client"))
+            {
+                User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+                if(user == null)
+                {
+                    return NotFound();
+                }
+
+                Client? client = await _clientRepository.GetByUserIdAsync(user.Id);
+
+                if(client == null)
+                {
+                    return NotFound();
+                }
+
+                if(request.Appointment.Animal.ClientId != client.Id)
+                {
+                    return Forbid();
+                }
             }
 
             return View(request);

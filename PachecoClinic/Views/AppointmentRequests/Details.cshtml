@@ -118,7 +118,7 @@
 
 </dl>
 
-@if(Model.Status == AppointmentRequestStatus.Pending)
+@if(Model.Status == AppointmentRequestStatus.Pending && !User.IsInRole("Client"))
 {
     <div class="d-flex gap-2">
         <form asp-action="Approve"
