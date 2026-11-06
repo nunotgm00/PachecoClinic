@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using PachecoClinic.Data;
 using PachecoClinic.Data.Entities;
+using PachecoClinic.Helpers;
 using PachecoClinic.Models;
 
 namespace PachecoClinic.Controllers
 {
-    [Authorize(Roles = "Admin,Employee,Doctor")]
+    [Authorize]
     public class AppointmentsController : Controller
     {
         private readonly IAppointmentRepository _appointmentRepository;
@@ -16,25 +16,34 @@ namespace PachecoClinic.Controllers
         private readonly IDoctorRepository _doctorRepository;
         private readonly IGenericRepository<Room> _roomRepository;
         private readonly IDoctorScheduleRepository _scheduleRepository;
+        private readonly IUserHelper _userHelper;
+        private readonly IClientRepository _clientRepository;
 
         public AppointmentsController(
             IAppointmentRepository appointmentRepository,
             IAnimalRepository animalRepository,
             IDoctorRepository doctorRepository,
             IGenericRepository<Room> roomRepository,
-            IDoctorScheduleRepository scheduleRepository)
+            IDoctorScheduleRepository scheduleRepository,
+            IUserHelper userHelper,
+            IClientRepository clientRepository)
         {
             _appointmentRepository = appointmentRepository;
             _animalRepository = animalRepository;
             _doctorRepository = doctorRepository;
             _roomRepository = roomRepository;
             _scheduleRepository = scheduleRepository;
+            _userHelper = userHelper;
+            _clientRepository = clientRepository;
         }
 
+        [Authorize(Roles = "Admin,Employee,Doctor")]
         public IActionResult Index()
         {
             return View(_appointmentRepository.GetAllWithDetails());
         }
+
+        [Authorize(Roles = "Admin,Employee,Doctor")]
 
         public IActionResult Create()
         {
@@ -48,6 +57,7 @@ namespace PachecoClinic.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin,Employee,Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateAppointmentViewModel model)
@@ -120,6 +130,7 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin,Employee,Doctor,Client")]
         public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
@@ -134,9 +145,32 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
+            if (User.IsInRole("Client"))
+            {
+                User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+                if(user == null)
+                {
+                    return NotFound();
+                }
+
+                Client? client = await _clientRepository.GetByUserIdAsync(user.Id);
+
+                if(client == null)
+                {
+                    return NotFound();
+                }
+
+                if(appointment.Animal.ClientId != client.Id)
+                {
+                    return Forbid();
+                }
+            }
+
             return View(appointment);
         }
 
+        [Authorize(Roles = "Admin,Employee,Doctor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if(id == null)
@@ -169,6 +203,7 @@ namespace PachecoClinic.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Admin,Employee,Doctor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditAppointmentViewModel model)
@@ -250,6 +285,7 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin,Employee,Doctor")]
         public async Task<IActionResult> Cancel(int? id)
         {
             if(id == null)
@@ -272,6 +308,7 @@ namespace PachecoClinic.Controllers
             return View(appointment);
         }
 
+        [Authorize(Roles = "Admin,Employee,Doctor")]
         [HttpPost, ActionName("Cancel")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelConfirmed(int id)
@@ -308,6 +345,32 @@ namespace PachecoClinic.Controllers
             await _appointmentRepository.UpdateAsync(appointment);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> MyAppointments()
+        {
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            Client? client = await _clientRepository.GetByUserIdAsync(user.Id);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            IQueryable<Appointment> appointments = _appointmentRepository
+                .GetAllWithDetails()
+                .Where(a => a.Animal.ClientId == client.Id)
+                .OrderBy(a => a.Date)
+                .ThenBy(a => a.StartTime;
+
+            return View(appointments);
         }
 
         private IEnumerable<SelectListItem> GetAnimals()
