@@ -324,5 +324,29 @@ namespace PachecoClinic.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Employe,Doctor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reject(int id)
+        {
+            AppointmentRequest? request = await _requestRepository.GetByIdAsync(id);
+
+            if(request == null)
+            {
+                return NotFound();
+            }
+
+            if(request.Status != AppointmentRequestStatus.Pending)
+            {
+                return BadRequest("Only pending requests can be rejected.");
+            }
+
+            request.Status = AppointmentRequestStatus.Rejected;
+
+            await _requestRepository.UpdateAsync(request);
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
