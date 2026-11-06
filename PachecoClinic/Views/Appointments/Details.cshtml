@@ -1,10 +1,11 @@
-﻿@model PachecoClinic.Data.Entities.Appointment
+﻿@using PachecoClinic.Data.Entities
+@model PachecoClinic.Data.Entities.Appointment
 
 @{
     ViewData["Title"] = "Appointment Details";
 }
 
-<h1>Detials</h1>
+<h1>Details</h1>
 
 <h4>Appointment</h4>
 <hr/>
@@ -75,10 +76,43 @@
 </dl>
 
 <div>
-    <a asp-action="Edit"
-       asp-route-id="@Model.Id">Edit</a>
+    @if (User.IsInRole("Client"))
+    {
+        @if(Model.Status == AppointmentStatus.Scheduled && Model.Date.Date + Model.StartTime > DateTime.Now)
+        {
+            <a asp-controller="AppointmentRequests"
+                asp-action="Create"
+                asp-route-appointmentId="@Model.Id"
+                class="btn btn-primary">
+                Request Change
+            </a>
+        }
 
-    <span> | </span>
+        <a asp-action="MyAppointments"
+            class="btn btn-secondary">
+            Back to my appointments
+        </a>
+    }
+    else
+    {
+        <a asp-action="Edit"
+            asp-route-id="@Model.Id"
+            class="btn btn-primary">
+            Edit
+        </a>
 
-    <a asp-action="Index">Back to List</a>
+        @if (Model.Status == AppointmentStatus.Scheduled && Model.Date.Date + Model.StartTime > DateTime.Now)
+        {
+            <a asp-action="Cancel"
+                asp-route-id="@Model.Id"
+                class="btn btn-danger">
+                Cancel
+            </a>
+        }
+
+        <a asp-action="Index"
+            class="btn btn-secondary">
+            Back to list
+        </a>
+    }
 </div>
