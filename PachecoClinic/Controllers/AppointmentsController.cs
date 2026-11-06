@@ -368,7 +368,7 @@ namespace PachecoClinic.Controllers
                 .GetAllWithDetails()
                 .Where(a => a.Animal.ClientId == client.Id)
                 .OrderBy(a => a.Date)
-                .ThenBy(a => a.StartTime;
+                .ThenBy(a => a.StartTime);
 
             return View(appointments);
         }

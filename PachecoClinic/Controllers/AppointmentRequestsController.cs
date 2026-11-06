@@ -348,7 +348,7 @@ namespace PachecoClinic.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Employe,Doctor")]
+        [Authorize(Roles = "Admin,Employee,Doctor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reject(int id)
         {

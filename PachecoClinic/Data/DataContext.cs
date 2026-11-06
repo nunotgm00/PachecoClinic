@@ -72,8 +72,8 @@ namespace PachecoClinic.Data
 
             builder.Entity<Intervention>()
                 .HasOne(i => i.Appointment)
-                .WithMany(a => a.Interventions)
-                .HasForeignKey(i => i.AppointmentId)
+                .WithOne(a => a.Intervention)
+                .HasForeignKey<Intervention>(i => i.AppointmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<AppointmentRequest>()

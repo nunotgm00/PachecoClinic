@@ -401,7 +401,8 @@ namespace PachecoClinic.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppointmentId");
+                    b.HasIndex("AppointmentId")
+                        .IsUnique();
 
                     b.ToTable("Interventions");
                 });
@@ -672,8 +673,8 @@ namespace PachecoClinic.Migrations
             modelBuilder.Entity("PachecoClinic.Data.Entities.Intervention", b =>
                 {
                     b.HasOne("PachecoClinic.Data.Entities.Appointment", "Appointment")
-                        .WithMany("Interventions")
-                        .HasForeignKey("AppointmentId")
+                        .WithOne("Intervention")
+                        .HasForeignKey("PachecoClinic.Data.Entities.Intervention", "AppointmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -687,7 +688,7 @@ namespace PachecoClinic.Migrations
 
             modelBuilder.Entity("PachecoClinic.Data.Entities.Appointment", b =>
                 {
-                    b.Navigation("Interventions");
+                    b.Navigation("Intervention");
 
                     b.Navigation("Requests");
                 });
