@@ -22,5 +22,23 @@ namespace PachecoClinic.Controllers
 
             return View(interventions);
         }
+
+        [Authorize(Roles = ("Admin,Employee,Doctor")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Intervention? intervention = await _interventionRepository.GetByIdWithDetailsAsync(id.Value);
+
+            if(intervention == null)
+            {
+                return NotFound();
+            }
+
+            return View(intervention);
+        }
     }
 }
