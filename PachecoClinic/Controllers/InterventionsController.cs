@@ -23,7 +23,7 @@ namespace PachecoClinic.Controllers
             return View(interventions);
         }
 
-        [Authorize(Roles = ("Admin,Employee,Doctor")]
+        [Authorize(Roles = ("Admin,Employee,Doctor"))]
         public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
