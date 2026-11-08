@@ -1,0 +1,85 @@
+﻿@model PachecoClinic.Models.CreateInterventionViewModel
+
+@{
+    ViewData["Title"] = "Create Intervention";
+}
+
+<h1>Create Intervention</h1>
+
+<hr/>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly"
+                class="text-danger"></div>
+
+            <input type="hidden"
+                asp-for="AppointmentId" />
+
+            <div class="form-group">
+                <label asp-for="Description"></label>
+
+                <textarea asp-for="Description"
+                    class="form-control"
+                    rows="4"></textarea>
+
+                <span asp-validation-for="Description"
+                    class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Diagnosis"></label>
+                
+                <textarea asp-for="Diagnosis"
+                    class="form-control"
+                    rows="3"></textarea>
+
+                <span asp-validation-for="Diagnosis"
+                    class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Treatment"></label>
+
+                <textarea asp-for="Treatment"
+                          class="form-control"
+                          rows="3"></textarea>
+
+                <span asp-validation-for="Treatment"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Observations"></label>
+
+                <textarea asp-for="Observations"
+                          class="form-control"
+                          rows="4"></textarea>
+
+                <span asp-validation-for="Observations"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit"
+                       value="Create"
+                       class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Appointments"
+       asp-action="Details"
+       asp-route-id="@Model.AppointmentId">
+        Back to Appointment
+    </a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
