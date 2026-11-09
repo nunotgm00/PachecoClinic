@@ -33,6 +33,7 @@ namespace PachecoClinic.Data
                 .Include(a => a.Doctor)
                     .ThenInclude(d => d.User)
                 .Include(a => a.Room)
+                .Include(a => a.Intervention)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.Id == id);
         }

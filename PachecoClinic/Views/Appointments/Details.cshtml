@@ -110,6 +110,37 @@
             </a>
         }
 
+        @if (User.IsInRole("Doctor"))
+        {
+            @if (Model.Intervention == null)
+            {
+                <a asp-controller="Interventions"
+                   asp-action"Create"
+                   asp-route-appointmentId="@Model.Id"
+                   class="btn btn-success">
+                    Add Intervention
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Interventions"
+                   asp-action="Details"
+                   asp-route-id="@Model.Intervention.Id"
+                   class="btn btn-info">
+                    View Intervention
+                </a>
+            }
+        }
+        else if(Model.Intervention != null)
+        {
+            <a asp-controller="Interventions"
+               asp-action="Details"
+               asp-route-id="@Model.Intervention.Id"
+               class="btn btn-info">
+                View Intervention
+            </a>
+        }
+
         <a asp-action="Index"
             class="btn btn-secondary">
             Back to list
