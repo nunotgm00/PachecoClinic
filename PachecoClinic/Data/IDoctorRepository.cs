@@ -9,5 +9,7 @@ namespace PachecoClinic.Data
         Task<Doctor?> GetByIdWithUserAndSpecialtyAsync(int id);
 
         Task<bool> HasAppointmentAsync(int id);
+
+        Task<Doctor?> GetByUserIdAsync(string userId);
     }
 }

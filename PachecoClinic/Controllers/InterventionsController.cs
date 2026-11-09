@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PachecoClinic.Data;
 using PachecoClinic.Data.Entities;
+using PachecoClinic.Helpers;
 using PachecoClinic.Models;
 
 namespace PachecoClinic.Controllers
@@ -11,13 +12,19 @@ namespace PachecoClinic.Controllers
     {
         private readonly IInterventionRepository _interventionRepository;
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IDoctorRepository _doctorRepository;
+        private readonly IUserHelper _userHelper;
 
         public InterventionsController(
             IInterventionRepository interventionRepository,
-            IAppointmentRepository appointmentRepository)
+            IAppointmentRepository appointmentRepository,
+            IDoctorRepository doctorRepository,
+            IUserHelper userHelper)
         {
             _interventionRepository = interventionRepository;
             _appointmentRepository = appointmentRepository;
+            _doctorRepository = doctorRepository;
+            _userHelper = userHelper;   
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
@@ -46,14 +53,33 @@ namespace PachecoClinic.Controllers
             return View(intervention);
         }
 
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Create(int appointmentId)
         {
-            Appointment? appointment = await _appointmentRepository.GetByIdWithDetailsAsync(appointmentId);
+            Appointment? appointment = await _appointmentRepository.GetByIdAsync(appointmentId);
 
             if(appointment == null)
             {
                 return NotFound();
+            }
+
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByUserIdAsync(user.Id);
+
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+
+            if(appointment.DoctorId != doctor.Id)
+            {
+                return Forbid();
             }
 
             if(appointment.Status == AppointmentStatus.Cancelled)
@@ -75,18 +101,37 @@ namespace PachecoClinic.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Doctor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateInterventionViewModel model)
         {
             Appointment? appointment = await _appointmentRepository.GetByIdAsync(model.AppointmentId);
 
-            if(appointment == null)
+            if (appointment == null)
             {
                 return NotFound();
             }
 
-            if(appointment.Status == AppointmentStatus.Cancelled)
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByUserIdAsync(user.Id);
+
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+
+            if (appointment.DoctorId != doctor.Id)
+            {
+                return Forbid();
+            }
+
+            if (appointment.Status == AppointmentStatus.Cancelled)
             {
                 ModelState.AddModelError(string.Empty, "An intervention cannot be created for a cancelled appointment.");
             }
@@ -115,7 +160,7 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Details), new {id = intervention.Id});
         }
 
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if(id == null)
@@ -129,6 +174,33 @@ namespace PachecoClinic.Controllers
             {
                 return NotFound();
             }
+
+            Appointment? appointment = await _appointmentRepository.GetByIdAsync(intervention.AppointmentId);
+
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByUserIdAsync(user.Id);
+
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+
+            if (appointment.DoctorId != doctor.Id)
+            {
+                return Forbid();
+            }
+
 
             EditInterventionViewModel model = new EditInterventionViewModel
             {
@@ -144,7 +216,7 @@ namespace PachecoClinic.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Doctor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id,  EditInterventionViewModel model)
         {
@@ -160,7 +232,34 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
-            if(!ModelState.IsValid)
+            Appointment? appointment = await _appointmentRepository.GetByIdAsync(intervention.AppointmentId);
+
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByUserIdAsync(user.Id);
+
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+
+            if (appointment.DoctorId != doctor.Id)
+            {
+                return Forbid();
+            }
+
+
+            if (!ModelState.IsValid)
             {
                 return View(model);
             }

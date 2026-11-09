@@ -30,6 +30,13 @@ namespace PachecoClinic.Data
                 .FirstOrDefaultAsync(d => d.Id == id); 
         }
 
+        public async Task<Doctor?> GetByUserIdAsync(string userId)
+        {
+            return await _context.Doctors
+                .AsNoTracking()
+                .FirstOrDefaultAsync(d => d.UserId == userId);
+        }
+
         public async Task<bool> HasAppointmentAsync(int id)
         {
             return await _context.Appointments.AnyAsync(a => id == id);
