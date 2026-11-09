@@ -16,5 +16,7 @@ namespace PachecoClinic.Data
             TimeSpan startTime,
             TimeSpan endTime,
             int? excludeId = null);
+
+        Task<List<Appointment>> GetByAnimalIdWithDetailsAsync(int animalId);
     }
 }
