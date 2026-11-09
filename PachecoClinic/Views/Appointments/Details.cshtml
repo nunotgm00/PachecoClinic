@@ -110,9 +110,9 @@
             </a>
         }
 
-        @if (User.IsInRole("Doctor"))
+        @if (User.IsInRole("Doctor") && Model.Doctor.User.Email == User.Identity!.Name)
         {
-            @if (Model.Intervention == null)
+            @if (Model.Intervention == null && Model.Status != AppointmentStatus.Cancelled) 
             {
                 <a asp-controller="Interventions"
                    asp-action"Create"
@@ -121,7 +121,7 @@
                     Add Intervention
                 </a>
             }
-            else
+            else if (Model.Intervention != null)
             {
                 <a asp-controller="Interventions"
                    asp-action="Details"
