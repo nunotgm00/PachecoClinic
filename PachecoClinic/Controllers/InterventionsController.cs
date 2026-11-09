@@ -114,5 +114,65 @@ namespace PachecoClinic.Controllers
 
             return RedirectToAction(nameof(Details), new {id = intervention.Id});
         }
+
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            Intervention? intervention = await _interventionRepository.GetByIdAsync(id.Value);
+
+            if(intervention == null)
+            {
+                return NotFound();
+            }
+
+            EditInterventionViewModel model = new EditInterventionViewModel
+            {
+                Id = intervention.Id,
+                AppointmentId = intervention.AppointmentId,
+                Description = intervention.Description,
+                Diagnosis = intervention.Diagnosis,
+                Treatment = intervention.Treatment,
+                Observations = intervention.Observations
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id,  EditInterventionViewModel model)
+        {
+            if(id != model.Id)
+            {
+                return NotFound();
+            }
+
+            Intervention? intervention = await _interventionRepository.GetByIdAsync(id);
+
+            if(intervention == null)
+            {
+                return NotFound();
+            }
+
+            if(!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            intervention.Description = model.Description;
+            intervention.Diagnosis = model.Diagnosis;
+            intervention.Treatment = model.Treatment;
+            intervention.Observations = model.Observations;
+
+            await _interventionRepository.UpdateAsync(intervention);
+
+            return RedirectToAction(nameof(Details), new { id = intervention.Id });
+        }
     }
 }
