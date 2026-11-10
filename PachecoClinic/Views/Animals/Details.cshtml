@@ -22,66 +22,127 @@
 
     <dt class="col-sm-2">
         Name
-    </dt
+    </dt>
     <dd class="col-sm-10">
         @Model.Name
     </dd>
 
     <dt class="col-sm-2">
         Species
-    </dt
+    </dt>
     <dd class="col-sm-10">
         @Model.Species
     </dd>
 
     <dt class="col-sm-2">
         Breed
-    </dt
+    </dt>
     <dd class="col-sm-10">
-        @Model.Breed
+        @if (!string.IsNullOrEmpty(Model.Breed))
+        {
+            @Model.Breed
+        }
+        else
+        {
+            <span>-</span>
+        }
     </dd>
 
     <dt class="col-sm-2">
         Birth Date
-    </dt
+    </dt>
     <dd class="col-sm-10">
-        @Model.BirthDate?.ToString("dd/MM/yyyy")
+        @if (Model.BirthDate.HasValue)
+        {
+            @Model.BirthDate.Value.ToString("dd/MM/yyyy")
+        }
+        else
+        {
+            <span>-</span>
+        }
     </dd>
 
     <dt class="col-sm-2">
         Weight
-    </dt
+    </dt>
     <dd class="col-sm-10">
-        @Model.Weight
+        @if (Model.Weight.HasValue)
+        {
+            @($"{Model.Weight.Value:0.##} kg")
+        }
+        else
+        {
+            <span>-</span>
+        }
     </dd>
 
     <dt class="col-sm-2">
         Color
-    </dt
+    </dt>
     <dd class="col-sm-10">
-        @Model.Color
+        @if (!string.IsNullOrEmpty(Model.Color))
+        {
+            @Model.Color
+        }
+        else
+        {
+            <span>-</span>
+        }
     </dd>
 
     <dt class="col-sm-2">
         Sex
-    </dt
+    </dt>
     <dd class="col-sm-10">
-        @Model.Sex
+        @if (!string.IsNullOrEmpty(Model.Sex))
+        {
+            @Model.Sex
+        }
+        else
+        {
+            <span>-</span>
+        }
     </dd>
 
     <dt class="col-sm-2">
         Owner
-    </dt
+    </dt>
     <dd class="col-sm-10">
         @Model.Client.User.FullName
     </dd>
 </dl>
 
 <div>
-    <a asp-action="Edit"
-       asp-route-id="@Model.Id">Edit</a>
+    <a asp-action="History"
+       asp-route-id="@Model.Id"
+       class="btn btn-info">
+        Medical History
+   </a>
 
-    <span> | </span>
+    @if (User.IsInRole("Client"))
+    {
+        <a asp-action="MyAnimals"
+           class="btn btn-secondary">
+            Back to my Animals
+        </a>
+    }
+    else
+    {
+        <a asp-action="Edit"
+           asp-route-id="@Model.Id"
+           class="btn btn-primary">
+            Edit
+       </a>
 
-    <a asp-action="Index">Back to List</a>
+        <a asp-action="Delete"
+          asp-route-id="@Model.Id"
+          class="btn btn-danger">
+            Delete
+       </a>
+
+       <a asp-action="Index"
+          class="btn btn-secondary">
+            Back to List
+      </a>
+    }
 </div>

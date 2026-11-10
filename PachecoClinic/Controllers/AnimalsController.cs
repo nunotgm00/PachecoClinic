@@ -52,6 +52,28 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
+            if (User.IsInRole("Client"))
+            {
+                User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                Client? client = await _clientRepository.GetByUserIdAsync(user.Id);
+
+                if (client == null)
+                {
+                    return NotFound();
+                }
+
+                if(animal.ClientId != client.Id)
+                {
+                    return Forbid();
+                }
+            }
+
             return View(animal);
         }
 
