@@ -98,8 +98,20 @@
         </a>
     }
 
-   <a asp-action="Index"
-      class="btn btn-secondary">
-        Back to List
-   </a>
+    @if (User.IsInRole("Client"))
+    {
+        <a asp-controller="Animals"
+           asp-action="History"
+           asp-route-id="@Model.Appointment.AnimalId"
+           class="btn btn-secondary">
+            Back to Medical History
+        </a>
+    }
+    else
+    {
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Back to List
+        </a>
+    }
 </div>

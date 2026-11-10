@@ -14,17 +14,20 @@ namespace PachecoClinic.Controllers
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IDoctorRepository _doctorRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IClientRepository _clientRepository;
 
         public InterventionsController(
             IInterventionRepository interventionRepository,
             IAppointmentRepository appointmentRepository,
             IDoctorRepository doctorRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IClientRepository clientRepository)
         {
             _interventionRepository = interventionRepository;
             _appointmentRepository = appointmentRepository;
             _doctorRepository = doctorRepository;
-            _userHelper = userHelper;   
+            _userHelper = userHelper; 
+            _clientRepository = clientRepository;
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
@@ -35,7 +38,7 @@ namespace PachecoClinic.Controllers
             return View(interventions);
         }
 
-        [Authorize(Roles = ("Admin,Employee,Doctor"))]
+        [Authorize(Roles = ("Admin,Employee,Doctor,Client"))]
         public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
@@ -48,6 +51,28 @@ namespace PachecoClinic.Controllers
             if(intervention == null)
             {
                 return NotFound();
+            }
+
+            if (User.IsInRole("Client"))
+            {
+                User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+                if(user == null)
+                {
+                    return NotFound();
+                }
+
+                Client? client = await _clientRepository.GetByUserIdAsync(user.Id);
+
+                if(client == null)
+                {
+                    return NotFound();
+                }
+
+                if(intervention.Appointment.Animal.ClientId != client.Id)
+                {
+                    return Forbid();
+                }
             }
 
             return View(intervention);
