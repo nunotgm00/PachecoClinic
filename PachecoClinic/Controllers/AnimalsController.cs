@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using PachecoClinic.Data;
 using PachecoClinic.Data.Entities;
+using PachecoClinic.Helpers;
 using PachecoClinic.Models;
 
 namespace PachecoClinic.Controllers
@@ -12,15 +13,21 @@ namespace PachecoClinic.Controllers
         private readonly IAnimalRepository _animalRepository;
         private readonly IClientRepository _clientRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IUserHelper _userHelper;
 
         public AnimalsController(
             IAnimalRepository animalRepository,
             IClientRepository clientRepository,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IAppointmentRepository appointmentRepository,
+            IUserHelper userHelper)
         {
             _animalRepository = animalRepository;
             _clientRepository = clientRepository;
             _webHostEnvironment = webHostEnvironment;
+            _appointmentRepository = appointmentRepository;
+            _userHelper = userHelper;
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
@@ -284,6 +291,50 @@ namespace PachecoClinic.Controllers
             }
 
             return items;
+        }
+
+        [Authorize(Roles = "Admin,Employee,Doctor,Client")]
+        public async Task<IActionResult> History(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Animal? animal = await _animalRepository.GetByIdWithClientAsync(id.Value);
+
+            if(animal == null)
+            {
+                return NotFound();
+            }
+
+            if (User.IsInRole("Client"))
+            {
+                User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+                if(user == null)
+                {
+                    return NotFound();
+                }
+
+                Client? client = await _clientRepository.GetByUserIdAsync(user.Id);
+
+                if(client == null)
+                {
+                    return NotFound();
+                }
+
+                if(animal.ClientId != client.Id)
+                {
+                    return Forbid();
+                }
+            }
+
+            List<Appointment> appointments = await _appointmentRepository.GetByAnimalIdWithDetailsAsync(animal.Id);
+
+            ViewBag.Animal = animal;
+
+            return View(appointments);
         }
     }
 }
