@@ -8,6 +8,7 @@ using PachecoClinic.Models;
 
 namespace PachecoClinic.Controllers
 {
+    [Authorize]
     public class AnimalsController : Controller
     {
         private readonly IAnimalRepository _animalRepository;
@@ -335,6 +336,29 @@ namespace PachecoClinic.Controllers
             ViewBag.Animal = animal;
 
             return View(appointments);
+        }
+
+        [Authorize(Roles = "Client")]
+        public async Task<IActionResult> MyAnimals()
+        {
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            Client? client = await _clientRepository.GetByUserIdAsync(user.Id);
+
+            if(client == null)
+            {
+                return NotFound();
+            }
+
+            IQueryable<Animal> animals = _animalRepository.GetAllWithClients().
+                Where(a => a.ClientId == client.Id);
+
+            return View(animals);
         }
     }
 }

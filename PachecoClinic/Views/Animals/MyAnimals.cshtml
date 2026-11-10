@@ -1,0 +1,97 @@
+﻿@model IEnumerable<PachecoClinic.Data.Entities.Animal>
+
+@{
+    ViewData["Title"] = "My Animals";
+}
+
+<h1>My Animals</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Photo
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Species
+            </th>
+            <th>
+                Breed
+            </th>
+            <th>
+                Birth Date
+            </th>
+            <th>
+                Weight
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <img src="@item.ImageUrl"
+                         alt="@item.Name"
+                         style="width: 80px; height: 80px; object-fit: cover;" />
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.Species
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.Breed))
+                    {
+                        @item.Breed
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @if (item.BirthDate.HasValue)
+                    {
+                        @item.BirthDate.Value.ToString("dd/MM/yyyy")
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @if (item.Weight.HasValue)
+                    {
+                        @($"{item.Weight.Value:0.##} kg")
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+
+                <td>
+                    <a asp-action="Details"
+                       asp-route-id="@item.Id"
+                       class="btn btn-info">Details</a>
+
+                    <a asp-action="History"
+                       asp-route-id="@item.Id"
+                       class="btn btn-secondary">
+                        Medical History
+                   </a>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
