@@ -1,0 +1,127 @@
+﻿@using PachecoClinic.Data.Entities
+@model IEnumerable<PachecoClinic.Data.Entities.Appointment>
+
+@{
+    ViewData["Title"] = "Medical History";
+    Animal animal = ViewBag.Animal;
+}
+
+<h1>Medical History</h1>
+
+<h4>@animal.Name</h4>
+
+<p>
+    <strong>Owner:</strong>
+    @animal.Client.User.FullName
+</p>
+
+<hr/>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Date
+            </th>
+
+            <th>
+                Time
+            </th>
+
+            <th>
+                Doctor
+            </th>
+
+            <th>
+                Room
+            </th>
+
+            <th>
+                Motive
+            </th>
+
+            <th>
+                Status
+            </th>
+
+            <th>
+                Intervention
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (Appointment item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Date.ToString("dd/MM/yyyy")
+                </td>
+
+                <td>
+                    @item.StartTime.ToString(@"hh\:mm")
+                    -
+                    @item.EndTime.ToString(@"hh\:mm")
+                </td>
+
+                <td>
+                    @item.Doctor.User.FullName
+                </td>
+
+                <td>
+                    @item.Room.Name
+                </td>
+
+                <td>
+                    @item.Motive
+                </td>
+
+                <td>
+                    @item.Status
+                </td>
+
+                <td>
+                    @if(item.Intervention != null)
+                    {
+                        <a asp-controller="Interventions"
+                           asp-action="Details"
+                           asp-route-id="@item.Intervention.Id">
+                            View Intervention
+                        </a>
+                    }
+                    else if(User.IsInRole("Doctor") &&
+                        item.Doctor.User.Email == User.Identity!.Name &&
+                        item.Status != AppointmentStatus.Cancelled)
+                    {
+                        <a asp-controller="Interventions"
+                           asp-action="Create"
+                           asp-route-id="@item.Id">
+                            Add Intervention
+                        </a>
+                    }
+                    else
+                    {
+                        <span>Not created yet</span>
+                    }
+                </td>
+
+                <td>
+                    <a asp-controller="Appointments"
+                       asp-action="Details"
+                       asp-route-id="@item.Id">
+                        Appointment Details
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a asp-action="Details"
+       asp-route-id="@animal.Id">
+        Back to Animal
+    </a>
+</div>
