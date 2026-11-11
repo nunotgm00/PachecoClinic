@@ -20,5 +20,7 @@ namespace PachecoClinic.Data.Entities
 
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
+
+        public bool ProfileCompleted { get; set; } = true;
     }
 }

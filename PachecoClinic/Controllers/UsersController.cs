@@ -42,7 +42,8 @@ namespace PachecoClinic.Controllers
                     FullName = user.FullName,
                     Email = user.Email!,
                     PhoneNumber = user.PhoneNumber,
-                    Role = roles.FirstOrDefault() ?? "-"
+                    Role = roles.FirstOrDefault() ?? "-",
+                    ProfileCompleted = user.ProfileCompleted,
                 });
             }
 

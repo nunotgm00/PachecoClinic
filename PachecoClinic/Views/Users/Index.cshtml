@@ -29,6 +29,9 @@
             <th>
                 Role
             </th>
+            <th>
+                Status
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -55,6 +58,16 @@
                 </td>
                 <td>
                     @item.Role
+                </td>
+                <td>
+                    @if (item.ProfileCompleted)
+                    {
+                        <span>Active</span>
+                    }
+                    else
+                    {
+                        <span>Pending Registration</span>
+                    }
                 </td>
                 <td>
                     <a asp-action="Details"

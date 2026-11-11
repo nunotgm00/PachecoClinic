@@ -11,5 +11,7 @@
         public string? PhoneNumber { get; set; }
 
         public string Role { get; set; } = null!;
+
+        public bool ProfileCompleted { get; set; }
     } 
 }
