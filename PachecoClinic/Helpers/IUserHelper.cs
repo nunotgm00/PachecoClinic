@@ -22,5 +22,12 @@ namespace PachecoClinic.Helpers
         Task<IdentityResult> UpdateUserAsync(User user);
 
         Task<IdentityResult> DeleteUserAsync(User user);
+
+        Task<string> GeneratePasswordResetTokenAsync(User user);
+
+        Task<IdentityResult> ResetPasswordAsync(
+            User user,
+            string token,
+            string password);
     }
 }
