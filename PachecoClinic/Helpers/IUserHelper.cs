@@ -31,5 +31,7 @@ namespace PachecoClinic.Helpers
             string password);
 
         IQueryable<User> GetAllUsers();
+
+        Task<IList<string>> GetRolesAsync(User user);
     }
 }

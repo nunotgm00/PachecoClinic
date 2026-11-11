@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using PachecoClinic.Data;
 using PachecoClinic.Data.Entities;
 using PachecoClinic.Helpers;
+using PachecoClinic.Models;
+using System.Threading.Tasks;
 
 namespace PachecoClinic.Controllers
 {
@@ -26,11 +28,25 @@ namespace PachecoClinic.Controllers
             _clientRepository = clientRepository;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IQueryable<User> users = _userHelper.GetAllUsers();
+            List<UserIndexViewModel> model = new List<UserIndexViewModel>();
 
-            return View(users);
+            foreach(User user in _userHelper.GetAllUsers())
+            {
+                IList<string> roles = await _userHelper.GetRolesAsync(user);
+
+                model.Add(new UserIndexViewModel
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email!,
+                    PhoneNumber = user.PhoneNumber,
+                    Role = roles.FirstOrDefault() ?? "-"
+                });
+            }
+
+            return View(model);
          }
 
 

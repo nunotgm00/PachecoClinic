@@ -73,5 +73,10 @@ namespace PachecoClinic.Helpers
         {
             return _userManager.Users;
         }
+
+        public async Task<IList<string>> GetRolesAsync(User user)
+        {
+            return await _userManager.GetRolesAsync(user);
+        }
     }
 }
