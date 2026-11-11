@@ -29,5 +29,7 @@ namespace PachecoClinic.Helpers
             User user,
             string token,
             string password);
+
+        IQueryable<User> GetAllUsers();
     }
 }

@@ -68,5 +68,10 @@ namespace PachecoClinic.Helpers
         {
             return await _userManager.ResetPasswordAsync(user, token, password);
         }
+
+        public IQueryable<User> GetAllUsers()
+        {
+            return _userManager.Users;
+        }
     }
 }
