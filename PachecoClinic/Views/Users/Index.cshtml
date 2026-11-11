@@ -1,0 +1,68 @@
+﻿@model IEnumerable<PachecoClinic.Models.UserIndexViewModel>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h1>Users</h1>
+
+<p>
+    <a asp-action="Create"
+       class="btn btn-primary">
+        Create User
+   </a>
+</p>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Phone Number
+            </th>
+            <th>
+                Role
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.FullName
+                </td>
+                <td>
+                    @item.Email
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                    {
+                        @item.PhoneNumber
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    @item.Role
+                </td>
+                <td>
+                    <a asp-action="Details"
+                       asp-route-id="@item.Id">
+                        Details
+                   </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
