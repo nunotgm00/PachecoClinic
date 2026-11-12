@@ -40,5 +40,7 @@ namespace PachecoClinic.Models
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "The password do not match")]
         public string ConfirmPassword { get; set; } = null!;
+
+        public string Role { get; set; } = null!;
     }
 }

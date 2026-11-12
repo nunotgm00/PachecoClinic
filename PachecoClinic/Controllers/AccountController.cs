@@ -141,10 +141,13 @@ namespace PachecoClinic.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
+            IList<string> roles = await _userHelper.GetRolesAsync(user);
+
             CompleteRegistrationViewModel model = new CompleteRegistrationViewModel
             {
                 Email = email,
-                Token = token
+                Token = token,
+                Role = roles.FirstOrDefault() ?? string.Empty
             };
 
             return View(model);
