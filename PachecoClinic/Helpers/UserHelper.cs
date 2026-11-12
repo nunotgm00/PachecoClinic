@@ -78,5 +78,10 @@ namespace PachecoClinic.Helpers
         {
             return await _userManager.GetRolesAsync(user);
         }
+
+        public async Task<IdentityResult> AddUserAsync(User user)
+        {
+            return await _userManager.CreateAsync(user);
+        }
     }
 }
