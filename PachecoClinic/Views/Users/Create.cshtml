@@ -1,0 +1,97 @@
+﻿@model PachecoClinic.Models.CreateUserViewModel
+
+@{
+    ViewData["Ttile"] = "Create User";
+}
+
+<h1>Create User</h1>
+
+<hr/>
+
+<div class="row">
+    <div class="col-md-4">
+
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+
+                <input asp-for="Email"
+                       class="form-control"/>
+
+                <span asp-validation-for="Email"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Role"></label>
+
+                <select asp-for="Role"
+                       asp-items="Model.Roles"
+                       class="form-control"
+                       id="roleSelect">
+                
+                     <option value="">Select Role</option>  
+                </select>
+
+                <span asp-validation-for="Role"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group"
+                 id="specialtyGroup"
+                 style="display:none;">
+                <label asp-for="SpecialtyId"></label>
+
+                <select asp-for="SpecialtyId"
+                        asp-items="Model.Specialties"
+                       class="form-control">
+                   
+                    <option value="">Select specialty</option>    
+                </select>
+
+                <span asp-validation-for="SpecialtyId"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit"
+                       value="Create User"
+                       class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">
+        Back to List
+    </a>
+</div>
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        const roleSelect = document.getElementById("roleSelect");
+        const specialtyGroup = document.getElementById("specialtyGroup");
+
+        function updateSpecialtyVisibility(){
+            if(roleSelect.value === "Doctor"){
+                specialtyGroup.style.display = "block";
+            }
+            else{
+                specialtyGroup.style.display = "none";
+            }
+        }
+
+        roleSelect.addEventListener("change", updateSpecialtyVisibility);
+
+        updateSpecialtyVisibility();
+    </script>
+}
