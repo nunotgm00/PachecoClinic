@@ -115,7 +115,7 @@
             @if (Model.Intervention == null && Model.Status != AppointmentStatus.Cancelled) 
             {
                 <a asp-controller="Interventions"
-                   asp-action"Create"
+                   asp-action="Create"
                    asp-route-appointmentId="@Model.Id"
                    class="btn btn-success">
                     Add Intervention
@@ -129,6 +129,21 @@
                    class="btn btn-info">
                     View Intervention
                 </a>
+            }
+
+            @if (Model.Status == AppointmentStatus.Scheduled &&
+                Model.Date.Date + Model.StartTime <= DateTime.Now)
+            {
+                <form asp-action="Complete"
+                      asp-route-id="@Model.Id"
+                      method="post"
+                      class="d-inline">
+
+                    <button type="submit"
+                            class="btn btn-success">
+                        Mark as Completed
+                    </button>
+                </form>
             }
         }
         else if(Model.Intervention != null)

@@ -373,6 +373,58 @@ namespace PachecoClinic.Controllers
             return View(appointments);
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Doctor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Complete(int id)
+        {
+            Appointment? appointment = await _appointmentRepository.GetByIdWithDetailsAsync(id);
+
+            if(appointment == null)
+            {
+                return NotFound();
+            }
+
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByUserIdAsync(user.Id);
+
+            if(doctor == null)
+            {
+                return NotFound();
+            }
+
+            if(appointment.DoctorId != doctor.Id)
+            {
+                return Forbid();
+            }
+
+            if(appointment.Status != AppointmentStatus.Scheduled)
+            {
+                return BadRequest();
+            }
+
+            DateTime appointmentStart = appointment.Date.Date + appointment.StartTime;
+
+            if(appointmentStart > DateTime.Now)
+            {
+                ModelState.AddModelError(string.Empty, "A future appointment cannot be completed.");
+
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            appointment.Status = AppointmentStatus.Completed;
+
+            await _appointmentRepository.UpdateAsync(appointment);
+
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
         private IEnumerable<SelectListItem> GetAnimals()
         {
             List<SelectListItem> items = new List<SelectListItem>();
