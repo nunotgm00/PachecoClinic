@@ -17,17 +17,20 @@ namespace PachecoClinic.Controllers
         private readonly IGenericRepository<Specialty> _specialtyRepository;
         private readonly IDoctorRepository _doctorRepository;
         private readonly IClientRepository _clientRepository;
+        private readonly IMailHelper _mailHelper;
 
         public UsersController(
             IUserHelper userHelper,
             IGenericRepository<Specialty> specialtyRepository,
             IDoctorRepository doctorRepository,
-            IClientRepository clientRepository)
+            IClientRepository clientRepository,
+            IMailHelper mailHelper)
         {
             _userHelper = userHelper;
             _specialtyRepository = specialtyRepository;
             _doctorRepository = doctorRepository;
             _clientRepository = clientRepository;
+            _mailHelper = mailHelper;
         }
 
         public async Task<IActionResult> Index()
@@ -169,7 +172,23 @@ namespace PachecoClinic.Controllers
                 token = token
             }, Request.Scheme);
 
-            TempData["RegistrationLink"] = registrationLink;
+            Response response = _mailHelper.SendEmail(
+                user.Email!,
+                "Pacheco Clinic - Complete Registration",
+                $"<h1>Complete Registration</h1>" +
+                $"<p>An account has been created for you at Pacheco Clinic.</p>" +
+                $"<p>To complete your registration and create your password, click the link below:</p>" +
+                $"<p><a href=\"{registrationLink}\">Complete Registration</a></p>");
+
+            if (response.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "User created successfully. Registration email sent.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "User created, but the registration email could not be sent.";
+
+            }
 
             return RedirectToAction(nameof(Index));
         }

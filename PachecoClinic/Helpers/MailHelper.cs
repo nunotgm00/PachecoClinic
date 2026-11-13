@@ -1,6 +1,7 @@
 ﻿using MimeKit;
 using MailKit.Net.Smtp;
 using MailKit;
+using MailKit.Security;
 
 namespace PachecoClinic.Helpers
 {
@@ -38,7 +39,7 @@ namespace PachecoClinic.Helpers
             {
                 using(var client = new SmtpClient())
                 {
-                    client.Connect(smtp, int.Parse(port!), false);
+                    client.Connect(smtp, int.Parse(port!), SecureSocketOptions.StartTls);
                     client.Authenticate(from, password);
                     client.Send(message);
                     client.Disconnect(true);
