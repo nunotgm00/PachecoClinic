@@ -161,6 +161,16 @@ namespace PachecoClinic.Controllers
                 await _clientRepository.CreateAsync(client);
             }
 
+            string token = await _userHelper.GeneratePasswordResetTokenAsync(user);
+
+            string? registrationLink = Url.Action("CompleteRegistration", "Account", new
+            {
+                email = user.Email,
+                token = token
+            }, Request.Scheme);
+
+            TempData["RegistrationLink"] = registrationLink;
+
             return RedirectToAction(nameof(Index));
         }
 
