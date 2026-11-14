@@ -13,12 +13,18 @@ namespace PachecoClinic.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IClientRepository _clientRepository;
         private readonly IDoctorRepository _doctorRepository;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AccountController(IUserHelper userHelper, IClientRepository clientRepository, IDoctorRepository doctorRepository)
+        public AccountController(
+            IUserHelper userHelper,
+            IClientRepository clientRepository,
+            IDoctorRepository doctorRepository,
+            IWebHostEnvironment webHostEnvironment)
         {
             _userHelper = userHelper;
             _clientRepository = clientRepository;
             _doctorRepository = doctorRepository;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Login()
@@ -262,6 +268,99 @@ namespace PachecoClinic.Controllers
             TempData["SuccessMessage"] = "Registration completed successfully. You can now log in.";
 
             return RedirectToAction(nameof(Login));
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            ProfileModelView model = new ProfileModelView
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                ImageUrl = user.ImageUrl
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Profile(ProfileModelView model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.PhoneNumber = model.PhoneNumber;
+
+            if(model.ImageFile != null && model.ImageFile.Length > 0)
+            {
+                string uploadsFolder = Path.Combine(
+                    _webHostEnvironment.WebRootPath, "images", "users");
+
+                Directory.CreateDirectory(uploadsFolder);
+
+                string extension = Path.GetExtension(model.ImageFile.FileName);
+
+                string fileName = $"{Guid.NewGuid()}{extension}";
+
+                string filePath = Path.Combine(uploadsFolder, fileName);
+
+                using(FileStream stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.ImageFile.CopyToAsync(stream);
+                }
+
+                if (!string.IsNullOrEmpty(user.ImageUrl))
+                {
+                    string oldImagePath = Path.Combine(
+                        _webHostEnvironment.WebRootPath, user.ImageUrl.TrimStart('/'));
+
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                user.ImageUrl = $"/images/users/{fileName}";
+            }
+
+            IdentityResult result = await _userHelper.UpdateUserAsync(user);
+
+            if (!result.Succeeded)
+            {
+                foreach(IdentityError error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                model.ImageUrl = user.ImageUrl;
+
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Profile updated successfully.";
+
+            return RedirectToAction(nameof(Profile));
         }
     }
 }
