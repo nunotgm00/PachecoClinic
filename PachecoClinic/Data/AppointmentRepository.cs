@@ -24,6 +24,20 @@ namespace PachecoClinic.Data
                 .AsNoTracking();
         }
 
+        public async Task<List<Appointment>> GetAppointmentsByDateAsync(DateTime date)
+        {
+            return await _context.Appointments
+                .Include(a => a.Animal)
+                    .ThenInclude(a => a.Client)
+                        .ThenInclude(c => c.User)
+                .Include(a => a.Doctor)
+                    .ThenInclude(d => d.User)
+                .Include(a => a.Room)
+                .Where(a => a.Date.Date == date.Date && a.Status == AppointmentStatus.Scheduled)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task<List<Appointment>> GetByAnimalIdWithDetailsAsync(int animalId)
         {
             return await _context.Appointments

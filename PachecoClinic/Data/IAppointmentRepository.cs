@@ -18,5 +18,7 @@ namespace PachecoClinic.Data
             int? excludeId = null);
 
         Task<List<Appointment>> GetByAnimalIdWithDetailsAsync(int animalId);
+
+        Task<List<Appointment>> GetAppointmentsByDateAsync(DateTime date);
     }
 }

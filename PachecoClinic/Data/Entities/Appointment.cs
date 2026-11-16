@@ -30,6 +30,8 @@ namespace PachecoClinic.Data.Entities
 
         public AppointmentStatus Status { get; set; }
 
+        public bool ReminderSent { get; set; } = false;
+
         public Intervention? Intervention { get; set; }
 
         public ICollection<AppointmentRequest> Requests { get; set; } = new List<AppointmentRequest>();
