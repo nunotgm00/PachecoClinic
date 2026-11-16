@@ -18,6 +18,7 @@ namespace PachecoClinic.Controllers
         private readonly IDoctorScheduleRepository _scheduleRepository;
         private readonly IUserHelper _userHelper;
         private readonly IClientRepository _clientRepository;
+        private readonly IMailHelper _mailHelper;
 
         public AppointmentsController(
             IAppointmentRepository appointmentRepository,
@@ -26,7 +27,8 @@ namespace PachecoClinic.Controllers
             IGenericRepository<Room> roomRepository,
             IDoctorScheduleRepository scheduleRepository,
             IUserHelper userHelper,
-            IClientRepository clientRepository)
+            IClientRepository clientRepository,
+            IMailHelper mailHelper)
         {
             _appointmentRepository = appointmentRepository;
             _animalRepository = animalRepository;
@@ -35,6 +37,7 @@ namespace PachecoClinic.Controllers
             _scheduleRepository = scheduleRepository;
             _userHelper = userHelper;
             _clientRepository = clientRepository;
+            _mailHelper = mailHelper;
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
@@ -343,6 +346,33 @@ namespace PachecoClinic.Controllers
             appointment.Status = AppointmentStatus.Cancelled;
 
             await _appointmentRepository.UpdateAsync(appointment);
+
+            Appointment? appointmentWithDetailsForEmail = await _appointmentRepository.GetByIdWithDetailsAsync(id);
+
+            if(appointmentWithDetailsForEmail != null)
+            {
+                Response response = _mailHelper.SendEmail(
+                    appointmentWithDetailsForEmail.Animal.Client.User.Email!,
+                    "Pacheco Clinic - Appointment Cancelled",
+                    $"<h1>Appointment Cancelled</h1>" +
+                    $"<p>Hello {appointmentWithDetailsForEmail.Animal.Client.User.FirstName},</p>" +
+                    $"<p>Your appointment for <strong>{appointmentWithDetailsForEmail.Animal.Name}</strong> has been cancelled.</p>" +
+                    $"<p><strong>Date:</strong> {appointmentWithDetailsForEmail.Date:dd/MM/yyyy}</p>" +
+                    $"<p><strong>Time:</strong> {appointmentWithDetailsForEmail.StartTime:hh\\:mm}</p>" +
+                    $"<p><strong>Doctor:</strong> {appointmentWithDetailsForEmail.Doctor.User.FullName}</p>" +
+                    $"<p>Please contact Pacheco Clinic if you wish to schedule another appointment.</p>");
+
+                if (response.IsSuccess)
+                {
+                    TempData["SuccessMessage"] =
+                        "Appointment cancelled successfully. The client was notified by email.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] =
+                        "Appointment cancelled succesfully, but the email could not be sent to client";
+                }
+            }
 
             return RedirectToAction(nameof(Index));
         }
