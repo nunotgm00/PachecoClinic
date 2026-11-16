@@ -275,6 +275,8 @@ namespace PachecoClinic.Controllers
                 return View(model);
             }
 
+            bool scheduleChanged = appointment.Date.Date != model.Date!.Value.Date || appointment.StartTime != model.StartTime!.Value;
+
             appointment.AnimalId = model.AnimalId;
             appointment.DoctorId = model.DoctorId;
             appointment.RoomId = model.RoomId;
@@ -282,6 +284,10 @@ namespace PachecoClinic.Controllers
             appointment.StartTime = model.StartTime!.Value;
             appointment.EndTime = model.EndTime!.Value;
             appointment.Motive = model.Motive;
+            if (scheduleChanged)
+            {
+                appointment.ReminderSent = false;
+            }
 
             await _appointmentRepository.UpdateAsync(appointment);
 

@@ -338,6 +338,7 @@ namespace PachecoClinic.Controllers
             appointment.Date = requestedDate;
             appointment.StartTime = requestedStartTime;
             appointment.EndTime = requestedEndTime;
+            appointment.ReminderSent = false;
 
             request.Status = AppointmentRequestStatus.Approved;
 
