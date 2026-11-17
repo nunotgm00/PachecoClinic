@@ -4,117 +4,165 @@
     ViewData["Title"] = "Complete Registration";
 }
 
-<h1>Complete Registration</h1>
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
 
-<p>
-    Complete your personal information and create a password for your account.
-</p>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-<hr/>
+                <h2 class="mb-2">Complete Registration</h2>
 
-<div class="row">
-    <div class="col-md-5">
-        <form asp-action="CompleteRegistration" method="post">
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger"></div>
+                <p class="text-muted mb-4">
+                    Complete your personal information and create a password for your account.
+                </p>
 
-            <input type="hidden"
-                   asp-for="Token"/>
+                <form asp-action="CompleteRegistration" method="post">
 
-            <input type="hidden"
-                   asp-for="Role"/>
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
 
-            <div class="form-group">
-                <label asp-for="Email"></label>
+                    <input type="hidden"
+                           asp-for="Token" />
 
-                <input asp-for="Email"
-                       class="form-control"
-                       readonly/>
+                    <input type="hidden"
+                           asp-for="Role" />
 
-                <span asp-validation-for="Email"
-                      class="text-danger"></span>
+
+                    <div class="mb-3">
+                        <label asp-for="Email"
+                               class="form-label">
+                            Email
+                        </label>
+
+                        <input asp-for="Email"
+                               class="form-control"
+                               readonly />
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label asp-for="FirstName"
+                               class="form-label">
+                            First Name
+                        </label>
+
+                        <input asp-for="FirstName"
+                               class="form-control" />
+
+                        <span asp-validation-for="FirstName"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label asp-for="LastName"
+                               class="form-label">
+                            Last Name
+                        </label>
+
+                        <input asp-for="LastName"
+                               class="form-control" />
+
+                        <span asp-validation-for="LastName"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber"
+                               class="form-label">
+                            Phone Number
+                        </label>
+
+                        <input asp-for="PhoneNumber"
+                               class="form-control" />
+
+                        <span asp-validation-for="PhoneNumber"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+
+                    @if (Model.Role == "Client")
+                    {
+                        <div class="mb-3">
+                            <label asp-for="Address"
+                                   class="form-label">
+                                Address
+                            </label>
+
+                            <input asp-for="Address"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Address"
+                                  class="text-danger">
+                            </span>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label asp-for="Nif"
+                                   class="form-label">
+                                NIF
+                            </label>
+
+                            <input asp-for="Nif"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Nif"
+                                  class="text-danger">
+                            </span>
+                        </div>
+                    }
+
+
+                    <div class="mb-3">
+                        <label asp-for="Password"
+                               class="form-label">
+                            Password
+                        </label>
+
+                        <input asp-for="Password"
+                               class="form-control" />
+
+                        <span asp-validation-for="Password"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword"
+                               class="form-label">
+                            Confirm Password
+                        </label>
+
+                        <input asp-for="ConfirmPassword"
+                               class="form-control" />
+
+                        <span asp-validation-for="ConfirmPassword"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Complete Registration
+                    </button>
+
+                </form>
+
             </div>
+        </div>
 
-            <div class="form-group">
-                <label asp-for="FirstName"></label>
-
-                <input asp-for="FirstName"
-                       class="form-control" />
-
-                <span asp-validation-for="FirstName"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="LastName"></label>
-
-                <input asp-for="LastName"
-                       class="form-control" />
-
-                <span asp-validation-for="LastName"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="PhoneNumber"></label>
-
-                <input asp-for="PhoneNumber"
-                       class="form-control" />
-
-                <span asp-validation-for="PhoneNumber"
-                      class="text-danger"></span>
-            </div>
-
-            @if(Model.Role == "Client")
-            {
-                <div class="form-group">
-                    <label asp-for="Address"></label>
-
-                    <input asp-for="Address"
-                           class="form-control" />
-
-                    <span asp-validation-for="Address"
-                          class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Nif"></label>
-
-                    <input asp-for="Nif"
-                           class="form-control" />
-
-                    <span asp-validation-for="Nif"
-                          class="text-danger"></span>
-                </div>
-            }
-
-            <div class="form-group">
-                <label asp-for="Password"></label>
-
-                <input asp-for="Password"
-                       class="form-control" />
-
-                <span asp-validation-for="Password"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ConfirmPassword"></label>
-
-                <input asp-for="ConfirmPassword"
-                       class="form-control" />
-
-                <span asp-validation-for="ConfirmPassword"
-                      class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <input type="submit"
-                       value="Complete Registration"
-                       class="btn btn-primary"/>
-            </div>
-
-        </form>
     </div>
 </div>
 
