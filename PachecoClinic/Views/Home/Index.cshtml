@@ -1,8 +1,128 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mt-5">
+
+    <img src="~/images/logoPacheco.png"
+         alt="Pacheco Veterinary Clinic"
+         class="img-fluid mb-4"
+         style="max-width: 350px;" />
+
+    <br />
+
+    <img src="~/images/dogCat.png"
+         alt="Dog and cat"
+         class="img-fluid mb-5"
+         style="max-width: 500px;" />
+
 </div>
+
+
+<div class="text-center mb-5">
+
+    <h2 class="mb-4">Clinic</h2>
+
+    <a asp-controller="Doctors"
+       asp-action="Index"
+       class="btn btn-primary m-2">
+        Doctors
+    </a>
+
+    <a asp-controller="Specialties"
+       asp-action="Index"
+       class="btn btn-primary m-2">
+        Specialties
+    </a>
+
+</div>
+
+
+@if (User.IsInRole("Client"))
+{
+    <div class="text-center mb-5">
+
+        <h2 class="mb-4">Client Area</h2>
+
+        <a asp-controller="Animals"
+           asp-action="MyAnimals"
+           class="btn btn-primary m-2">
+            My Animals
+        </a>
+
+        <a asp-controller="Appointments"
+           asp-action="MyAppointments"
+           class="btn btn-primary m-2">
+            My Appointments
+        </a>
+
+    </div>
+}
+
+
+@if (User.IsInRole("Doctor"))
+{
+    <div class="text-center mb-5">
+
+        <h2 class="mb-4">Doctor Area</h2>
+
+        <a asp-controller="Appointments"
+           asp-action="Index"
+           class="btn btn-primary m-2">
+            Appointments
+        </a>
+
+        <a asp-controller="Interventions"
+           asp-action="Index"
+           class="btn btn-primary m-2">
+            Interventions
+        </a>
+
+    </div>
+}
+
+
+@if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+{
+    <div class="text-center mb-5">
+
+        <h2 class="mb-4">Management</h2>
+
+        <a asp-controller="Clients"
+           asp-action="Index"
+           class="btn btn-primary m-2">
+            Clients
+        </a>
+
+        <a asp-controller="Doctors"
+           asp-action="Index"
+           class="btn btn-primary m-2">
+            Doctors
+        </a>
+
+        <a asp-controller="Rooms"
+           asp-action="Index"
+           class="btn btn-primary m-2">
+            Rooms
+        </a>
+
+        <a asp-controller="Appointments"
+           asp-action="Index"
+           class="btn btn-primary m-2">
+            Appointments
+        </a>
+
+        <a asp-controller="Users"
+           asp-action="Index"
+           class="btn btn-primary m-2">
+            Users
+        </a>
+
+        <a asp-controller="Notifications"
+           asp-action="ClinicClosure"
+           class="btn btn-primary m-2">
+            Notifications
+        </a>
+
+    </div>
+}
