@@ -49,6 +49,8 @@ namespace PachecoClinic
                 app.UseHsts();
             }
 
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8 / V1JBaF5cXmRCd1p / TH5YfUNzdUVEY1ZUTXxaS1ZhSXxVd0RiXn5dcXBXQmNYUkF9XEc =");
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

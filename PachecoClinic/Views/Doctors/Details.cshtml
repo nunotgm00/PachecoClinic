@@ -1,64 +1,173 @@
-﻿@model PachecoClinic.Data.Entities.Doctor
+﻿@using PachecoClinic.Data.Entities
+@using PachecoClinic.Models
+@model PachecoClinic.Data.Entities.Doctor
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Doctor Details";
+
+    DateTime currentDate = DateTime.Today;
+
+    List<DoctorAppointmentScheduleViewModel> scheduleData =
+        ViewBag.ScheduleData;
 }
 
-<h1>Details</h1>
+<div class="container">
 
-<div>
-    <h4>Doctor</h4>
+    <div class="row mb-4">
+
+        <div class="col-md-2">
+
+            @if (!string.IsNullOrEmpty(Model.User.ImageUrl))
+            {
+                <img src="@Model.User.ImageUrl"
+                     alt="@Model.User.FullName"
+                     class="img-fluid rounded-circle"
+                     style="width: 140px; height: 140px; object-fit: cover;" />
+            }
+
+        </div>
+
+        <div class="col-md-7">
+
+            <h2>@Model.User.FullName</h2>
+
+            <p class="mb-1">
+                <strong>Specialty:</strong>
+                @Model.Specialty.Name
+            </p>
+
+            <p class="mb-1">
+                <strong>Email:</strong>
+                @Model.User.Email
+            </p>
+
+            <p class="mb-1">
+                <strong>Phone:</strong>
+                @Model.User.PhoneNumber
+            </p>
+
+            <p>
+                <strong>Status:</strong>
+
+                @if (Model.Active)
+                {
+                    <span class="badge bg-success">
+                        Active
+                    </span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">
+                        Inactive
+                    </span>
+                }
+            </p>
+
+        </div>
+
+        <div class="col-md-3 text-end">
+
+            @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+            {
+                <a asp-controller="DoctorSchedules"
+                   asp-action="Index"
+                   asp-route-doctorId="@Model.Id"
+                   class="btn btn-outline-primary">
+                    Manage Schedule
+                </a>
+
+                <a asp-action="Edit"
+                   asp-route-id="@Model.Id"
+                   class="btn btn-primary">
+                    Edit
+                </a>
+            }
+
+        </div>
+
+    </div>
+
+
     <hr />
 
-    <dl class="row">
 
-        <dt class="col-sm-2">
-            Name
-        </dt>
+    <div class="row">
 
-        <dd class="col-sm-10">
-            @Model.User.FullName
-        </dd>
+        <div class="col-md-4">
 
-        <dt class="col-sm-2">
-            Email
-        </dt>
+            <ejs-calendar id="doctor-calendar"
+                          value="@currentDate"
+                          change="currentDateChange"
+                          cssClass="doctor-calendar">
+            </ejs-calendar>
 
-        <dd class="col-sm-10">
-            @Model.User.Email
-        </dd>
+        </div>
 
-        <dt class="col-sm-2">
-            Phone Number
-        </dt>
 
-        <dd class="col-sm-10">
-            @Model.User.PhoneNumber
-        </dd>
+        <div class="col-md-8">
 
-        <dt class="col-sm-2">
-            Specialty
-        </dt>
+            <script id="quickInfoFooter" type="text/x-template">
+                <div></div>
+            </script>
 
-        <dd class="col-sm-10">
-            @Model.Specialty.Name
-        </dd>
+            <ejs-schedule id="doctor-schedule"
+                          selectedDate="@currentDate"
+                          height="650px"
+                          readonly="true">
 
-        <dt class="col-sm-2">
-            Active
-        </dt>
+                <e-schedule-quickinfotemplates footer="#quickInfoFooter">
+                </e-schedule-quickinfotemplates>
 
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Active)
-        </dd>
+                <e-schedule-views>
+                    <e-schedule-view option="Day"></e-schedule-view>
+                    <e-schedule-view option="Week"></e-schedule-view>
+                    <e-schedule-view option="Month"></e-schedule-view>
+                </e-schedule-views>
 
-    </dl>
+                <e-schedule-eventsettings dataSource="@scheduleData">
+                </e-schedule-eventsettings>
+
+            </ejs-schedule>
+
+        </div>
+
+    </div>
+
+
+    <div class="mt-4">
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+            Back to List
+        </a>
+
+    </div>
+
 </div>
 
 
-<div>
-    <a asp-action="Edit"
-       asp-route-id="@Model.Id">Edit</a> |
+<script>
 
-    <a asp-action="Index">Back to List</a>
-</div>
+    function currentDateChange(args) {
+
+        if (args && args.isInteracted) {
+
+            var schedule =
+                document.getElementById("doctor-schedule")
+                    .ej2_instances[0];
+
+            schedule.selectedDate = args.value;
+        }
+    }
+
+</script>
+
+
+<style>
+
+    .doctor-calendar.e-calendar {
+        width: 100% !important;
+        max-width: 400px !important;
+    }
+
+</style>

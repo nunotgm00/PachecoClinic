@@ -15,15 +15,18 @@ namespace PachecoClinic.Controllers
         private readonly IDoctorRepository _doctorRepository;
         private readonly IGenericRepository<Specialty> _specialtyRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IAppointmentRepository _appointmentRepository;
 
         public DoctorsController(
             IDoctorRepository doctorRepository,
             IGenericRepository<Specialty> specialtyRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IAppointmentRepository appointmentRepository)
         {
             _doctorRepository = doctorRepository;
             _specialtyRepository = specialtyRepository;
             _userHelper = userHelper;
+            _appointmentRepository = appointmentRepository;
         }
 
         [AllowAnonymous]
@@ -128,6 +131,23 @@ namespace PachecoClinic.Controllers
             {
                 return NotFound();
             }
+
+            List<DoctorAppointmentScheduleViewModel> appointments =
+                _appointmentRepository.GetAllWithDetails()
+                .Where(a => a.DoctorId == doctor.Id &&
+                    a.Status != AppointmentStatus.Cancelled)
+                .Select(a => new DoctorAppointmentScheduleViewModel
+                {
+                    Id = a.Id,
+                    Subject = a.Animal.Name + " - " + a.Motive,
+                    StartTime = a.Date.Date + a.StartTime,
+                    EndTime = a.Date.Date + a.EndTime,
+                    Description = a.Motive,
+                    Location = a.Room.Name
+                })
+                .ToList();
+
+            ViewBag.ScheduleData = appointments;
 
             return View(doctor);
         }
