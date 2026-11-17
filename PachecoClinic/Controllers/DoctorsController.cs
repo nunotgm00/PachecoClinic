@@ -16,17 +16,20 @@ namespace PachecoClinic.Controllers
         private readonly IGenericRepository<Specialty> _specialtyRepository;
         private readonly IUserHelper _userHelper;
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IMailHelper _mailHelper;
 
         public DoctorsController(
             IDoctorRepository doctorRepository,
             IGenericRepository<Specialty> specialtyRepository,
             IUserHelper userHelper,
-            IAppointmentRepository appointmentRepository)
+            IAppointmentRepository appointmentRepository,
+            IMailHelper mailHelper)
         {
             _doctorRepository = doctorRepository;
             _specialtyRepository = specialtyRepository;
             _userHelper = userHelper;
             _appointmentRepository = appointmentRepository;
+            _mailHelper = mailHelper;
         }
 
         [AllowAnonymous]
@@ -67,17 +70,15 @@ namespace PachecoClinic.Controllers
 
             User user = new User
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
+                FirstName = "Pending",
+                LastName = "Registration",
                 Email = model.Email,
                 UserName = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                EmailConfirmed = true
+                EmailConfirmed  = false,
+                ProfileCompleted = false
             };
 
-            string temporaryPassword = $"Temp1!{Guid.NewGuid():N}";
-
-            IdentityResult userResult = await _userHelper.AddUserAsync(user, temporaryPassword);
+            IdentityResult userResult = await _userHelper.AddUserAsync(user);
 
             if (!userResult.Succeeded)
             {
@@ -108,11 +109,38 @@ namespace PachecoClinic.Controllers
             Doctor doctor = new Doctor
             {
                 UserId = user.Id,
-                SpecialtyId = model.SpecialtyId,
-                Active = model.Active
+                SpecialtyId = model.SpecialtyId!.Value,
+                Active = false
             };
 
             await _doctorRepository.CreateAsync(doctor);
+
+            string token = await _userHelper.GeneratePasswordResetTokenAsync(user);
+
+            string? registrationLink = Url.Action("CompleteRegistration", "Account", new
+            {
+                email = user.Email,
+                token = token
+            }, Request.Scheme);
+
+            Response response = _mailHelper.SendEmail(
+                user.Email!,
+                "Pacheco Clinic - Complete Registration",
+                $"<h1>Complete Registration</h1>" +
+                $"<p>An account has been created for you at Pacheco Clinic.</p>" +
+                $"<p>To complete your registration and create your password, click the link below:</p>" +
+                $"<p><a href=\"{registrationLink}\">Complete Registration</a></p>");
+
+            if (response.IsSuccess)
+            {
+                TempData["SuccessMessage"] =
+                    "Doctor created successfully. Registration email sent.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] =
+                    "Doctor created successfully, but the registration email could not be sent.";
+            }
 
             return RedirectToAction(nameof(Index));
         }

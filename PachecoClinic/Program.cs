@@ -13,6 +13,15 @@ namespace PachecoClinic
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            string? syncfusionLicenseKey =
+                builder.Configuration["Syncfusion:LicenseKey"];
+
+            if (!string.IsNullOrEmpty(syncfusionLicenseKey))
+            {
+                Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(
+                    syncfusionLicenseKey);
+            }
+
             builder.Services.AddDbContext<DataContext>(options =>
             options.UseSqlServer(
                 builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -48,8 +57,6 @@ namespace PachecoClinic
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8 / V1JBaF5cXmRCd1p / TH5YfUNzdUVEY1ZUTXxaS1ZhSXxVd0RiXn5dcXBXQmNYUkF9XEc =");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
