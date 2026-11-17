@@ -1,62 +1,101 @@
-﻿@model IEnumerable<PachecoClinic.Data.Entities.Doctor>
+﻿@model IEnumerable<PachecoClinic.Models.DoctorListViewModel>
 
 @{
     ViewData["Title"] = "Doctors";
 }
 
-<h1>Doctors</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <div>
+        <h1 class="mb-1">Doctors</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
-            <th>Specialty</th>
-            <th>Active</th>
-            <th></th>
-        </tr>
-    </thead>
+        <p class="text-muted mb-0">
+            View the clinic's medical team.
+        </p>
+    </div>
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.User.FullName
-                </td>
+    @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+    {
+        <a asp-action="Create"
+           class="btn btn-primary">
+            Create Doctor
+        </a>
+    }
 
-                <td>
-                    @item.User.Email
-                </td>
+</div>
 
-                <td>
-                    @item.User.PhoneNumber
-                </td>
+<ejs-grid id="DoctorsGrid"
+          dataSource="@Model"
+          allowSorting="true"
+          allowFiltering="true"
+          allowPaging="true">
 
-                <td>
-                    @item.Specialty.Name
-                </td>
+    <e-grid-filtersettings type="Menu">
+    </e-grid-filtersettings>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Active)
-                </td>
+    <e-grid-pagesettings pageSize="10">
+    </e-grid-pagesettings>
 
-                <td>
-                    <a asp-action="Edit"
-                       asp-route-id="@item.Id">Edit</a> |
+    <e-grid-columns>
 
-                    <a asp-action="Details"
-                       asp-route-id="@item.Id">Details</a> |
+        <e-grid-column field="Name"
+                       headerText="Name"
+                       width="180">
+        </e-grid-column>
 
-                    <a asp-action="Delete"
-                       asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <e-grid-column field="Email"
+                       headerText="Email"
+                       width="220">
+        </e-grid-column>
+
+        <e-grid-column field="PhoneNumber"
+                       headerText="Phone Number"
+                       width="150">
+        </e-grid-column>
+
+        <e-grid-column field="Specialty"
+                       headerText="Specialty"
+                       width="160">
+        </e-grid-column>
+
+        <e-grid-column field="Active"
+                       headerText="Active"
+                       displayAsCheckBox="true"
+                       textAlign="Center"
+                       width="100">
+        </e-grid-column>
+
+        <e-grid-column headerText="Actions"
+                       template="#actionsTemplate"
+                       allowFiltering="false"
+                       allowSorting="false"
+                       textAlign="Center"
+                       width="240">
+        </e-grid-column>
+
+    </e-grid-columns>
+
+</ejs-grid>
+
+<script id="actionsTemplate"
+        type="text/x-template">
+
+    <a href="/Doctors/Details/${Id}"
+       class="btn btn-sm btn-outline-primary">
+        Details
+    </a>
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+    {
+            <a href="/Doctors/Edit/${Id}"
+               class="btn btn-sm btn-outline-secondary">
+                Edit
+            </a>
+
+            <a href="/Doctors/Delete/${Id}"
+               class="btn btn-sm btn-outline-danger">
+                Delete
+            </a>
+    }
+
+</script>

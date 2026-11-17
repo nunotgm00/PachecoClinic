@@ -35,7 +35,21 @@ namespace PachecoClinic.Controllers
         [AllowAnonymous]
         public IActionResult Index()
         {
-            return View(_doctorRepository.GetAllWithUsersAndSpecialties());
+            var doctors = _doctorRepository
+               .GetAllWithUsersAndSpecialties()
+               .Select(d => new DoctorListViewModel
+               {
+                   Id = d.Id,
+                   Name = d.User.FullName,
+                   Email = d.User.Email!,
+                   PhoneNumber = d.User.PhoneNumber,
+                   Specialty = d.Specialty.Name,
+                   Active = d.Active,
+                   ImageUrl = d.User.ImageUrl
+               })
+              .ToList();
+
+            return View(doctors);
         }
 
         public IActionResult Create()
