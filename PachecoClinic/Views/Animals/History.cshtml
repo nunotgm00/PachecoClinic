@@ -6,122 +6,172 @@
     Animal animal = ViewBag.Animal;
 }
 
-<h1>Medical History</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-11">
 
-<h4>@animal.Name</h4>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-<p>
-    <strong>Owner:</strong>
-    @animal.Client.User.FullName
-</p>
+                <div class="mb-4">
 
-<hr/>
+                    <h2 class="mb-1">
+                        Medical History
+                    </h2>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Date
-            </th>
+                    <h5 class="text-muted mb-2">
+                        @animal.Name
+                    </h5>
 
-            <th>
-                Time
-            </th>
+                    <p class="mb-0">
+                        <strong>Owner:</strong>
+                        @animal.Client.User.FullName
+                    </p>
 
-            <th>
-                Doctor
-            </th>
+                </div>
 
-            <th>
-                Room
-            </th>
+                <div class="table-responsive">
 
-            <th>
-                Motive
-            </th>
+                    <table class="table table-hover align-middle">
 
-            <th>
-                Status
-            </th>
+                        <thead class="table-light">
+                            <tr>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Doctor</th>
+                                <th>Room</th>
+                                <th>Motive</th>
+                                <th>Status</th>
+                                <th>Intervention</th>
+                                <th></th>
+                            </tr>
+                        </thead>
 
-            <th>
-                Intervention
-            </th>
+                        <tbody>
 
-            <th></th>
-        </tr>
-    </thead>
+                            @foreach (Appointment item in Model)
+                            {
+                                <tr>
 
-    <tbody>
-        @foreach (Appointment item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Date.ToString("dd/MM/yyyy")
-                </td>
+                                    <td>
+                                        @item.Date.ToString("dd/MM/yyyy")
+                                    </td>
 
-                <td>
-                    @item.StartTime.ToString(@"hh\:mm")
-                    -
-                    @item.EndTime.ToString(@"hh\:mm")
-                </td>
+                                    <td>
+                                        @item.StartTime.ToString(@"hh\:mm")
+                                        -
+                                        @item.EndTime.ToString(@"hh\:mm")
+                                    </td>
 
-                <td>
-                    @item.Doctor.User.FullName
-                </td>
+                                    <td>
+                                        @item.Doctor.User.FullName
+                                    </td>
 
-                <td>
-                    @item.Room.Name
-                </td>
+                                    <td>
+                                        @item.Room.Name
+                                    </td>
 
-                <td>
-                    @item.Motive
-                </td>
+                                    <td>
+                                        <ejs-tooltip id="motiveTooltip-@item.Id"
+                                                     content="@item.Motive"
+                                                     OpensOn="Click"
+                                                     isSticky="true"
+                                                     width="300px"
+                                                     position="TopCenter">
 
-                <td>
-                    @item.Status
-                </td>
+                                            <e-content-template>
 
-                <td>
-                    @if(item.Intervention != null)
-                    {
-                        <a asp-controller="Interventions"
-                           asp-action="Details"
-                           asp-route-id="@item.Intervention.Id">
-                            View Intervention
-                        </a>
-                    }
-                    else if(User.IsInRole("Doctor") &&
-                        item.Doctor.User.Email == User.Identity!.Name &&
-                        item.Status != AppointmentStatus.Cancelled)
-                    {
-                        <a asp-controller="Interventions"
-                           asp-action="Create"
-                           asp-route-id="@item.Id">
-                            Add Intervention
-                        </a>
-                    }
-                    else
-                    {
-                        <span>Not created yet</span>
-                    }
-                </td>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary">
+                                                    View Motive
+                                                </button>
 
-                <td>
-                    <a asp-controller="Appointments"
-                       asp-action="Details"
-                       asp-route-id="@item.Id">
-                        Appointment Details
+                                            </e-content-template>
+
+                                        </ejs-tooltip>
+                                    </td>
+
+                                    <td>
+                                        @if (item.Status == AppointmentStatus.Completed)
+                                        {
+                                            <span class="badge bg-success">
+                                                Completed
+                                            </span>
+                                        }
+                                        else if (item.Status == AppointmentStatus.Cancelled)
+                                        {
+                                            <span class="badge bg-danger">
+                                                Cancelled
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-primary">
+                                                Scheduled
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (item.Intervention != null)
+                                        {
+                                            <a asp-controller="Interventions"
+                                               asp-action="Details"
+                                               asp-route-id="@item.Intervention.Id"
+                                               class="btn btn-sm btn-outline-primary">
+                                                View
+                                            </a>
+                                        }
+                                        else if (User.IsInRole("Doctor") &&
+                                        item.Doctor.User.Email == User.Identity!.Name &&
+                                        item.Status != AppointmentStatus.Cancelled)
+                                        {
+                                            <a asp-controller="Interventions"
+                                               asp-action="Create"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-outline-success">
+                                                Add
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">
+                                                Not created
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <a asp-controller="Appointments"
+                                           asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            Details
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="mt-3">
+
+                    <a asp-action="Details"
+                       asp-route-id="@animal.Id"
+                       class="btn btn-outline-secondary">
+                        Back to Animal
                     </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
-<div>
-    <a asp-action="Details"
-       asp-route-id="@animal.Id">
-        Back to Animal
-    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 </div>
