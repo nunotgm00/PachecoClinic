@@ -4,81 +4,130 @@
     ViewData["Title"] = "Cancel Appointment";
 }
 
-<h1>Cancel Appointment</h1>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
 
-<h3>Are you sure you want to cancel this appointment?</h3>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-<div asp-validation-summary="ModelOnly"
-    class="text-danger"></div>
+                <div class="text-center mb-4">
 
-<dl class="row">
-    <dt class="col-sm-2">
-        Animal
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Animal.Name
-    </dd>
+                    <h2>Cancel Appointment</h2>
 
-    <dt class="col-sm-2">
-        Owner
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Animal.Client.User.FullName
-    </dd>
+                    <p class="text-danger mb-0">
+                        Are you sure you want to cancel this appointment?
+                    </p>
 
-    <dt class="col-sm-2">
-        Doctor
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Doctor.User.FullName
-    </dd>
+                </div>
 
-    <dt class="col-sm-2">
-        Room
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Room.Name
-    </dd>
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
 
-    <dt class="col-sm-2">
-        Date
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Date.ToString("dd/MM/yyyy")
-    </dd>
+                <dl class="row">
 
-    <dt class="col-sm-2">
-        Time
-    </dt>
-    <dd class="col-sm-10">
-        @Model.StartTime.ToString(@"hh\:mm")
-        -
-        @Model.EndTime.ToString(@"hh\:mm")
-    </dd>
+                    <dt class="col-sm-4">
+                        Animal
+                    </dt>
 
-    <dt class="col-sm-2">
-        Motive
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Motive
-    </dd>
+                    <dd class="col-sm-8">
+                        @Model.Animal.Name
+                    </dd>
 
-    <dt class="col-sm-2">
-        Status
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Status
-    </dd>
-</dl>
 
-<form asp-action="Cancel" method="post">
+                    <dt class="col-sm-4">
+                        Owner
+                    </dt>
 
-    <input type="hidden" asp-for="Id" />
+                    <dd class="col-sm-8">
+                        @Model.Animal.Client.User.FullName
+                    </dd>
 
-    <input type="submit"
-           value="Cancel Appointment"
-           class="btn btn-danger" />
 
-    <a asp-action="Index">Back to List</a>
+                    <dt class="col-sm-4">
+                        Doctor
+                    </dt>
 
-</form>
+                    <dd class="col-sm-8">
+                        @Model.Doctor.User.FullName
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Room
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.Room.Name
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Date
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.Date.ToString("dd/MM/yyyy")
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Time
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.StartTime.ToString(@"hh\:mm") - @Model.EndTime.ToString(@"hh\:mm")
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Motive
+                    </dt>
+
+                    <dd class="col-sm-8 text-break">
+                        @Model.Motive
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Status
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        <span class="badge bg-primary">
+                            @Model.Status
+                        </span>
+                    </dd>
+
+                </dl>
+
+                <hr />
+
+                <form asp-action="Cancel"
+                      method="post">
+
+                    <input type="hidden"
+                           asp-for="Id" />
+
+                    <div class="d-flex gap-2">
+
+                        <button type="submit"
+                                class="btn btn-danger">
+                            Cancel Appointment
+                        </button>
+
+                        <a asp-action="Details"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-outline-secondary">
+                            Back
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>

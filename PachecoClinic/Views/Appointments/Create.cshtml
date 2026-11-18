@@ -4,111 +4,192 @@
     ViewData["Title"] = "Create Appointment";
 }
 
-<h1>Create</h1>
+<div class="row justify-content-center">
+    <div class="col-md-9 col-lg-8">
 
-<h4>Appointment</h4>
-<hr/>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post">
-            <div asp-validation-summary="ModelOnly"
-                class="text-danger"></div>
+                <h2 class="mb-2">Create Appointment</h2>
 
-            <div class="form-group">
-                <label asp-for="AnimalId"></label>
+                <p class="text-muted mb-4">
+                    Schedule a new appointment.
+                </p>
 
-                <select asp-for="AnimalId"
-                        asp-items="Model.Animals"
-                        class="form-control">
-                    <option value="0">Select an animal</option>
-                </select>
+                <form asp-action="Create" method="post">
 
-                <span asp-validation-for="AnimalId"
-                    class="text-danger"></span>
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="AnimalId"
+                                   class="form-label">
+                                Animal
+                            </label>
+
+                            <select asp-for="AnimalId"
+                                    asp-items="Model.Animals"
+                                    class="form-select">
+
+                                <option value="0">
+                                    Select an animal
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="AnimalId"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="DoctorId"
+                                   class="form-label">
+                                Doctor
+                            </label>
+
+                            <select asp-for="DoctorId"
+                                    asp-items="Model.Doctors"
+                                    class="form-select">
+
+                                <option value="0">
+                                    Select a doctor
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="DoctorId"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="RoomId"
+                                   class="form-label">
+                                Room
+                            </label>
+
+                            <select asp-for="RoomId"
+                                    asp-items="Model.Rooms"
+                                    class="form-select">
+
+                                <option value="0">
+                                    Select a room
+                                </option>
+
+                            </select>
+
+                            <span asp-validation-for="RoomId"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="Date"
+                                   class="form-label">
+                                Date
+                            </label>
+
+                            <input asp-for="Date"
+                                   type="date"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Date"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="StartTime"
+                                   class="form-label">
+                                Start Time
+                            </label>
+
+                            <input asp-for="StartTime"
+                                   type="time"
+                                   class="form-control" />
+
+                            <span asp-validation-for="StartTime"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label asp-for="EndTime"
+                                   class="form-label">
+                                End Time
+                            </label>
+
+                            <input asp-for="EndTime"
+                                   type="time"
+                                   class="form-control" />
+
+                            <span asp-validation-for="EndTime"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-4">
+
+                        <label asp-for="Motive"
+                               class="form-label">
+                            Motive
+                        </label>
+
+                        <textarea asp-for="Motive"
+                                  class="form-control"
+                                  rows="4"></textarea>
+
+                        <span asp-validation-for="Motive"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="d-flex gap-2">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Create Appointment
+                        </button>
+
+                        <a asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
             </div>
+        </div>
 
-            <div class="form-group">
-                <label asp-for="DoctorId"></label>
-
-                <select asp-for="DoctorId"
-                        asp-items="Model.Doctors"
-                        class="form-control">
-                    <option value="0">Select a doctor</option>
-                </select>
-
-                <span asp-validation-for="DoctorId"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="RoomId"></label>
-
-                <select asp-for="RoomId"
-                        asp-items="Model.Rooms"
-                        class="form-control">
-                    <option value="0">Select a room</option>
-                </select>
-
-                <span asp-validation-for="RoomId"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Date"></label>
-
-                <input asp-for="Date"
-                        type="date"
-                        class="form-control"/>
-
-                <span asp-validation-for="Date"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="StartTime"></label>
-
-                <input asp-for="StartTime"
-                       type="time"
-                       class="form-control" />
-
-                <span asp-validation-for="StartTime"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="EndTime"></label>
-
-                <input asp-for="EndTime"
-                       type="time"
-                       class="form-control" />
-
-                <span asp-validation-for="EndTime"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Motive"></label>
-
-                <textarea asp-for="Motive"
-                       class="form-control"
-                       rows="4"></textarea>
-
-                <span asp-validation-for="Motive"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit"
-                       value="Create"
-                       class="btn btn-primary"/>
-            </div>
-        </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
