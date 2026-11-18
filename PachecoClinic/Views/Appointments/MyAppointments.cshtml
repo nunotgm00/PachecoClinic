@@ -5,97 +5,136 @@
     ViewData["Title"] = "My Appointments";
 }
 
+<div class="row justify-content-center">
+    <div class="col-lg-11">
 
-<h1>My Appointments</h1>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Animal
-            </th>
+                <h2 class="mb-4">
+                    My Appointments
+                </h2>
 
-            <th>
-                Doctor
-            </th>
+                <div class="table-responsive">
 
-            <th>
-                Room
-            </th>
+                    <table class="table table-hover align-middle">
 
-            <th>
-                Date
-            </th>
+                        <thead class="table-light">
+                            <tr>
+                                <th>Animal</th>
+                                <th>Doctor</th>
+                                <th>Room</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Motive</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
 
-            <th>
-                Time
-            </th>
+                        <tbody>
 
-            <th>
-                Motive
-            </th>
+                            @foreach (Appointment item in Model)
+                            {
+                                <tr>
 
-            <th>
-                Status
-            </th>
+                                    <td>
+                                        @item.Animal.Name
+                                    </td>
 
-            <th></th>
-        </tr>
-    </thead>
+                                    <td>
+                                        @item.Doctor.User.FullName
+                                    </td>
 
-    <tbody>
-        @foreach (Appointment item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Animal.Name
-                </td>
+                                    <td>
+                                        @item.Room.Name
+                                    </td>
 
-                <td>
-                    @item.Doctor.User.FullName
-                </td>
+                                    <td>
+                                        @item.Date.ToString("dd/MM/yyyy")
+                                    </td>
 
-                <td>
-                    @item.Room.Name
-                </td>
+                                    <td>
+                                        @item.StartTime.ToString(@"hh\:mm") - @item.EndTime.ToString(@"hh\:mm")
+                                    </td>
 
-                <td>
-                    @item.Date.ToString("dd/MM/yyyy")
-                </td>
+                                    <td>
 
-                <td>
-                    @item.StartTime.ToString(@"hh\:mm")
-                    -
-                    @item.EndTime.ToString(@"hh\:mm")
-                </td>
+                                        <ejs-tooltip id="motiveTooltip-@item.Id"
+                                                     content="@item.Motive"
+                                                     OpensOn="Click"
+                                                     isSticky="true"
+                                                     width="300px"
+                                                     position="TopCenter">
 
-                <td>
-                    @item.Motive
-                </td>
+                                            <e-content-template>
 
-                <td>
-                    @item.Status
-                </td>
+                                                <button type="button"
+                                                        class="btn btn-sm btn-outline-secondary">
+                                                    View Motive
+                                                </button>
 
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@item.Id"
-                        class="btn btn-info">
-                        Details
-                    </a>
+                                            </e-content-template>
 
-                    @if (item.Status == AppointmentStatus.Scheduled && 
-                         item.Date.Date + item.StartTime > DateTime.Now)
-                    {
-                        <a asp-controller="AppointmentRequests"
-                           asp-action="Create"
-                           asp-route-apppointmentId="@item.Id"
-                           class="btn btn-primary">
-                          Request Change
-                       </a>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                                        </ejs-tooltip>
+
+                                    </td>
+
+                                    <td>
+
+                                        @if (item.Status == AppointmentStatus.Completed)
+                                        {
+                                            <span class="badge bg-success">
+                                                Completed
+                                            </span>
+                                        }
+                                        else if (item.Status == AppointmentStatus.Cancelled)
+                                        {
+                                            <span class="badge bg-danger">
+                                                Cancelled
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-primary">
+                                                Scheduled
+                                            </span>
+                                        }
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Details
+                                        </a>
+
+                                        @if (item.Status == AppointmentStatus.Scheduled &&
+                                                                            item.Date.Date + item.StartTime > DateTime.Now)
+                                        {
+                                            <a asp-controller="AppointmentRequests"
+                                               asp-action="Create"
+                                               asp-route-appointmentId="@item.Id"
+                                               class="btn btn-sm btn-outline-secondary">
+                                                Request Change
+                                            </a>
+                                        }
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
