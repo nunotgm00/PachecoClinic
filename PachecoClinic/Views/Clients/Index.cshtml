@@ -4,76 +4,99 @@
     ViewData["Title"] = "Clients";
 }
 
-<h1>Clients</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-@if (User.IsInRole("Admin"))
-{
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-}
+    <h1 class="mb-0">
+        Clients
+    </h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Phone Number
-            </th>
-            <th>
-                NIF
-            </th>
-            <th>
-                Address
-            </th>
-            <th></th>
-        </tr>
-    </thead>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create"
+           class="btn btn-primary">
+            Create Client
+        </a>
+    }
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.User.FullName
-                </td>
+</div>
 
-                <td>
-                    @item.User.Email
-                </td>
 
-                <td>
-                    @item.User.PhoneNumber
-                </td>
+<div class="card shadow-sm">
+    <div class="card-body p-4">
 
-                <td>
-                    @item.Nif
-                </td>
+        <div class="table-responsive">
 
-                <td>
-                    @item.Address
-                </td>
+            <table class="table table-hover align-middle">
 
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@item.Id">Details</a>
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>NIF</th>
+                        <th>Address</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
 
-                    <span> | </span>
+                <tbody>
 
-                    <a asp-action="Edit"
-                       asp-route-id="@item.Id">Edit</a>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
 
-                    <span> | </span>
+                            <td>
+                                <strong>
+                                    @item.User.FullName
+                                </strong>
+                            </td>
 
-                    <a asp-action="Delete"
-                       asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                            <td>
+                                @item.User.Email
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrEmpty(item.User.PhoneNumber) ? "-" : item.User.PhoneNumber)
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrEmpty(item.Nif) ? "-" : item.Nif)
+                            </td>
+
+                            <td>
+                                @(string.IsNullOrEmpty(item.Address) ? "-" : item.Address)
+                            </td>
+
+                            <td class="text-end">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Details
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    Edit
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
