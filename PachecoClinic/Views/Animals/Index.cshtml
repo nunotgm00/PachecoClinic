@@ -1,79 +1,99 @@
-﻿@model IEnumerable<PachecoClinic.Data.Entities.Animal>
+﻿@model IEnumerable<PachecoClinic.Models.AnimalListViewModel>
 
 @{
     ViewData["Title"] = "Animals";
 }
 
-<h1>Animals</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    <h1 class="mb-0">
+        Animals
+    </h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                Species
-            </th>
-            <th>
-                Breed
-            </th>
-            <th>
-                Owner
-            </th>
-            <th>
-                Birth Date
-            </th>
-            <th>
-                Weight
-            </th>
+    <a asp-action="Create"
+       class="btn btn-primary">
+        Create Animal
+    </a>
 
-        </tr>
-    </thead>
+</div>
 
-    <tbody>
-        @foreach(var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Species
-                </td>
-                <td>
-                    @item.Breed
-                </td>
-                <td>
-                    @item.Client.User.FullName
-                </td>
-                <td>
-                    @item.BirthDate?.ToString("dd/MM/yyyy")
-                </td>
-                <td>
-                    @item.Weight
-                </td>
-                
-                <td>
-                    <a asp-action="Details"
-                        asp-route-id="@item.Id">Details</a>
+<ejs-grid id="AnimalsGrid"
+          dataSource="@Model"
+          allowSorting="true"
+          allowFiltering="true"
+          allowPaging="true">
 
-                    <span> | </span>
+    <e-grid-filtersettings type="Menu">
+    </e-grid-filtersettings>
 
-                    <a asp-action="Edit"
-                       asp-route-id="@item.Id">Edit</a>
+    <e-grid-pagesettings pageSize="10">
+    </e-grid-pagesettings>
 
-                    <span> | </span>
+    <e-grid-columns>
 
-                    <a asp-action="Delete"
-                       asp-route-id="@item.Id">Delete</a>
+        <e-grid-column field="Name"
+                       headerText="Name"
+                       width="130">
+        </e-grid-column>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+        <e-grid-column field="Species"
+                       headerText="Species"
+                       width="130">
+        </e-grid-column>
+
+        <e-grid-column field="Breed"
+                       headerText="Breed"
+                       width="140">
+        </e-grid-column>
+
+        <e-grid-column field="Owner"
+                       headerText="Owner"
+                       width="190">
+        </e-grid-column>
+
+        <e-grid-column field="BirthDate"
+                       headerText="Birth Date"
+                       type="date"
+                       format="dd/MM/yyyy"
+                       width="130">
+        </e-grid-column>
+
+        <e-grid-column field="Weight"
+                       headerText="Weight"
+                       format="N2"
+                       textAlign="Right"
+                       width="100">
+        </e-grid-column>
+
+        <e-grid-column headerText="Actions"
+                       template="#actionsTemplate"
+                       allowFiltering="false"
+                       allowSorting="false"
+                       textAlign="Center"
+                       width="230">
+        </e-grid-column>
+
+    </e-grid-columns>
+
+</ejs-grid>
+
+
+<script id="actionsTemplate"
+        type="text/x-template">
+
+    <a href="/Animals/Details/${Id}"
+       class="btn btn-sm btn-outline-primary">
+        Details
+    </a>
+
+    <a href="/Animals/Edit/${Id}"
+       class="btn btn-sm btn-outline-secondary">
+        Edit
+    </a>
+
+    <a href="/Animals/Delete/${Id}"
+       class="btn btn-sm btn-outline-danger">
+        Delete
+    </a>
+
+</script>

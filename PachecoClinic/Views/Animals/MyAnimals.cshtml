@@ -4,94 +4,92 @@
     ViewData["Title"] = "My Animals";
 }
 
-<h1>My Animals</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-10">
 
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Photo
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Species
-            </th>
-            <th>
-                Breed
-            </th>
-            <th>
-                Birth Date
-            </th>
-            <th>
-                Weight
-            </th>
+                <h2 class="mb-4">My Animals</h2>
 
-            <th></th>
-        </tr>
-    </thead>
+                <div class="table-responsive">
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <img src="@item.ImageUrl"
-                         alt="@item.Name"
-                         style="width: 80px; height: 80px; object-fit: cover;" />
-                </td>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Species
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.Breed))
-                    {
-                        @item.Breed
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
-                </td>
-                <td>
-                    @if (item.BirthDate.HasValue)
-                    {
-                        @item.BirthDate.Value.ToString("dd/MM/yyyy")
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
-                </td>
-                <td>
-                    @if (item.Weight.HasValue)
-                    {
-                        @($"{item.Weight.Value:0.##} kg")
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
-                </td>
+                    <table class="table table-hover align-middle">
 
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@item.Id"
-                       class="btn btn-info">Details</a>
+                        <thead class="table-light">
+                            <tr>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Species</th>
+                                <th>Breed</th>
+                                <th>Birth Date</th>
+                                <th>Weight</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
 
-                    <a asp-action="History"
-                       asp-route-id="@item.Id"
-                       class="btn btn-secondary">
-                        Medical History
-                   </a>
+                        <tbody>
 
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        <img src="@item.ImageUrl"
+                                             alt="@item.Name"
+                                             class="rounded"
+                                             style="width: 70px; height: 70px; object-fit: cover;" />
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            @item.Name
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @item.Species
+                                    </td>
+
+                                    <td>
+                                        @(string.IsNullOrEmpty(item.Breed) ? "-" : item.Breed)
+                                   </td>
+
+                                    <td>
+                                        @(item.BirthDate.HasValue ? item.BirthDate.Value.ToString("dd/MM/yyyy") : "-")
+                                    </td>
+
+                                    <td>
+                                        @(item.Weight.HasValue ? $"{item.Weight.Value:0.##} kg" : "-")
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Details
+                                        </a>
+
+                                        <a asp-action="History"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary">
+                                            Medical History
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+                             }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

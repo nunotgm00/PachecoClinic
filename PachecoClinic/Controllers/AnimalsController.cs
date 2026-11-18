@@ -34,7 +34,21 @@ namespace PachecoClinic.Controllers
         [Authorize(Roles = "Admin,Employee,Doctor")]
         public ActionResult Index()
         {
-            return View(_animalRepository.GetAllWithClients());
+            List<AnimalListViewModel> animals = _animalRepository
+                .GetAllWithClients()
+                .Select(a => new AnimalListViewModel
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    Species = a.Species,
+                    Breed = a.Breed,
+                    Owner = a.Client.User.FullName,
+                    BirthDate = a.BirthDate,
+                    Weight = a.Weight
+                })
+                .ToList();
+
+            return View(animals);
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
