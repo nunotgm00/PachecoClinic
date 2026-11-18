@@ -1,85 +1,113 @@
-﻿@model IEnumerable<PachecoClinic.Data.Entities.AppointmentRequest>
+﻿@using PachecoClinic.Data.Entities
+@model IEnumerable<PachecoClinic.Data.Entities.AppointmentRequest>
 
 @{
-    ViewData["Title"] = "Appointment Requests";
+    ViewData["Title"] = "My Requests";
 }
 
-<h1>My Requests</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-11">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Animal
-            </th>
-            <th>
-                Doctor
-            </th>
-            <th>
-                Appointment
-            </th>
-            <th>
-                Request Type
-            </th>
-            <th>
-                Requested Date
-            </th>
-            <th>
-                Requested Time
-            </th>
-            <th>
-                Status
-            </th>
-            <th></th>
-        </tr>
-    </thead>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Appointment.Animal.Name
-                </td>
-                <td>
-                    @item.Appointment.Doctor.User.FullName
-                </td>
-                <td>
-                    @item.Appointment.Date.ToString("dd/MM/yyyy")
-                    -
-                    @item.Appointment.StartTime.ToString(@"hh\:mm")
-                </td>
-                <td>
-                    @item.Type
-                </td>
-                <td>
-                    @if (item.RequestedDate.HasValue)
-                    {
-                        @item.RequestedDate.Value.ToString("dd/MM/yyyy")
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
-                </td>
-                <td>
-                    @if (item.RequestedStartTime.HasValue)
-                    {
-                        @item.RequestedStartTime.Value.ToString(@"hh\:mm")
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
-                </td>
-                <td>
-                    @item.Status
-                </td>
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@item.Id">Details</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                <h2 class="mb-4">
+                    My Requests
+                </h2>
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead class="table-light">
+                            <tr>
+                                <th>Animal</th>
+                                <th>Doctor</th>
+                                <th>Appointment</th>
+                                <th>Request Type</th>
+                                <th>Requested Date</th>
+                                <th>Requested Time</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @item.Appointment.Animal.Name
+                                    </td>
+
+                                    <td>
+                                        @item.Appointment.Doctor.User.FullName
+                                    </td>
+
+                                    <td>
+                                        @item.Appointment.Date.ToString("dd/MM/yyyy")
+                                        <br />
+                                        <span class="text-muted">
+                                            @item.Appointment.StartTime.ToString(@"hh\:mm")
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        @item.Type
+                                    </td>
+
+                                    <td>
+                                        @(item.RequestedDate.HasValue? item.RequestedDate.Value.ToString("dd/MM/yyyy") : "-")
+                                    </td>
+
+                                    <td>
+                                        @(item.RequestedStartTime.HasValue? item.RequestedStartTime.Value.ToString(@"hh\:mm") : "-")
+                                    </td>
+
+                                    <td>
+                                        @if (item.Status == AppointmentRequestStatus.Pending)
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                Pending
+                                            </span>
+                                        }
+                                        else if (item.Status == AppointmentRequestStatus.Approved)
+                                        {
+                                            <span class="badge bg-success">
+                                                Approved
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">
+                                                Rejected
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Details
+                                        </a>
+
+                                    </td>
+
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
