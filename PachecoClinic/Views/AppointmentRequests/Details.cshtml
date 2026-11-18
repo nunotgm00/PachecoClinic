@@ -5,145 +5,180 @@
     ViewData["Title"] = "Appointment Request Details";
 }
 
-<h1>Details</h1>
+<div class="row justify-content-center">
+    <div class="col-md-9 col-lg-8">
 
-<h4>Appointment Request</h4>
-<hr />
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-<dl class="row">
+                <h2 class="mb-4">
+                    Appointment Request Details
+                </h2>
 
-    <dt class="col-sm-2">
-        Client
-    </dt>
+                <dl class="row">
 
-    <dd class="col-sm-10">
-        @Model.Appointment.Animal.Client.User.FullName
-    </dd>
+                    <dt class="col-sm-4">
+                        Client
+                    </dt>
 
-    <dt class="col-sm-2">
-        Animal
-    </dt>
+                    <dd class="col-sm-8">
+                        @Model.Appointment.Animal.Client.User.FullName
+                    </dd>
 
-    <dd class="col-sm-10">
-        @Model.Appointment.Animal.Name
-    </dd>
 
-    <dt class="col-sm-2">
-        Doctor
-    </dt>
+                    <dt class="col-sm-4">
+                        Animal
+                    </dt>
 
-    <dd class="col-sm-10">
-        @Model.Appointment.Doctor.User.FullName
-    </dd>
+                    <dd class="col-sm-8">
+                        @Model.Appointment.Animal.Name
+                    </dd>
 
-    <dt class="col-sm-2">
-        Current Date
-    </dt>
 
-    <dd class="col-sm-10">
-        @Model.Appointment.Date.ToString("dd/MM/yyyy")
-    </dd>
+                    <dt class="col-sm-4">
+                        Doctor
+                    </dt>
 
-    <dt class="col-sm-2">
-        Current Time
-    </dt>
+                    <dd class="col-sm-8">
+                        @Model.Appointment.Doctor.User.FullName
+                    </dd>
 
-    <dd class="col-sm-10">
-        @Model.Appointment.StartTime.ToString(@"hh\:mm")
-        -
-        @Model.Appointment.EndTime.ToString(@"hh\:mm")
-    </dd>
 
-    <dt class="col-sm-2">
-        Request Type
-    </dt>
+                    <dt class="col-sm-4">
+                        Current Date
+                    </dt>
 
-    <dd class="col-sm-10">
-        @Model.Type
-    </dd>
+                    <dd class="col-sm-8">
+                        @Model.Appointment.Date.ToString("dd/MM/yyyy")
+                    </dd>
 
-    <dt class="col-sm-2">
-        Requested Date
-    </dt>
 
-    <dd class="col-sm-10">
-        @if (Model.RequestedDate.HasValue)
-        {
-            @Model.RequestedDate.Value.ToString("dd/MM/yyyy")
-        }
-        else
-        {
-            <span>-</span>
-        }
-    </dd>
+                    <dt class="col-sm-4">
+                        Current Time
+                    </dt>
 
-    <dt class="col-sm-2">
-        Requested Time
-    </dt>
+                    <dd class="col-sm-8">
+                        @Model.Appointment.StartTime.ToString(@"hh\:mm")
+                        -
+                        @Model.Appointment.EndTime.ToString(@"hh\:mm")
+                    </dd>
 
-    <dd class="col-sm-10">
-        @if (Model.RequestedStartTime.HasValue)
-        {
-            @Model.RequestedStartTime.Value.ToString(@"hh\:mm")
-        }
-        else
-        {
-            <span>-</span>
-        }
-    </dd>
 
-    <dt class="col-sm-2">
-        Message
-    </dt>
+                    <dt class="col-sm-4">
+                        Request Type
+                    </dt>
 
-    <dd class="col-sm-10">
-        @Model.Message
-    </dd>
+                    <dd class="col-sm-8">
+                        @Model.Type
+                    </dd>
 
-    <dt class="col-sm-2">
-        Status
-    </dt>
 
-    <dd class="col-sm-10">
-        @Model.Status
-    </dd>
+                    <dt class="col-sm-4">
+                        Requested Date
+                    </dt>
 
-    <dt class="col-sm-2">
-        Created At
-    </dt>
+                    <dd class="col-sm-8">
+                        @(Model.RequestedDate.HasValue ? Model.RequestedDate.Value.ToString("dd/MM/yyyy") : "-")
+                    </dd>
 
-    <dd class="col-sm-10">
-        @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
-    </dd>
 
-</dl>
+                    <dt class="col-sm-4">
+                        Requested Time
+                    </dt>
 
-@if(Model.Status == AppointmentRequestStatus.Pending && !User.IsInRole("Client"))
-{
-    <div class="d-flex gap-2">
-        <form asp-action="Approve"
-              asp-route-id="@Model.Id"
-              method="post">
-            
-            <button type="submit"
-                class="btn btn-success">
-                Approve
-            </button>
-        </form>
+                    <dd class="col-sm-8">
+                        @(Model.RequestedStartTime.HasValue ? Model.RequestedStartTime.Value.ToString(@"hh\:mm") : "-")
+                    </dd>
 
-        <form asp-action="Reject"
-              asp-route-id="@Model.Id"
-              method="post">
 
-            <button type="submit"
-                    class="btn btn-success">
-                Reject
-            </button>
-        </form>
+                    <dt class="col-sm-4">
+                        Message
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @(string.IsNullOrEmpty(Model.Message) ? "-" : Model.Message)
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Status
+                    </dt>
+
+                    <dd class="col-sm-8">
+
+                        @if (Model.Status == AppointmentRequestStatus.Pending)
+                        {
+                            <span class="badge bg-warning text-dark">
+                                Pending
+                            </span>
+                        }
+                        else if (Model.Status == AppointmentRequestStatus.Approved)
+                        {
+                            <span class="badge bg-success">
+                                Approved
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                Rejected
+                            </span>
+                        }
+
+                    </dd>
+
+
+                    <dt class="col-sm-4">
+                        Created At
+                    </dt>
+
+                    <dd class="col-sm-8">
+                        @Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                    </dd>
+
+                </dl>
+
+
+                @if (Model.Status == AppointmentRequestStatus.Pending && !User.IsInRole("Client"))
+                {
+                    <hr />
+
+                    <div class="d-flex gap-2 mb-3">
+
+                        <form asp-action="Approve"
+                              asp-route-id="@Model.Id"
+                              method="post">
+
+                            <button type="submit"
+                                    class="btn btn-success">
+                                Approve
+                            </button>
+
+                        </form>
+
+
+                        <form asp-action="Reject"
+                              asp-route-id="@Model.Id"
+                              method="post">
+
+                            <button type="submit"
+                                    class="btn btn-danger">
+                                Reject
+                            </button>
+
+                        </form>
+
+                    </div>
+                }
+
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    Back to List
+                </a>
+
+            </div>
+        </div>
+
     </div>
-}
-<br/>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
