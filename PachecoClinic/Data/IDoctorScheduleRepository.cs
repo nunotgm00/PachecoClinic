@@ -20,5 +20,7 @@ namespace PachecoClinic.Data
             DayOfWeek dayOfWeek,
             TimeSpan startTime,
             TimeSpan endTime);
+
+        Task<List<DoctorSchedule>> GetByDoctorIdAsync(int doctorId);
     }
 }

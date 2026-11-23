@@ -19,6 +19,14 @@ namespace PachecoClinic.Data
                 .AsNoTracking();
         }
 
+        public async Task<List<DoctorSchedule>> GetByDoctorIdAsync(int doctorId)
+        {
+            return await _context.DoctorSchedules
+                .Where(s => s.DoctorId == doctorId)
+                .OrderBy(s => s.DayOfWeek)
+                .ToListAsync();
+        }
+
         public async Task<DoctorSchedule?> GetByIdWithDoctorsAsync(int id)
         {
             return await _context.DoctorSchedules
