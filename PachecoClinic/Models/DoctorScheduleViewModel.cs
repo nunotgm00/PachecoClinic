@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace PachecoClinic.Models
@@ -7,7 +8,8 @@ namespace PachecoClinic.Models
     {
         public int DoctorId { get; set; }
 
-        public string DoctorName { get; set; }
+        [ValidateNever]
+        public string DoctorName { get; set; } = null!;
 
         public List<DoctorScheduleDayViewModel> Days { get; set; } = new();
     }

@@ -8,33 +8,35 @@ using PachecoClinic.Models;
 
 namespace PachecoClinic.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Employee,Doctor")]
     public class DoctorSchedulesController : Controller
     {
         private readonly IDoctorScheduleRepository _scheduleRepository;
         private readonly IDoctorRepository _doctorRepository;
         private readonly IUserHelper _userHelper;
+        private readonly IAppointmentRepository _appointmentRepository;
 
         public DoctorSchedulesController(
             IDoctorScheduleRepository scheduleRepository, 
             IDoctorRepository doctorRepository,
-            IUserHelper userHelper)
+            IUserHelper userHelper,
+            IAppointmentRepository appointmentRepository)
         {
             _scheduleRepository = scheduleRepository;
             _doctorRepository = doctorRepository;
             _userHelper = userHelper;
+            _appointmentRepository = appointmentRepository;
         }
 
-        [AllowAnonymous]
+        /*[AllowAnonymous]
         public IActionResult Index()
         {
             return View(_scheduleRepository.GetAllWithDoctors());
-        }
+        }*/
         
-        [Authorize(Roles = "Admin,EMployee,Doctor")]
         public async Task<IActionResult> Manage(int id)
         {
-            Doctor doctor = await _doctorRepository.GetByIdWithUserAndSpecialtyAsync(id);
+            Doctor? doctor = await _doctorRepository.GetByIdWithUserAndSpecialtyAsync(id);
 
             if (doctor == null)
             {
@@ -94,7 +96,6 @@ namespace PachecoClinic.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admim,Employee,Doctor")]
         public async Task<IActionResult> Manage(DoctorScheduleViewModel model)
         {
             Doctor? doctor = await _doctorRepository.GetByIdWithUserAndSpecialtyAsync(model.DoctorId);
@@ -145,15 +146,48 @@ namespace PachecoClinic.Controllers
                 return View(model);
             }
 
-            List<DoctorSchedule> schedules = await _scheduleRepository.GetByDoctorIdAsync(model.DoctorId);
-
             foreach(DoctorScheduleDayViewModel day in model.Days)
             {
-                DoctorSchedule? schedule = schedules.FirstOrDefault(s => s.DayOfWeek == day.DayOfWeek);
+                List<Appointment> appointments =
+                    await _appointmentRepository.GetFutureAppointmentsByDoctorAndDayAsync(model.DoctorId, day.DayOfWeek);
 
-                if(day.StartTime.HasValue && day.EndTime.HasValue)
+                if(!day.StartTime.HasValue && !day.EndTime.HasValue)
                 {
-                    if(schedule == null)
+                    if (appointments.Any())
+                    {
+                        ModelState.AddModelError(string.Empty, $"Cannot set {day.DayOfWeek} as a day off because there are future appointments scheduled.");
+                    }
+                }
+                else
+                {
+                    bool invalidAppointment = appointments.Any(a => a.StartTime < day.StartTime!.Value ||
+                        a.EndTime > day.EndTime!.Value);
+
+                    if (invalidAppointment)
+                    {
+                        ModelState.AddModelError(string.Empty, $"Cannot change {day.DayOfWeek}'s schedule because there are future appointments outside these working hours.");
+                    }
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.DoctorName = doctor.User.FullName;
+
+                return View(model);
+            }
+
+            List<DoctorSchedule> schedules =
+                await _scheduleRepository.GetByDoctorIdAsync(model.DoctorId);
+
+            foreach (DoctorScheduleDayViewModel day in model.Days)
+            {
+                DoctorSchedule? schedule =
+                    schedules.FirstOrDefault(s => s.DayOfWeek == day.DayOfWeek);
+
+                if (day.StartTime.HasValue && day.EndTime.HasValue)
+                {
+                    if (schedule == null)
                     {
                         schedule = new DoctorSchedule
                         {
@@ -173,7 +207,7 @@ namespace PachecoClinic.Controllers
                         await _scheduleRepository.UpdateAsync(schedule);
                     }
                 }
-                else if(schedule != null)
+                else if (schedule != null)
                 {
                     await _scheduleRepository.DeleteAsync(schedule);
                 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PachecoClinic.Data.Entities;
+using Syncfusion.EJ2.Linq;
 
 namespace PachecoClinic.Data
 {
@@ -64,6 +65,19 @@ namespace PachecoClinic.Data
                 .Include(a => a.Intervention)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<List<Appointment>> GetFutureAppointmentsByDoctorAndDayAsync(int DoctorId, DayOfWeek dayOfWeek)
+        {
+            DateTime today = DateTime.Today;
+
+            List<Appointment> appointments = await _context.Appointments
+                .Where(a => a.DoctorId == DoctorId && a.Status == AppointmentStatus.Scheduled && a.Date >= today)
+                .ToListAsync();
+
+            return appointments
+                .Where(a => a.Date.DayOfWeek == dayOfWeek && a.Date.Date + a.StartTime > DateTime.Now)
+                .ToList();
         }
 
         public async Task<bool> HasConflictAsync(

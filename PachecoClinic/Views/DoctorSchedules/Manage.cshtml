@@ -1,0 +1,381 @@
+﻿@model PachecoClinic.Models.DoctorScheduleViewModel
+
+@{
+    ViewData["Title"] = "Doctor Schedule";
+
+    DateTime today = DateTime.Today;
+    int daysSinceMonday = ((int)today.DayOfWeek + 6) % 7;
+    DateTime monday = today.AddDays(-daysSinceMonday);
+    DateTime sunday = monday.AddDays(6);
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+
+                <h2 class="mb-1">Doctor Schedule</h2>
+
+                <p class="text-muted mb-4">
+                    @Model.DoctorName
+                </p>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                <form asp-action="Manage"
+                      method="post"
+                      id="scheduleForm">
+
+                    <input type="hidden"
+                           asp-for="DoctorId" />
+
+                    <div asp-validation-summary="All"
+                         class="text-danger mb-3">
+                    </div>
+
+
+                    @for (int i = 0; i < Model.Days.Count; i++)
+                    {
+                        <input type="hidden"
+                               asp-for="Days[i].DayOfWeek" />
+
+                        <input type="hidden"
+                               asp-for="Days[i].StartTime"
+                               id="startTime-@i" />
+
+                        <input type="hidden"
+                               asp-for="Days[i].EndTime"
+                               id="endTime-@i" />
+                    }
+
+
+                    <div class="row g-4">
+
+                        <div class="col-md-5">
+
+                            <h5 class="mb-3">
+                                Select Day
+                            </h5>
+
+                            <ejs-calendar id="scheduleCalendar"
+                                          value="@monday"
+                                          min="@monday"
+                                          max="@sunday"
+                                          firstDayOfWeek="1"
+                                          showTodayButton="false"
+                                          change="calendarChanged">
+                            </ejs-calendar>
+
+                        </div>
+
+
+                        <div class="col-md-7">
+
+                            <div class="border rounded p-4 h-100">
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+
+                                    <div>
+                                        <h4 id="selectedDayName"
+                                            class="mb-1">
+                                            Monday
+                                        </h4>
+
+                                        <span id="dayStatus"
+                                              class="text-muted">
+                                        </span>
+                                    </div>
+
+                                    <button type="button"
+                                            class="btn btn-outline-danger"
+                                            onclick="setDayOff()">
+                                        Day Off
+                                    </button>
+
+                                </div>
+
+
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label">
+                                            Start Time
+                                        </label>
+
+                                        <ejs-timepicker id="startTimePicker"
+                                                        placeholder="Select start time"
+                                                        format="HH:mm"
+                                                        step="15"
+                                                        change="timeChanged">
+                                        </ejs-timepicker>
+
+                                    </div>
+
+
+                                    <div class="col-md-6 mb-3">
+
+                                        <label class="form-label">
+                                            End Time
+                                        </label>
+
+                                        <ejs-timepicker id="endTimePicker"
+                                                        placeholder="Select end time"
+                                                        format="HH:mm"
+                                                        step="15"
+                                                        change="timeChanged">
+                                        </ejs-timepicker>
+
+                                    </div>
+
+                                </div>
+
+                                <p class="text-muted mb-0">
+                                    Select the working hours for this day or mark it as a day off.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <hr class="my-4" />
+
+
+                    <div class="d-flex gap-2">
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Save Schedule
+                        </button>
+
+                        <a asp-controller="Doctors"
+                           asp-action="Details"
+                           asp-route-id="@Model.DoctorId"
+                           class="btn btn-outline-secondary">
+                            Back to Doctor
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+
+    var selectedDayIndex = 0;
+    var loadingDay = false;
+
+
+    window.addEventListener("load", function () {
+
+        loadDay(0);
+
+        document.getElementById("scheduleForm")
+            .addEventListener("submit", function () {
+                saveSelectedDay();
+            });
+    });
+
+
+    function calendarChanged(args) {
+
+        saveSelectedDay();
+
+        selectedDayIndex = getDayIndex(args.value.getDay());
+
+        loadDay(selectedDayIndex);
+    }
+
+
+    function getDayIndex(dayOfWeek) {
+
+        if (dayOfWeek === 0) {
+            return 6;
+        }
+
+        return dayOfWeek - 1;
+    }
+
+
+    function loadDay(index) {
+
+        loadingDay = true;
+
+        var startValue =
+            document.getElementById("startTime-" + index).value;
+
+        var endValue =
+            document.getElementById("endTime-" + index).value;
+
+        var startPicker =
+            document.getElementById("startTimePicker").ej2_instances[0];
+
+        var endPicker =
+            document.getElementById("endTimePicker").ej2_instances[0];
+
+        startPicker.value =
+            startValue ? parseTime(startValue) : null;
+
+        endPicker.value =
+            endValue ? parseTime(endValue) : null;
+
+        startPicker.dataBind();
+        endPicker.dataBind();
+
+        document.getElementById("selectedDayName").textContent =
+            getDayName(index);
+
+        updateStatus(startValue, endValue);
+
+        loadingDay = false;
+    }
+
+
+    function timeChanged() {
+
+        if (loadingDay) {
+            return;
+        }
+
+        saveSelectedDay();
+    }
+
+
+    function saveSelectedDay() {
+
+        var startPicker =
+            document.getElementById("startTimePicker").ej2_instances[0];
+
+        var endPicker =
+            document.getElementById("endTimePicker").ej2_instances[0];
+
+        var startValue =
+            startPicker.value ? formatTime(startPicker.value) : "";
+
+        var endValue =
+            endPicker.value ? formatTime(endPicker.value) : "";
+
+        document.getElementById("startTime-" + selectedDayIndex).value =
+            startValue;
+
+        document.getElementById("endTime-" + selectedDayIndex).value =
+            endValue;
+
+        updateStatus(startValue, endValue);
+    }
+
+
+    function setDayOff() {
+
+        var startPicker =
+            document.getElementById("startTimePicker").ej2_instances[0];
+
+        var endPicker =
+            document.getElementById("endTimePicker").ej2_instances[0];
+
+        loadingDay = true;
+
+        startPicker.value = null;
+        endPicker.value = null;
+
+        startPicker.dataBind();
+        endPicker.dataBind();
+
+        document.getElementById("startTime-" + selectedDayIndex).value = "";
+        document.getElementById("endTime-" + selectedDayIndex).value = "";
+
+        loadingDay = false;
+
+        updateStatus("", "");
+    }
+
+
+    function updateStatus(startTime, endTime) {
+
+        var status = document.getElementById("dayStatus");
+
+        if (!startTime && !endTime) {
+            status.textContent = "Day Off";
+            return;
+        }
+
+        if (startTime && endTime) {
+            status.textContent =
+                startTime.substring(0, 5) +
+                " - " +
+                endTime.substring(0, 5);
+
+            return;
+        }
+
+        status.textContent = "Incomplete schedule";
+    }
+
+
+    function parseTime(value) {
+
+        var parts = value.split(":");
+
+        var date = new Date();
+
+        date.setHours(
+            parseInt(parts[0]),
+            parseInt(parts[1]),
+            0,
+            0
+        );
+
+        return date;
+    }
+
+
+    function formatTime(date) {
+
+        var hours =
+            date.getHours().toString().padStart(2, "0");
+
+        var minutes =
+            date.getMinutes().toString().padStart(2, "0");
+
+        return hours + ":" + minutes + ":00";
+    }
+
+
+    function getDayName(index) {
+
+        var days = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday"
+        ];
+
+        return days[index];
+    }
+
+</script>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

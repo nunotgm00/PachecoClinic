@@ -1,6 +1,6 @@
 ﻿@using PachecoClinic.Data.Entities
 @using PachecoClinic.Models
-@model PachecoClinic.Data.Entities.Doctor
+@model Doctor
 
 @{
     ViewData["Title"] = "Doctor Details";
@@ -8,141 +8,180 @@
     DateTime currentDate = DateTime.Today;
 
     List<DoctorAppointmentScheduleViewModel> scheduleData =
-        ViewBag.ScheduleData;
+        ViewBag.ScheduleData ?? new List<DoctorAppointmentScheduleViewModel>();
+
+    bool canManageSchedule =
+        User.IsInRole("Admin") ||
+        User.IsInRole("Employee") ||
+        (User.IsInRole("Doctor") && Model.User.Email == User.Identity!.Name);
 }
 
-<div class="container">
+<div class="row justify-content-center">
+    <div class="col-lg-10">
 
-    <div class="row mb-4">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body p-4">
 
-        <div class="col-md-2">
+                <div class="row align-items-center">
 
-            @if (!string.IsNullOrEmpty(Model.User.ImageUrl))
-            {
-                <img src="@Model.User.ImageUrl"
-                     alt="@Model.User.FullName"
-                     class="img-fluid rounded-circle"
-                     style="width: 140px; height: 140px; object-fit: cover;" />
-            }
+                    <div class="col-md-3 text-center mb-3 mb-md-0">
 
-        </div>
+                        @if (!string.IsNullOrEmpty(Model.User.ImageUrl))
+                        {
+                            <img src="@Model.User.ImageUrl"
+                                 alt="@Model.User.FullName"
+                                 class="rounded-circle"
+                                 style="width: 160px; height: 160px; object-fit: cover;" />
+                        }
 
-        <div class="col-md-7">
+                    </div>
 
-            <h2>@Model.User.FullName</h2>
+                    <div class="col-md-9">
 
-            <p class="mb-1">
-                <strong>Specialty:</strong>
-                @Model.Specialty.Name
-            </p>
+                        <h2 class="mb-1">
+                            @Model.User.FullName
+                        </h2>
 
-            <p class="mb-1">
-                <strong>Email:</strong>
-                @Model.User.Email
-            </p>
+                        <h5 class="text-muted mb-3">
+                            @Model.Specialty.Name
+                        </h5>
 
-            <p class="mb-1">
-                <strong>Phone:</strong>
-                @Model.User.PhoneNumber
-            </p>
+                        <dl class="row mb-0">
 
-            <p>
-                <strong>Status:</strong>
+                            <dt class="col-sm-3">
+                                Email
+                            </dt>
 
-                @if (Model.Active)
+                            <dd class="col-sm-9">
+                                @Model.User.Email
+                            </dd>
+
+                            <dt class="col-sm-3">
+                                Phone Number
+                            </dt>
+
+                            <dd class="col-sm-9">
+                                @(string.IsNullOrEmpty(Model.User.PhoneNumber) ? "-" : Model.User.PhoneNumber)
+                            </dd>
+
+                            <dt class="col-sm-3">
+                                Status
+                            </dt>
+
+                            <dd class="col-sm-9">
+
+                                @if (Model.Active)
+                                {
+                                    <span class="badge bg-success">
+                                        Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">
+                                        Inactive
+                                    </span>
+                                }
+
+                            </dd>
+
+                        </dl>
+
+                    </div>
+
+                </div>
+
+                @if (User.IsInRole("Admin") || User.IsInRole("Employee") || User.IsInRole("Doctor"))
                 {
-                    <span class="badge bg-success">
-                        Active
-                    </span>
+                    <hr />
+
+                    <div class="d-flex flex-wrap gap-2">
+
+                        @if (canManageSchedule)
+                        {
+                            <a asp-controller="DoctorSchedules"
+                               asp-action="Manage"
+                               asp-route-id="@Model.Id"
+                               class="btn btn-primary">
+                                Manage Schedule
+                            </a>
+                        }
+
+                        @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+                        {
+                            <a asp-action="Edit"
+                               asp-route-id="@Model.Id"
+                               class="btn btn-outline-secondary">
+                                Edit Doctor
+                            </a>
+
+                            <a asp-action="Delete"
+                               asp-route-id="@Model.Id"
+                               class="btn btn-outline-danger">
+                                Delete Doctor
+                            </a>
+                        }
+
+                    </div>
                 }
-                else
-                {
-                    <span class="badge bg-secondary">
-                        Inactive
-                    </span>
-                }
-            </p>
 
-        </div>
-
-        <div class="col-md-3 text-end">
-
-            @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
-            {
-                <a asp-controller="DoctorSchedules"
-                   asp-action="Index"
-                   asp-route-doctorId="@Model.Id"
-                   class="btn btn-outline-primary">
-                    Manage Schedule
-                </a>
-
-                <a asp-action="Edit"
-                   asp-route-id="@Model.Id"
-                   class="btn btn-primary">
-                    Edit
-                </a>
-            }
-
-        </div>
-
-    </div>
-
-
-    <hr />
-
-
-    <div class="row">
-
-        <div class="col-md-4">
-
-            <ejs-calendar id="doctor-calendar"
-                          value="@currentDate"
-                          change="currentDateChange"
-                          cssClass="doctor-calendar">
-            </ejs-calendar>
-
+            </div>
         </div>
 
 
-        <div class="col-md-8">
+        @if (User.IsInRole("Admin") || User.IsInRole("Employee") || User.IsInRole("Doctor"))
+        {
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
 
-            <script id="quickInfoFooter" type="text/x-template">
-                <div></div>
-            </script>
+                    <h3 class="mb-4">
+                        Appointments
+                    </h3>
 
-            <ejs-schedule id="doctor-schedule"
-                          selectedDate="@currentDate"
-                          height="650px"
-                          readonly="true">
+                    <div class="row">
 
-                <e-schedule-quickinfotemplates footer="#quickInfoFooter">
-                </e-schedule-quickinfotemplates>
+                        <div class="col-md-4 mb-4 mb-md-0">
 
-                <e-schedule-views>
-                    <e-schedule-view option="Day"></e-schedule-view>
-                    <e-schedule-view option="Week"></e-schedule-view>
-                    <e-schedule-view option="Month"></e-schedule-view>
-                </e-schedule-views>
+                            <ejs-calendar id="doctor-calendar"
+                                          value="@currentDate"
+                                          change="currentDateChange">
+                            </ejs-calendar>
 
-                <e-schedule-eventsettings dataSource="@scheduleData">
-                </e-schedule-eventsettings>
+                        </div>
 
-            </ejs-schedule>
+                        <div class="col-md-8">
 
-        </div>
+                            <ejs-schedule id="doctor-schedule"
+                                          selectedDate="@currentDate"
+                                          height="650px"
+                                          readonly="true">
 
-    </div>
+                                <e-schedule-views>
+                                    <e-schedule-view option="Day"></e-schedule-view>
+                                    <e-schedule-view option="Week"></e-schedule-view>
+                                    <e-schedule-view option="Month"></e-schedule-view>
+                                </e-schedule-views>
 
+                                <e-schedule-eventsettings dataSource="@scheduleData">
+                                </e-schedule-eventsettings>
 
-    <div class="mt-4">
+                            </ejs-schedule>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        }
+
 
         <a asp-action="Index"
-           class="btn btn-secondary">
-            Back to List
+           class="btn btn-outline-secondary">
+            Back to Doctors
         </a>
 
     </div>
-
 </div>
 
 
@@ -153,21 +192,12 @@
         if (args && args.isInteracted) {
 
             var schedule =
-                document.getElementById("doctor-schedule")
-                    .ej2_instances[0];
+                document.getElementById("doctor-schedule");
 
-            schedule.selectedDate = args.value;
+            if (schedule) {
+                schedule.ej2_instances[0].selectedDate = args.value;
+            }
         }
     }
 
 </script>
-
-
-<style>
-
-    .doctor-calendar.e-calendar {
-        width: 100% !important;
-        max-width: 400px !important;
-    }
-
-</style>
