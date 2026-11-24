@@ -5,67 +5,110 @@
     ViewData["Title"] = "Interventions";
 }
 
-<h1>Interventions</h1>
+<div class="card shadow-sm">
+    <div class="card-body p-4">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Animal
-            </th>
-            <th>
-                Owner
-            </th>
-            <th>
-                Doctor
-            </th>
-            <th>
-                Appointment Date
-            </th>
-            <th>
-                Description
-            </th>
-            <th>
-                Diagnosis
-            </th>
-            <th></th>
-        </tr>
-    </thead>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Interventions</h2>
+        </div>
 
-    <tbody>
-        @foreach (Intervention item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Appointment.Animal.Name
-                </td>
-                <td>
-                    @item.Appointment.Animal.Client.User.FullName
-                </td>
-                <td>
-                    @item.Appointment.Doctor.User.FullName
-                </td>
-                <td>
-                    @item.Appointment.Date.ToString("dd/MM/yyyy")
-                </td>
-                <td>
-                    @item.Description
-                </td>
-                <td>
-                    @item.Diagnosis
-                </td>
-                <td>
-                    <a asp-action="Details"
-                       asp-route-id="@item.Id">
-                        Details
-                    </a>
+        <div class="table-responsive">
 
-                    <a asp-action="Edit"
-                       asp-route-id="@item.Id">
-                        Edit
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Animal</th>
+                        <th>Owner</th>
+                        <th>Doctor</th>
+                        <th>Appointment Date</th>
+                        <th>Description</th>
+                        <th>Diagnosis</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (Intervention item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @item.Appointment.Animal.Name
+                            </td>
+
+                            <td>
+                                @item.Appointment.Animal.Client.User.FullName
+                            </td>
+
+                            <td>
+                                @item.Appointment.Doctor.User.FullName
+                            </td>
+
+                            <td>
+                                @item.Appointment.Date.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td style="max-width: 220px;">
+
+                                @if (string.IsNullOrWhiteSpace(item.Description))
+                                {
+                                    <span>-</span>
+                                }
+                                else
+                                {
+                                    <span class="d-inline-block text-truncate"
+                                          style="max-width: 200px;">
+                                        @item.Description
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td style="max-width: 220px;">
+
+                                @if (string.IsNullOrWhiteSpace(item.Diagnosis))
+                                {
+                                    <span>-</span>
+                                }
+                                else
+                                {
+                                    <span class="d-inline-block text-truncate"
+                                          style="max-width: 200px;">
+                                        @item.Diagnosis
+                                    </span>
+                                }
+
+                            </td>
+
+                            <td class="text-nowrap">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Details
+                                </a>
+
+                                @if (User.IsInRole("Doctor") && item.Appointment.Doctor.User.Email == User.Identity!.Name)
+                                {
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Edit
+                                    </a>
+                                }
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
