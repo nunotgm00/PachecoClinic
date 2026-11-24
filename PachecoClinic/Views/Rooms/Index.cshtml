@@ -4,53 +4,92 @@
     ViewData["Title"] = "Rooms";
 }
 
-<h1>Rooms</h1>
+<div class="card shadow-sm">
+    <div class="card-body p-4">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnderMaintenance)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
+            <h2 class="mb-0">Rooms</h2>
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Type)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UnderMaintenance)
-                </td>
+            <a asp-action="Create"
+               class="btn btn-primary">
+                Create Room
+            </a>
 
-                <td>
-                    <a asp-action="Edit"
-                       asp-route-id="@item.Id">Edit</a> |
+        </div>
 
-                    <a asp-action="Details"
-                       asp-route-id="@item.Id">Details</a> |
+        <div class="table-responsive">
 
-                    <a asp-action="Delete"
-                       asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Under Maintenance</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @item.Name
+                            </td>
+
+                            <td>
+                                @item.Type
+                            </td>
+
+                            <td>
+                                @if (item.UnderMaintenance)
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        Yes
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        No
+                                    </span>
+                                }
+                            </td>
+
+                            <td class="text-nowrap">
+
+                                <a asp-action="Details"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Details
+                                </a>
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-secondary">
+                                    Edit
+                                </a>
+
+                                <a asp-action="Delete"
+                                   asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </a>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
