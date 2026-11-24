@@ -4,114 +4,123 @@
     ViewData["Title"] = "Intervention Details";
 }
 
-<h1>Details</h1>
+<div class="row justify-content-center">
+    <div class="col-lg-9">
 
-<h4>Intervention</h4>
-<hr />
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
 
-<dl class="row">
-    <dt class="col-sm-2">
-        Animal
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Appointment.Animal.Name
-    </dd>
+                <h2 class="mb-4">Intervention Details</h2>
 
-    <dt class="col-sm-2">
-        Owner
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Appointment.Animal.Client.User.FullName
-    </dd>
+                <div class="row mb-4">
 
-    <dt class="col-sm-2">
-        Doctor
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Appointment.Doctor.User.FullName
-    </dd>
+                    <div class="col-md-6">
 
-    <dt class="col-sm-2">
-        Room
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Appointment.Room.Name
-    </dd>
+                        <h5 class="mb-3">Appointment</h5>
 
-    <dt class="col-sm-2">
-        Date
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Appointment.Date.ToString("dd/MM/yyyy")
-    </dd>
+                        <dl class="row mb-0">
 
-    <dt class="col-sm-2">
-        Start Time
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Appointment.StartTime.ToString(@"hh\:mm")
-    </dd>
+                            <dt class="col-sm-4">Animal</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Animal.Name</dd>
 
-    <dt class="col-sm-2">
-        End Time
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Appointment.EndTime.ToString(@"hh\:mm")
-    </dd>
+                            <dt class="col-sm-4">Owner</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Animal.Client.User.FullName</dd>
 
-    <dt class="col-sm-2">
-        Description
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Description
-    </dd>
+                            <dt class="col-sm-4">Doctor</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Doctor.User.FullName</dd>
 
-    <dt class="col-sm-2">
-        Diagnosis
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Diagnosis
-    </dd>
+                            <dt class="col-sm-4">Room</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Room.Name</dd>
 
-    <dt class="col-sm-2">
-        Treatment
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Treatment
-    </dd>
+                            <dt class="col-sm-4">Date</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Date.ToString("dd/MM/yyyy")</dd>
 
-    <dt class="col-sm-2">
-        Observations
-    </dt>
-    <dd class="col-sm-10">
-        @Model.Observations
-    </dd>
-</dl>
+                            <dt class="col-sm-4">Time</dt>
+                            <dd class="col-sm-8">
+                                @Model.Appointment.StartTime.ToString(@"hh\:mm") -
+                                @Model.Appointment.EndTime.ToString(@"hh\:mm")
+                            </dd>
 
-<div>
-    @if(User.IsInRole("Doctor") && Model.Appointment.Doctor.User.Email == User.Identity!.Name)
-    {
-        <a asp-action="Edit"
-           asp-route-id="@Model.Id"
-           class="btn btn-primary">
-            Edit
-        </a>
-    }
+                        </dl>
 
-    @if (User.IsInRole("Client"))
-    {
-        <a asp-controller="Animals"
-           asp-action="History"
-           asp-route-id="@Model.Appointment.AnimalId"
-           class="btn btn-secondary">
-            Back to Medical History
-        </a>
-    }
-    else
-    {
-        <a asp-action="Index"
-           class="btn btn-secondary">
-            Back to List
-        </a>
-    }
+                    </div>
+
+                </div>
+
+                <hr />
+
+                <div class="mb-4">
+
+                    <h5>Description</h5>
+
+                    <p class="mb-0 text-break">
+                        @(string.IsNullOrWhiteSpace(Model.Description) ? "-" : Model.Description)
+                    </p>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <h5>Diagnosis</h5>
+
+                    <p class="mb-0 text-break">
+                        @(string.IsNullOrWhiteSpace(Model.Diagnosis) ? "-" : Model.Diagnosis)
+                    </p>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <h5>Treatment</h5>
+
+                    <p class="mb-0 text-break">
+                        @(string.IsNullOrWhiteSpace(Model.Treatment) ? "-" : Model.Treatment)
+                    </p>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <h5>Observations</h5>
+
+                    <p class="mb-0 text-break">
+                        @(string.IsNullOrWhiteSpace(Model.Observations) ? "-" : Model.Observations)
+                    </p>
+
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    @if (User.IsInRole("Doctor") && Model.Appointment.Doctor.User.Email == User.Identity!.Name)
+                    {
+                        <a asp-action="Edit"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-primary">
+                            Edit Intervention
+                        </a>
+                    }
+
+                    @if (User.IsInRole("Client"))
+                    {
+                        <a asp-controller="Animals"
+                           asp-action="History"
+                           asp-route-id="@Model.Appointment.AnimalId"
+                           class="btn btn-outline-secondary">
+                            Back to Medical History
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index"
+                           class="btn btn-outline-secondary">
+                            Back to Interventions
+                        </a>
+                    }
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 </div>
