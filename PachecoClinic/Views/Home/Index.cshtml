@@ -2,127 +2,538 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center mt-5">
+<div class="home-page">
 
-    <img src="~/images/logoPacheco.png"
-         alt="Pacheco Veterinary Clinic"
-         class="img-fluid mb-4"
-         style="max-width: 350px;" />
+    <section class="home-hero mb-5">
 
-    <br />
+        <div class="home-decoration">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+        </div>
 
-    <img src="~/images/dogCat.png"
-         alt="Dog and cat"
-         class="img-fluid mb-5"
-         style="max-width: 500px;" />
+        <div class="row align-items-center g-5">
 
-</div>
+            <div class="col-lg-6">
 
+                <img src="~/images/logoPachecoEng.png"
+                     alt="Pacheco Clinic"
+                     class="home-logo mb-4" />
 
-<div class="text-center mb-5">
+                <h1 class="display-5 fw-bold mb-3">
+                    Caring for your pets,
+                    every step of the way.
+                </h1>
 
-    <h2 class="mb-4">Clinic</h2>
+                <p class="lead text-muted mb-4">
+                    Veterinary care focused on the health and well-being of your animals.
+                </p>
 
-    <a asp-controller="Doctors"
-       asp-action="Index"
-       class="btn btn-primary m-2">
-        Doctors
-    </a>
+                <div class="d-flex flex-wrap gap-2">
 
-    <a asp-controller="Specialties"
-       asp-action="Index"
-       class="btn btn-primary m-2">
-        Specialties
-    </a>
+                    <a asp-controller="Doctors"
+                       asp-action="Index"
+                       class="btn btn-primary btn-lg">
+                        Meet Our Doctors
+                    </a>
 
-</div>
+                    <a asp-controller="Specialties"
+                       asp-action="Index"
+                       class="btn btn-outline-primary btn-lg">
+                        Our Specialties
+                    </a>
 
+                    @if (User.Identity?.IsAuthenticated != true)
+                    {
+                        <a asp-controller="Account"
+                           asp-action="Login"
+                           class="btn btn-outline-secondary btn-lg">
+                            Login
+                        </a>
+                    }
 
-@if (User.IsInRole("Client"))
-{
-    <div class="text-center mb-5">
+                </div>
 
-        <h2 class="mb-4">Client Area</h2>
-
-        <a asp-controller="Animals"
-           asp-action="MyAnimals"
-           class="btn btn-primary m-2">
-            My Animals
-        </a>
-
-        <a asp-controller="Appointments"
-           asp-action="MyAppointments"
-           class="btn btn-primary m-2">
-            My Appointments
-        </a>
-
-    </div>
-}
+            </div>
 
 
-@if (User.IsInRole("Doctor"))
-{
-    <div class="text-center mb-5">
+            <div class="col-lg-6 text-center">
 
-        <h2 class="mb-4">Doctor Area</h2>
+                <img src="~/images/dogCat.png"
+                     alt="Dog and cat"
+                     class="img-fluid home-pets" />
 
-        <a asp-controller="Appointments"
-           asp-action="Index"
-           class="btn btn-primary m-2">
-            Appointments
-        </a>
+            </div>
 
-        <a asp-controller="Interventions"
-           asp-action="Index"
-           class="btn btn-primary m-2">
-            Interventions
-        </a>
+        </div>
 
-    </div>
-}
+    </section>
 
 
-@if (User.IsInRole("Admin") || User.IsInRole("Employee"))
-{
-    <div class="text-center mb-5">
+    <section class="mb-5">
 
-        <h2 class="mb-4">Management</h2>
+        <div class="row g-3">
 
-        <a asp-controller="Clients"
-           asp-action="Index"
-           class="btn btn-primary m-2">
-            Clients
-        </a>
+            <div class="col-md-4">
 
-        <a asp-controller="Doctors"
-           asp-action="Index"
-           class="btn btn-primary m-2">
-            Doctors
-        </a>
+                <div class="card h-100 shadow-sm border-0 overflow-hidden">
 
-        <a asp-controller="Rooms"
-           asp-action="Index"
-           class="btn btn-primary m-2">
-            Rooms
-        </a>
+                    <img src="~/images/VetPhoto.jpg"
+                         alt="Veterinarian with a dog"
+                         class="card-img-top home-card-image" />
 
-        <a asp-controller="Appointments"
-           asp-action="Index"
-           class="btn btn-primary m-2">
-            Appointments
-        </a>
+                    <div class="card-body p-4">
 
-        <a asp-controller="Users"
-           asp-action="Index"
-           class="btn btn-primary m-2">
-            Users
-        </a>
+                        <h4 class="mb-3">
+                            Experienced Team
+                        </h4>
 
-        <a asp-controller="Notifications"
-           asp-action="ClinicClosure"
-           class="btn btn-primary m-2">
-            Notifications
-        </a>
+                        <p class="text-muted mb-0">
+                            Meet our veterinary doctors and discover their areas of specialization.
+                        </p>
 
-    </div>
-}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="card h-100 shadow-sm border-0 overflow-hidden">
+
+                    <img src="~/images/AnimalsPhoto.jpg"
+                         alt="Veterinarian with a dog and cat"
+                         class="card-img-top home-card-image" />
+
+                    <div class="card-body p-4">
+
+                        <h4 class="mb-3">
+                            Veterinary Care
+                        </h4>
+
+                        <p class="text-muted mb-0">
+                            Medical care adapted to the needs of each animal.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-4">
+
+                <div class="card h-100 shadow-sm border-0 overflow-hidden">
+
+                    <img src="~/images/CheckPhoto.jpg"
+                         alt="Veterinary check-up"
+                         class="card-img-top home-card-image" />
+
+                    <div class="card-body p-4">
+
+                        <h4 class="mb-3">
+                            Medical History
+                        </h4>
+
+                        <p class="text-muted mb-0">
+                            Registered clients can access their animals and veterinary history online.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <section class="mb-5">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <h2 class="mb-4">
+                        Your Area
+                    </h2>
+
+
+                    @if (User.IsInRole("Client"))
+                    {
+                        <div class="home-actions-grid">
+
+                            <a asp-controller="Animals"
+                               asp-action="MyAnimals"
+                               class="home-action-card">
+
+                                <h5>My Animals</h5>
+
+                                <p>
+                                    View your registered animals.
+                                </p>
+
+                            </a>
+
+
+                            <a asp-controller="Appointments"
+                               asp-action="MyAppointments"
+                               class="home-action-card">
+
+                                <h5>My Appointments</h5>
+
+                                <p>
+                                    View your upcoming and previous appointments.
+                                </p>
+
+                            </a>
+
+
+                            <a asp-controller="AppointmentRequests"
+                               asp-action="MyRequests"
+                               class="home-action-card">
+
+                                <h5>My Requests</h5>
+
+                                <p>
+                                    Follow your cancellation and reschedule requests.
+                                </p>
+
+                            </a>
+
+                        </div>
+                    }
+
+
+                    @if (User.IsInRole("Doctor"))
+                    {
+                        <div class="home-actions-grid">
+
+                            <a asp-controller="Appointments"
+                               asp-action="Index"
+                               class="home-action-card">
+
+                                <h5>Appointments</h5>
+
+                                <p>
+                                    View your scheduled appointments.
+                                </p>
+
+                            </a>
+
+
+                            <a asp-controller="Interventions"
+                               asp-action="Index"
+                               class="home-action-card">
+
+                                <h5>Interventions</h5>
+
+                                <p>
+                                    Access clinical interventions and records.
+                                </p>
+
+                            </a>
+
+
+                            <a asp-controller="Doctors"
+                               asp-action="Index"
+                               class="home-action-card">
+
+                                <h5>Doctors</h5>
+
+                                <p>
+                                    View the clinic's medical team.
+                                </p>
+
+                            </a>
+
+                        </div>
+                    }
+
+                    @if (User.IsInRole("Employee"))
+                    {
+                        <div class="home-actions-grid">
+
+                            <a asp-controller="Appointments"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-calendar-check home-action-icon"></i>
+                                <h5>Appointments</h5>
+                                <p>Manage clinic appointments.</p>
+                            </a>
+
+                            <a asp-controller="AppointmentRequests"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-calendar2-week home-action-icon"></i>
+                                <h5>Requests</h5>
+                                <p>Manage cancellation and reschedule requests.</p>
+                            </a>
+
+                            <a asp-controller="Interventions"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-clipboard2-pulse home-action-icon"></i>
+                                <h5>Interventions</h5>
+                                <p>Access clinical interventions and records.</p>
+                            </a>
+
+                            <a asp-controller="Clients"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-people home-action-icon"></i>
+                                <h5>Clients</h5>
+                                <p>View and manage clinic clients.</p>
+                            </a>
+
+                            <a asp-controller="Animals"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-heart home-action-icon"></i>
+                                <h5>Animals</h5>
+                                <p>Access registered animals.</p>
+                            </a>
+
+                            <a asp-controller="Doctors"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-person-badge home-action-icon"></i>
+                                <h5>Doctors</h5>
+                                <p>Manage the veterinary team.</p>
+                            </a>
+
+                            <a asp-controller="Rooms"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-door-open home-action-icon"></i>
+                                <h5>Rooms</h5>
+                                <p>Manage clinic rooms.</p>
+                            </a>
+
+                            <a asp-controller="Specialties"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-clipboard2-heart home-action-icon"></i>
+                                <h5>Specialties</h5>
+                                <p>Manage veterinary specialties.</p>
+                            </a>
+
+                            <a asp-controller="Users"
+                               asp-action="Create"
+                               class="home-action-card home-action-card-primary">
+                                <i class="bi bi-person-plus home-action-icon"></i>
+                                <h5>Create User</h5>
+                                <p>Create a new clinic account.</p>
+                            </a>
+
+                        </div>
+                    }
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <div class="home-actions-grid-admin">
+
+                            <a asp-controller="Appointments"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-calendar-check home-action-icon"></i>
+                                <h5>Appointments</h5>
+                                <p>Manage clinic appointments.</p>
+                            </a>
+
+                            <a asp-controller="Clients"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-people home-action-icon"></i>
+                                <h5>Clients</h5>
+                                <p>View and manage clinic clients.</p>
+                            </a>
+
+                            <a asp-controller="Animals"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-heart home-action-icon"></i>
+                                <h5>Animals</h5>
+                                <p>Access registered animals.</p>
+                            </a>
+
+                            <a asp-controller="Doctors"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-person-badge home-action-icon"></i>
+                                <h5>Doctors</h5>
+                                <p>Manage the veterinary team.</p>
+                            </a>
+
+                            <a asp-controller="Rooms"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-door-open home-action-icon"></i>
+                                <h5>Rooms</h5>
+                                <p>Manage clinic rooms.</p>
+                            </a>
+
+                            <a asp-controller="Specialties"
+                               asp-action="Index"
+                               class="home-action-card">
+                                <i class="bi bi-clipboard2-heart home-action-icon"></i>
+                                <h5>Specialties</h5>
+                                <p>Manage veterinary specialties.</p>
+                            </a>
+
+                            <a asp-controller="Users"
+                               asp-action="Create"
+                               class="home-action-card home-action-card-primary">
+                                <i class="bi bi-person-plus home-action-icon"></i>
+                                <h5>Create User</h5>
+                                <p>Create a new clinic account.</p>
+                            </a>
+
+                        </div>
+                    }
+                    
+
+                </div>
+            </div>
+
+        </section>
+    }
+
+
+    <section class="mb-4">
+
+        <div class="row g-4">
+
+            <div class="col-md-6">
+
+                <div class="card h-100 shadow-sm home-info-card">
+
+                    <div class="card-body p-4 position-relative">
+
+                        <i class="bi bi-clock home-info-icon"></i>
+
+                        <h3 class="mb-3">
+                            Opening Hours
+                        </h3>
+
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span>Monday - Friday</span>
+                            <strong>09:00 - 20:00</strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span>Saturday</span>
+                            <strong>09:00 - 14:00</strong>
+                        </div>
+
+                        <div class="d-flex justify-content-between pt-2">
+                            <span>Sunday</span>
+                            <strong>Closed</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-6">
+
+                <div class="card h-100 shadow-sm home-info-card">
+
+                    <div class="card-body p-4 position-relative">
+
+                        <i class="bi bi-telephone home-info-icon"></i>
+
+                        <h3 class="mb-3">
+                            Contact
+                        </h3>
+
+                        <dl class="row mb-0">
+
+                            <dt class="col-sm-4">
+                                Phone
+                            </dt>
+
+                            <dd class="col-sm-8">
+                                000 000 000
+                            </dd>
+
+                            <dt class="col-sm-4">
+                                Email
+                            </dt>
+
+                            <dd class="col-sm-8">
+                                clinic@pachecoclinic.pt
+                            </dd>
+
+                            <dt class="col-sm-4">
+                                Address
+                            </dt>
+
+                            <dd class="col-sm-8">
+                                Lisbon, Portugal
+                            </dd>
+
+                        </dl>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+<style>
+
+    .home-page {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .home-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 3rem 0;
+        min-height: 520px;
+    }
+
+    .home-logo {
+        max-width: 260px;
+        width: 100%;
+        height: auto;
+    }
+
+    .home-pets {
+        max-height: 430px;
+        object-fit: contain;
+    }
+
+    .home-hero .row {
+        position: relative;
+        z-index: 2;
+    }
+
+    @@media (max-width: 991px) {
+
+        .home-hero {
+            padding-top: 1rem;
+        }
+
+        .home-pets {
+            max-height: 320px;
+        }
+    }
+
+</style>

@@ -1,5 +1,14 @@
+:root {
+    --clinic-primary: #2D6A6A;
+    --clinic-primary-dark: #245757;
+    --clinic-primary-light: #7FB1B1;
+    --clinic-background: #F7F9F9;
+}
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -8,15 +17,256 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--clinic-primary-light);
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--clinic-background);
 }
+
+a {
+    color: var(--clinic-primary);
+}
+
+a:hover {
+    color: var(--clinic-primary-dark);
+}
+
+.btn-primary {
+    background-color: var(--clinic-primary);
+    border-color: var(--clinic-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: var(--clinic-primary-dark);
+    border-color: var(--clinic-primary-dark);
+}
+
+.btn-outline-primary {
+    color: var(--clinic-primary);
+    border-color: var(--clinic-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--clinic-primary);
+    border-color: var(--clinic-primary);
+}
+
+.home-page {
+    position: relative;
+    min-height: 85vh;
+    overflow: hidden;
+    background-color: #f5f6f6;
+    padding: 30px 20px 40px;
+}
+
+.home-card-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+
+.home-decoration {
+    position: absolute;
+    right: -180px;
+    left: auto;
+    bottom: -170px;
+    width: 950px;
+    height: 700px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.blob {
+    position: absolute;
+    opacity: 0.95;
+}
+
+.blob-1 {
+    width: 620px;
+    height: 560px;
+    background-color: var(--clinic-primary);
+    bottom: -40px;
+    right: 170px;
+    border-radius: 58% 42% 63% 37% / 42% 58% 39% 61%;
+    transform: rotate(-14deg);
+}
+
+.blob-2 {
+    width: 480px;
+    height: 440px;
+    background-color: #79ACAF;
+    bottom: -30px;
+    right: 10px;
+    border-radius: 43% 57% 38% 62% / 60% 36% 64% 40%;
+    transform: rotate(18deg);
+}
+
+.blob-3 {
+    width: 320px;
+    height: 290px;
+    background-color: #A9CBCD;
+    bottom: 180px;
+    right: -30px;
+    border-radius: 61% 39% 52% 48% / 44% 61% 39% 56%;
+    transform: rotate(-22deg);
+}
+
+.home-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 520px;
+    padding: 3rem 0;
+}
+
+.home-hero .row {
+    position: relative;
+    z-index: 2;
+}
+
+.home-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.home-actions-grid-admin {
+    grid-template-columns: repeat(12, 1fr);
+}
+
+.home-actions-grid-admin .home-action-card:nth-child(-n+3) {
+    grid-column: span 4;
+}
+
+.home-actions-grid-admin .home-action-card:nth-child(n+4) {
+    grid-column: span 3;
+}
+
+.home-action-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 135px;
+    padding: 1.5rem;
+    padding-right: 4.5rem;
+    border: 1px solid #d9e3e3;
+    border-radius: 12px;
+    background-color: white;
+    color: #212529;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.home-action-icon {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    font-size: 2rem;
+    color: var(--clinic-primary);
+}
+
+.home-action-card h5 {
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+    color: var(--clinic-primary);
+}
+
+.home-action-card p {
+    margin-bottom: 0;
+    color: #6c757d;
+}
+
+.home-action-card-primary h5,
+.home-action-card-primary p,
+.home-action-card-primary .home-action-icon {
+    color: white;
+}
+
+.home-action-card:hover {
+    color: #212529;
+    border-color: var(--clinic-primary);
+    box-shadow: 0 4px 14px rgba(45, 106, 106, 0.12);
+    transform: translateY(-2px);
+}
+
+.home-action-card-primary {
+    background-color: var(--clinic-primary);
+    border-color: var(--clinic-primary);
+}
+
+.home-action-card-primary:hover {
+    background-color: var(--clinic-primary-dark);
+    border-color: var(--clinic-primary-dark);
+}
+
+.home-info-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #dce6e6;
+}
+
+.home-info-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: var(--clinic-primary);
+}
+
+.home-info-icon {
+    position: absolute;
+    top: 1.4rem;
+    right: 1.5rem;
+    font-size: 2rem;
+    color: var(--clinic-primary);
+    opacity: 0.8;
+}
+
+.home-actions-grid-admin {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.home-actions-grid-admin .home-action-card:nth-child(-n+3) {
+    grid-column: span 4;
+}
+
+.home-actions-grid-admin .home-action-card:nth-child(n+4) {
+    grid-column: span 3;
+}
+
+@media (max-width: 991px) {
+    .home-actions-grid,
+    .home-actions-grid-admin {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .home-actions-grid-admin .home-action-card:nth-child(n) {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 576px) {
+    .home-actions-grid,
+    .home-actions-grid-admin {
+        grid-template-columns: 1fr;
+    }
+
+    .home-actions-grid-admin .home-action-card:nth-child(n) {
+        grid-column: span 1;
+    }
+}
+
