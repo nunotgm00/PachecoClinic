@@ -323,7 +323,9 @@ namespace PachecoClinic.Controllers
                 items.Add(new SelectListItem
                 {
                     Value = client.Id.ToString(),
-                    Text = client.User.FullName
+                    Text = client.User.ProfileCompleted
+                               ? $"{client.User.FullName} - {client.User.Email}"
+                               : $"Pending - {client.User.Email}"
                 });
             }
 
