@@ -8,10 +8,12 @@ namespace PachecoClinic.Controllers
     public class SpecialtiesController : Controller
     {
         private readonly IGenericRepository<Specialty> _repository;
+        private readonly IDoctorRepository _doctorRepository;
 
-        public SpecialtiesController(IGenericRepository<Specialty> repository)
+        public SpecialtiesController(IGenericRepository<Specialty> repository, IDoctorRepository doctorRepository)
         {
             _repository = repository;
+            _doctorRepository = doctorRepository;
         }
 
         [AllowAnonymous]
@@ -20,6 +22,7 @@ namespace PachecoClinic.Controllers
             return View(_repository.GetAll());
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
@@ -124,6 +127,15 @@ namespace PachecoClinic.Controllers
             if(specialty == null)
             {
                 return NotFound();
+            }
+
+            bool hasDoctors = await _doctorRepository.HasDoctorsBySpecialtyAsync(id);
+
+            if (hasDoctors)
+            {
+                TempData["ErrorMessage"] = "This specialty cannot be deleted because it has doctors associated with it.";
+
+                return RedirectToAction(nameof(Details), new { id });
             }
 
             await _repository.DeleteAsync(specialty);

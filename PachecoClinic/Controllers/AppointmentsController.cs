@@ -47,14 +47,27 @@ namespace PachecoClinic.Controllers
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
-
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            CreateAppointmentViewModel model = new CreateAppointmentViewModel()
+            Doctor? currentDoctor = await GetCurrentDoctorAsync();
+
+            if (User.IsInRole("Doctor") && currentDoctor == null)
+            {
+                return NotFound();
+            }
+
+            IEnumerable<SelectListItem> doctors = GetDoctors();
+
+            if (currentDoctor != null)
+            {
+                doctors = doctors.Where(d => d.Value == currentDoctor.Id.ToString());
+            }
+
+            CreateAppointmentViewModel model = new CreateAppointmentViewModel
             {
                 Animals = GetAnimals(),
-                Doctors = GetDoctors(),
-                Rooms = GetRooms(),
+                Doctors = doctors,
+                Rooms = GetRooms()
             };
 
             return View(model);
@@ -65,7 +78,38 @@ namespace PachecoClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateAppointmentViewModel model)
         {
-            if(model.Date.HasValue && model.Date.Value.Date < DateTime.Today)
+            Doctor? currentDoctor = await GetCurrentDoctorAsync();
+
+            if (User.IsInRole("Doctor") && currentDoctor == null)
+            {
+                return NotFound();
+            }
+
+            Animal? animal = await _animalRepository.GetByIdAsync(model.AnimalId);
+            Doctor? doctor = await _doctorRepository.GetByIdAsync(model.DoctorId);
+            Room? room = await _roomRepository.GetByIdAsync(model.RoomId);
+
+            if (animal == null)
+            {
+                ModelState.AddModelError("AnimalId", "The selected animal does not exist.");
+            }
+
+            if (doctor == null || !doctor.Active)
+            {
+                ModelState.AddModelError("DoctorId", "The selected doctor is not available.");
+            }
+
+            if (currentDoctor != null && model.DoctorId != currentDoctor.Id)
+            {
+                return Forbid();
+            }
+
+            if (room == null || room.UnderMaintenance)
+            {
+                ModelState.AddModelError("RoomId", "The selected room is not available.");
+            }
+
+            if (model.Date.HasValue && model.Date.Value.Date < DateTime.Today)
             {
                 ModelState.AddModelError("Date", "The appointment date cannot be in the past");
             }
@@ -73,6 +117,16 @@ namespace PachecoClinic.Controllers
             if(model.StartTime.HasValue && model.EndTime.HasValue && model.EndTime.Value <= model.StartTime.Value)
             {
                 ModelState.AddModelError("EndTime", "End time must be later than start time");
+            }
+
+            if (model.Date.HasValue && model.StartTime.HasValue)
+            {
+                DateTime appointmentDateTime = model.Date.Value.Date + model.StartTime.Value;
+
+                if (appointmentDateTime <= DateTime.Now)
+                {
+                    ModelState.AddModelError("StartTime", "The appointment date and time must be in the future.");
+                }
             }
 
             if (ModelState.IsValid)
@@ -92,8 +146,7 @@ namespace PachecoClinic.Controllers
 
             if (ModelState.IsValid)
             {
-                bool conflict =
-                    await _appointmentRepository.HasConflictAsync(
+                bool conflict = await _appointmentRepository.HasConflictAsync(
                         model.DoctorId,
                         model.RoomId,
                         model.AnimalId,
@@ -110,7 +163,9 @@ namespace PachecoClinic.Controllers
             if (!ModelState.IsValid)
             {
                 model.Animals = GetAnimals();
-                model.Doctors = GetDoctors();
+                model.Doctors = currentDoctor != null
+                    ? GetDoctors().Where(d => d.Value == currentDoctor.Id.ToString())
+                    : GetDoctors();
                 model.Rooms = GetRooms();
 
                 return View(model);
@@ -188,6 +243,40 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
+            Doctor? currentDoctor = await GetCurrentDoctorAsync();
+
+            if (User.IsInRole("Doctor"))
+            {
+                if (currentDoctor == null)
+                {
+                    return NotFound();
+                }
+
+                if (appointment.DoctorId != currentDoctor.Id)
+                {
+                    return Forbid();
+                }
+            }
+
+            if (appointment.Status != AppointmentStatus.Scheduled)
+            {
+                return BadRequest();
+            }
+
+            DateTime appointmentDateTime = appointment.Date.Date + appointment.StartTime;
+
+            if (appointmentDateTime <= DateTime.Now)
+            {
+                return RedirectToAction(nameof(Details), new { id });
+            }
+
+            IEnumerable<SelectListItem> doctors = GetDoctors();
+
+            if (currentDoctor != null)
+            {
+                doctors = doctors.Where(d => d.Value == currentDoctor.Id.ToString());
+            }
+
             EditAppointmentViewModel model = new EditAppointmentViewModel
             {
                 Id = appointment.Id,
@@ -199,7 +288,7 @@ namespace PachecoClinic.Controllers
                 EndTime = appointment.EndTime,
                 Motive = appointment.Motive,
                 Animals = GetAnimals(),
-                Doctors = GetDoctors(),
+                Doctors = doctors,
                 Rooms = GetRooms()
             };
 
@@ -211,7 +300,7 @@ namespace PachecoClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EditAppointmentViewModel model)
         {
-            if(id != model.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -223,16 +312,76 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
-            if (model.Date.HasValue && model.Date.Value.Date < DateTime.Today
-                && model.Date.Value.Date != appointment.Date.Date)
+            Doctor? currentDoctor = await GetCurrentDoctorAsync();
+
+            if (User.IsInRole("Doctor"))
             {
-                ModelState.AddModelError("Date", "The appointment date cannot be in the past.");
+                if (currentDoctor == null)
+                {
+                    return NotFound();
+                }
+
+                if (appointment.DoctorId != currentDoctor.Id || model.DoctorId != currentDoctor.Id)
+                {
+                    return Forbid();
+                }
             }
 
-            if(model.StartTime.HasValue && model.EndTime.HasValue &&
-               model.EndTime.Value <= model.StartTime.Value)
+            if (appointment.Status != AppointmentStatus.Scheduled)
+            {
+                return BadRequest("Only scheduled appointments can be edited.");
+            }
+
+            DateTime currentAppointmentDateTime = appointment.Date.Date + appointment.StartTime;
+
+            if (currentAppointmentDateTime <= DateTime.Now)
+            {
+                return BadRequest("Past appointments cannot be edited.");
+            }
+
+            Animal? animal = await _animalRepository.GetByIdAsync(model.AnimalId);
+
+            if (animal == null)
+            {
+                ModelState.AddModelError("AnimalId", "The selected animal does not exist.");
+            }
+
+            Doctor? doctor = await _doctorRepository.GetByIdAsync(model.DoctorId);
+
+            if (doctor == null)
+            {
+                ModelState.AddModelError("DoctorId", "The selected doctor does not exist.");
+            }
+            else if (!doctor.Active)
+            {
+                ModelState.AddModelError("DoctorId", "The selected doctor is not active.");
+            }
+
+            Room? room = await _roomRepository.GetByIdAsync(model.RoomId);
+
+            if (room == null)
+            {
+                ModelState.AddModelError("RoomId", "The selected room does not exist.");
+            }
+            else if (room.UnderMaintenance)
+            {
+                ModelState.AddModelError("RoomId", "The selected room is under maintenance.");
+            }
+
+            if (model.StartTime.HasValue && model.EndTime.HasValue &&
+                model.EndTime.Value <= model.StartTime.Value)
             {
                 ModelState.AddModelError("EndTime", "End time must be later than start time.");
+            }
+
+            if (model.Date.HasValue && model.StartTime.HasValue)
+            {
+                DateTime newAppointmentDateTime = model.Date.Value.Date + model.StartTime.Value;
+
+                if (newAppointmentDateTime <= DateTime.Now)
+                {
+                    ModelState.AddModelError("StartTime", "The appointment date and time must be in the future.");
+                }
             }
 
             if (ModelState.IsValid)
@@ -245,7 +394,8 @@ namespace PachecoClinic.Controllers
 
                 if (!doctorAvailable)
                 {
-                    ModelState.AddModelError(string.Empty, "The doctor is not available during the selected date and time.");
+                    ModelState.AddModelError(string.Empty,
+                        "The doctor is not available during the selected date and time.");
                 }
             }
 
@@ -262,20 +412,27 @@ namespace PachecoClinic.Controllers
 
                 if (conflict)
                 {
-                    ModelState.AddModelError(string.Empty, "There is already an appointment conflicting with the selected doctor, room or animal");
+                    ModelState.AddModelError(string.Empty,
+                        "There is already an appointment conflicting with the selected doctor, room or animal.");
                 }
             }
 
             if (!ModelState.IsValid)
             {
                 model.Animals = GetAnimals();
-                model.Doctors = GetDoctors();
+                model.Doctors = currentDoctor != null
+                    ? GetDoctors().Where(d => d.Value == currentDoctor.Id.ToString())
+                    : GetDoctors();
                 model.Rooms = GetRooms();
 
                 return View(model);
             }
 
-            bool scheduleChanged = appointment.Date.Date != model.Date!.Value.Date || appointment.StartTime != model.StartTime!.Value;
+            bool scheduleChanged =
+                appointment.Date.Date != model.Date!.Value.Date ||
+                appointment.StartTime != model.StartTime!.Value ||
+                appointment.EndTime != model.EndTime!.Value ||
+                appointment.DoctorId != model.DoctorId;
 
             appointment.AnimalId = model.AnimalId;
             appointment.DoctorId = model.DoctorId;
@@ -284,6 +441,7 @@ namespace PachecoClinic.Controllers
             appointment.StartTime = model.StartTime!.Value;
             appointment.EndTime = model.EndTime!.Value;
             appointment.Motive = model.Motive;
+
             if (scheduleChanged)
             {
                 appointment.ReminderSent = false;
@@ -297,19 +455,41 @@ namespace PachecoClinic.Controllers
         [Authorize(Roles = "Admin,Employee,Doctor")]
         public async Task<IActionResult> Cancel(int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             Appointment? appointment = await _appointmentRepository.GetByIdWithDetailsAsync(id.Value);
 
-            if(appointment == null)
+            if (appointment == null)
             {
                 return NotFound();
             }
 
-            if(appointment.Status != AppointmentStatus.Scheduled)
+            Doctor? currentDoctor = await GetCurrentDoctorAsync();
+
+            if (User.IsInRole("Doctor"))
+            {
+                if (currentDoctor == null)
+                {
+                    return NotFound();
+                }
+
+                if (appointment.DoctorId != currentDoctor.Id)
+                {
+                    return Forbid();
+                }
+            }
+
+            if (appointment.Status != AppointmentStatus.Scheduled)
+            {
+                return RedirectToAction(nameof(Details), new { id = appointment.Id });
+            }
+
+            DateTime appointmentDateTime = appointment.Date.Date + appointment.StartTime;
+
+            if (appointmentDateTime <= DateTime.Now)
             {
                 return RedirectToAction(nameof(Details), new { id = appointment.Id });
             }
@@ -329,7 +509,22 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
-            if(appointment.Status != AppointmentStatus.Scheduled)
+            Doctor? currentDoctor = await GetCurrentDoctorAsync();
+
+            if (User.IsInRole("Doctor"))
+            {
+                if (currentDoctor == null)
+                {
+                    return NotFound();
+                }
+
+                if (appointment.DoctorId != currentDoctor.Id)
+                {
+                    return Forbid();
+                }
+            }
+
+            if (appointment.Status != AppointmentStatus.Scheduled)
             {
                 ModelState.AddModelError(string.Empty, "Only scheduled appointments can be cancelled");
 
@@ -449,7 +644,7 @@ namespace PachecoClinic.Controllers
 
             if(appointmentStart > DateTime.Now)
             {
-                ModelState.AddModelError(string.Empty, "A future appointment cannot be completed.");
+                TempData["ErrorMessage"] = "A future appointment cannot be completed.";
 
                 return RedirectToAction(nameof(Details), new { id });
             }
@@ -513,6 +708,23 @@ namespace PachecoClinic.Controllers
             }
 
             return items;
+        }
+
+        private async Task<Doctor?> GetCurrentDoctorAsync()
+        {
+            if (!User.IsInRole("Doctor"))
+            {
+                return null;
+            }
+
+            User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return await _doctorRepository.GetByUserIdAsync(user.Id);
         }
     }
 }

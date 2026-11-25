@@ -42,7 +42,9 @@ namespace PachecoClinic.Controllers
                     Name = a.Name,
                     Species = a.Species,
                     Breed = a.Breed,
-                    Owner = a.Client.User.FullName,
+                    Owner = a.Client.User.ProfileCompleted
+                                ? a.Client.User.FullName
+                                : $"Pending - {a.Client.User.Email}",
                     BirthDate = a.BirthDate,
                     Weight = a.Weight
                 })
@@ -51,7 +53,7 @@ namespace PachecoClinic.Controllers
             return View(animals);
         }
 
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Admin,Employee,Doctor,Client")]
         public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
@@ -109,6 +111,16 @@ namespace PachecoClinic.Controllers
         {
             if (!ModelState.IsValid)
             {
+                model.Clients = GetClients();
+
+                return View(model);
+            }
+
+            Client? client = await _clientRepository.GetByIdAsync(model.ClientId);
+
+            if (client == null)
+            {
+                ModelState.AddModelError(nameof(model.ClientId), "The selected owner does not exist.");
                 model.Clients = GetClients();
 
                 return View(model);
@@ -200,6 +212,17 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
+            Client? client = await _clientRepository.GetByIdAsync(model.ClientId);
+
+            if (client == null)
+            {
+                ModelState.AddModelError(nameof(model.ClientId), "The selected owner does not exist.");
+                model.Clients = GetClients();
+                model.CurrentImageURL = animal.ImageUrl;
+
+                return View(model);
+            }
+
             if (!ModelState.IsValid)
             {
                 model.Clients = GetClients();
@@ -215,7 +238,7 @@ namespace PachecoClinic.Controllers
             animal.Weight = model.Weight;
             animal.Color = model.Color;
             animal.Sex = model.Sex;
-            animal.ClientId = animal.ClientId;
+            animal.ClientId = model.ClientId;
 
             if(model.ImageFile != null)
             {

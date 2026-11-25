@@ -41,5 +41,10 @@ namespace PachecoClinic.Data
         {
             return await _context.Appointments.AnyAsync(a => id == id);
         }
+
+        public async Task<bool> HasDoctorsBySpecialtyAsync(int specialtyId)
+        {
+            return await _context.Doctors.AnyAsync(d => d.SpecialtyId == specialtyId);
+        }
     }
 }

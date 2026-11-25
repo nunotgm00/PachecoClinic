@@ -176,7 +176,7 @@
                                 <h5>My Animals</h5>
 
                                 <p>
-                                    View your registered animals.
+                                    View your registered animals and medical history.
                                 </p>
 
                             </a>
@@ -222,7 +222,20 @@
                                 <h5>Appointments</h5>
 
                                 <p>
-                                    View your scheduled appointments.
+                                    View and manage your appointments.
+                                </p>
+
+                            </a>
+
+
+                            <a asp-controller="AppointmentRequests"
+                               asp-action="Index"
+                               class="home-action-card">
+
+                                <h5>Requests</h5>
+
+                                <p>
+                                    Review requests for your appointments.
                                 </p>
 
                             </a>
@@ -235,7 +248,46 @@
                                 <h5>Interventions</h5>
 
                                 <p>
-                                    Access clinical interventions and records.
+                                    Access and manage clinical records.
+                                </p>
+
+                            </a>
+
+
+                            <a asp-controller="Clients"
+                               asp-action="Index"
+                               class="home-action-card">
+
+                                <h5>Clients</h5>
+
+                                <p>
+                                    View and update clinic clients.
+                                </p>
+
+                            </a>
+
+
+                            <a asp-controller="Animals"
+                               asp-action="Index"
+                               class="home-action-card">
+
+                                <h5>Animals</h5>
+
+                                <p>
+                                    Access and manage registered animals.
+                                </p>
+
+                            </a>
+
+
+                            <a asp-controller="Rooms"
+                               asp-action="Index"
+                               class="home-action-card">
+
+                                <h5>Rooms</h5>
+
+                                <p>
+                                    View clinic rooms.
                                 </p>
 
                             </a>
@@ -253,8 +305,22 @@
 
                             </a>
 
+
+                            <a asp-controller="Specialties"
+                               asp-action="Index"
+                               class="home-action-card">
+
+                                <h5>Specialties</h5>
+
+                                <p>
+                                    View veterinary specialties.
+                                </p>
+
+                            </a>
+
                         </div>
                     }
+
 
                     @if (User.IsInRole("Employee"))
                     {
@@ -297,7 +363,7 @@
                                class="home-action-card">
                                 <i class="bi bi-heart home-action-icon"></i>
                                 <h5>Animals</h5>
-                                <p>Access registered animals.</p>
+                                <p>Access and manage registered animals.</p>
                             </a>
 
                             <a asp-controller="Doctors"
@@ -305,7 +371,7 @@
                                class="home-action-card">
                                 <i class="bi bi-person-badge home-action-icon"></i>
                                 <h5>Doctors</h5>
-                                <p>Manage the veterinary team.</p>
+                                <p>View doctors and their schedules.</p>
                             </a>
 
                             <a asp-controller="Rooms"
@@ -321,7 +387,7 @@
                                class="home-action-card">
                                 <i class="bi bi-clipboard2-heart home-action-icon"></i>
                                 <h5>Specialties</h5>
-                                <p>Manage veterinary specialties.</p>
+                                <p>View veterinary specialties.</p>
                             </a>
 
                             <a asp-controller="Users"
@@ -329,11 +395,20 @@
                                class="home-action-card home-action-card-primary">
                                 <i class="bi bi-person-plus home-action-icon"></i>
                                 <h5>Create User</h5>
-                                <p>Create a new clinic account.</p>
+                                <p>Create a new client or doctor account.</p>
+                            </a>
+
+                            <a asp-controller="Notifications"
+                               asp-action="ClinicClosure"
+                               class="home-action-card">
+                                <i class="bi bi-megaphone home-action-icon"></i>
+                                <h5>Clinic Closure</h5>
+                                <p>Notify clients about a clinic closure.</p>
                             </a>
 
                         </div>
                     }
+
 
                     @if (User.IsInRole("Admin"))
                     {
@@ -360,7 +435,7 @@
                                class="home-action-card">
                                 <i class="bi bi-heart home-action-icon"></i>
                                 <h5>Animals</h5>
-                                <p>Access registered animals.</p>
+                                <p>Access and manage registered animals.</p>
                             </a>
 
                             <a asp-controller="Doctors"
@@ -393,6 +468,14 @@
                                 <i class="bi bi-person-plus home-action-icon"></i>
                                 <h5>Create User</h5>
                                 <p>Create a new clinic account.</p>
+                            </a>
+
+                            <a asp-controller="Notifications"
+                               asp-action="ClinicClosure"
+                               class="home-action-card">
+                                <i class="bi bi-megaphone home-action-icon"></i>
+                                <h5>Clinic Closure</h5>
+                                <p>Notify clients about a clinic closure.</p>
                             </a>
 
                         </div>

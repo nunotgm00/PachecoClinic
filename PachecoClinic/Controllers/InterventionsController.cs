@@ -38,7 +38,7 @@ namespace PachecoClinic.Controllers
             return View(interventions);
         }
 
-        [Authorize(Roles = ("Admin,Employee,Doctor,Client"))]
+        [Authorize(Roles = "Admin,Employee,Doctor,Client")]
         public async Task<IActionResult> Details(int? id)
         {
             if(id == null)
@@ -173,7 +173,7 @@ namespace PachecoClinic.Controllers
 
             Intervention intervention = new Intervention
             {
-                Appointment = appointment,
+                AppointmentId = model.AppointmentId,
                 Description = model.Description,
                 Diagnosis = model.Diagnosis,
                 Treatment = model.Treatment,

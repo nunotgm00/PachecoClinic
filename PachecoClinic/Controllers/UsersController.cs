@@ -104,6 +104,16 @@ namespace PachecoClinic.Controllers
                 ModelState.AddModelError("SpecialtyId", "A specialty is required for a doctor");
             }
 
+            if (model.Role == "Doctor" && model.SpecialtyId.HasValue)
+            {
+                Specialty? specialty = await _specialtyRepository.GetByIdAsync(model.SpecialtyId.Value);
+
+                if (specialty == null)
+                {
+                    ModelState.AddModelError("SpecialtyId", "The selected specialty does not exist.");
+                }
+            }
+
             if (!string.IsNullOrEmpty(model.Email))
             {
                 User? existingUser = await _userHelper.GetUserByEmailAsync(model.Email);

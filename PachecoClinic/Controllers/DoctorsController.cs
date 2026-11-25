@@ -16,20 +16,17 @@ namespace PachecoClinic.Controllers
         private readonly IGenericRepository<Specialty> _specialtyRepository;
         private readonly IUserHelper _userHelper;
         private readonly IAppointmentRepository _appointmentRepository;
-        private readonly IMailHelper _mailHelper;
 
         public DoctorsController(
             IDoctorRepository doctorRepository,
             IGenericRepository<Specialty> specialtyRepository,
             IUserHelper userHelper,
-            IAppointmentRepository appointmentRepository,
-            IMailHelper mailHelper)
+            IAppointmentRepository appointmentRepository)
         {
             _doctorRepository = doctorRepository;
             _specialtyRepository = specialtyRepository;
             _userHelper = userHelper;
             _appointmentRepository = appointmentRepository;
-            _mailHelper = mailHelper;
         }
 
         [AllowAnonymous]
@@ -67,22 +64,25 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
-            List<DoctorAppointmentScheduleViewModel> appointments =
-                _appointmentRepository.GetAllWithDetails()
-                .Where(a => a.DoctorId == doctor.Id &&
-                    a.Status != AppointmentStatus.Cancelled)
-                .Select(a => new DoctorAppointmentScheduleViewModel
-                {
-                    Id = a.Id,
-                    Subject = a.Animal.Name + " - " + a.Motive,
-                    StartTime = a.Date.Date + a.StartTime,
-                    EndTime = a.Date.Date + a.EndTime,
-                    Description = a.Motive,
-                    Location = a.Room.Name
-                })
-                .ToList();
+            if (User.IsInRole("Admin") || User.IsInRole("Employee") || User.IsInRole("Doctor"))
+            {
+                List<DoctorAppointmentScheduleViewModel> appointments =
+                    _appointmentRepository.GetAllWithDetails()
+                    .Where(a => a.DoctorId == doctor.Id &&
+                        a.Status != AppointmentStatus.Cancelled)
+                    .Select(a => new DoctorAppointmentScheduleViewModel
+                    {
+                        Id = a.Id,
+                        Subject = a.Animal.Name + " - " + a.Motive,
+                        StartTime = a.Date.Date + a.StartTime,
+                        EndTime = a.Date.Date + a.EndTime,
+                        Description = a.Motive,
+                        Location = a.Room.Name
+                    })
+                    .ToList();
 
-            ViewBag.ScheduleData = appointments;
+                ViewBag.ScheduleData = appointments;
+            }
 
             return View(doctor);
         }
@@ -162,6 +162,16 @@ namespace PachecoClinic.Controllers
             user.Email = model.Email;
             user.UserName = model.Email;
             user.PhoneNumber = model.PhoneNumber;
+
+            Specialty? specialty = await _specialtyRepository.GetByIdAsync(model.SpecialtyId);
+
+            if (specialty == null)
+            {
+                ModelState.AddModelError("SpecialtyId", "The selected specialty does not exist.");
+                model.Specialties = GetSpecialties();
+
+                return View(model);
+            }
 
             IdentityResult userResult = await _userHelper.UpdateUserAsync(user);
 

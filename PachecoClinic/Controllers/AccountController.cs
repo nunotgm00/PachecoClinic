@@ -130,7 +130,7 @@ namespace PachecoClinic.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> CompleteRegistration(string email, string token)
         {
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
             {
                 return BadRequest();
             }

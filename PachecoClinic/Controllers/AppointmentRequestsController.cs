@@ -14,19 +14,22 @@ namespace PachecoClinic.Controllers
         private readonly IClientRepository _clientRepository;
         private readonly IUserHelper _userHelper;
         private readonly IDoctorScheduleRepository _doctorScheduleRepository;
+        private readonly IDoctorRepository _doctorRepository;
 
         public AppointmentRequestsController(
             IAppointmentRequestRepository requestRepository,
             IAppointmentRepository appointmentRepository,
             IClientRepository clientRepository,
             IUserHelper userHelper,
-            IDoctorScheduleRepository doctorScheduleRepository)
+            IDoctorScheduleRepository doctorScheduleRepository,
+            IDoctorRepository doctorRepository)
         {
             _requestRepository = requestRepository;
             _appointmentRepository = appointmentRepository;
             _clientRepository = clientRepository;
             _userHelper = userHelper;
             _doctorScheduleRepository = doctorScheduleRepository;
+            _doctorRepository = doctorRepository;
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
@@ -251,7 +254,7 @@ namespace PachecoClinic.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Employee,Doctor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Approve(int id)
         {
@@ -274,12 +277,41 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
-            if(appointment.Status != AppointmentStatus.Scheduled)
+            if (User.IsInRole("Doctor"))
+            {
+                User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                Doctor? doctor = await _doctorRepository.GetByUserIdAsync(user.Id);
+
+                if (doctor == null)
+                {
+                    return NotFound();
+                }
+
+                if (appointment.DoctorId != doctor.Id)
+                {
+                    return Forbid();
+                }
+            }
+
+            if (appointment.Status != AppointmentStatus.Scheduled)
             {
                 return BadRequest("Only scheduled appointments can be changed.");
             }
 
-            if(request.Type == AppointmentRequestType.Cancellation)
+            DateTime appointmentDateTime = appointment.Date.Date + appointment.StartTime;
+
+            if (appointmentDateTime <= DateTime.Now)
+            {
+                return BadRequest("Past appointments cannot be changed.");
+            }
+
+            if (request.Type == AppointmentRequestType.Cancellation)
             {
                 appointment.Status = AppointmentStatus.Cancelled;
                 request.Status = AppointmentRequestStatus.Approved;
@@ -349,7 +381,7 @@ namespace PachecoClinic.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Employee,Doctor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Reject(int id)
         {
@@ -360,7 +392,36 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
-            if(request.Status != AppointmentRequestStatus.Pending)
+            Appointment? appointment = await _appointmentRepository.GetByIdAsync(request.AppointmentId);
+
+            if(appointment == null)
+            {
+                return NotFound();
+            }
+
+            if (User.IsInRole("Doctor"))
+            {
+                User? user = await _userHelper.GetUserByEmailAsync(User.Identity!.Name!);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                Doctor? doctor = await _doctorRepository.GetByUserIdAsync(user.Id);
+
+                if (doctor == null)
+                {
+                    return NotFound();
+                }
+
+                if (appointment.DoctorId != doctor.Id)
+                {
+                    return Forbid();
+                }
+            }
+
+            if (request.Status != AppointmentRequestStatus.Pending)
             {
                 return BadRequest("Only pending requests can be rejected.");
             }

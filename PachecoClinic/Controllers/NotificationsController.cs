@@ -32,8 +32,13 @@ namespace PachecoClinic.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ClinicClosure(ClinicClosureViewModel model)
+        public IActionResult ClinicClosure(ClinicClosureViewModel model)
         {
+            if (model.Date < DateTime.Today)
+            {
+                ModelState.AddModelError("Date", "The closure date cannot be in the past.");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);

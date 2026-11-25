@@ -80,6 +80,11 @@ namespace PachecoClinic.Data
                 .ToList();
         }
 
+        public async Task<bool> HasAppointmentByRoomAsync(int roomId)
+        {
+            return await _context.Appointments.AnyAsync(a => a.RoomId == roomId);
+        }
+
         public async Task<bool> HasConflictAsync(
             int doctorId,
             int roomId,
@@ -106,6 +111,14 @@ namespace PachecoClinic.Data
             }
 
             return await appointments.AnyAsync();
+        }
+
+        public async Task<bool> HasFutureAppointmentsByRoomAsync(int roomId)
+        {
+            DateTime now = DateTime.Now;
+
+            return await _context.Appointments.AnyAsync(a => a.RoomId == roomId &&
+                a.Status == AppointmentStatus.Scheduled && a.Date.Date + a.StartTime > now);
         }
     }
 }

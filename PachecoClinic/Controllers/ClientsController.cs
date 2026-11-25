@@ -24,7 +24,36 @@ namespace PachecoClinic.Controllers
         {
             return View(_clientRepository.GetAllWithUsers());
         }
-        
+
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Client? client = await _clientRepository.GetByIdWithUserAsync(id.Value);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            EditClientViewModel model = new EditClientViewModel
+            {
+                Id = client.Id,
+                FirstName = client.User.FirstName,
+                LastName = client.User.LastName,
+                Email = client.User.Email!,
+                PhoneNumber = client.User.PhoneNumber,
+                Address = client.Address,
+                Nif = client.Nif
+            };
+
+            return View(model);
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin,Employee,Doctor")]
         [ValidateAntiForgeryToken]
@@ -89,7 +118,7 @@ namespace PachecoClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> Delete(int? id)
         {
             if(id == null)
@@ -108,7 +137,7 @@ namespace PachecoClinic.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [Authorize(Roles = "Admin,Employee,Doctor")]
+        [Authorize(Roles = "Admin,Employee")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

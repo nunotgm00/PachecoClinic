@@ -22,5 +22,9 @@ namespace PachecoClinic.Data
         Task<List<Appointment>> GetAppointmentsByDateAsync(DateTime date);
 
         Task<List<Appointment>> GetFutureAppointmentsByDoctorAndDayAsync(int DoctorId, DayOfWeek dayOfWeek);
+
+        Task<bool> HasAppointmentByRoomAsync(int roomId);
+
+        Task<bool> HasFutureAppointmentsByRoomAsync(int roomId);
     }
 }
