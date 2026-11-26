@@ -1,18 +1,24 @@
-﻿@model PachecoClinic.Data.Entities.Appointment
+﻿@using PachecoClinic.Data.Entities
+@model PachecoClinic.Data.Entities.Appointment
 
 @{
     ViewData["Title"] = "Cancel Appointment";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-8 col-lg-7">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
+
+            <div class="card-body p-4 p-md-5">
 
                 <div class="text-center mb-4">
 
-                    <h2>Cancel Appointment</h2>
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Cancel Appointment
+                    </h2>
 
                     <p class="text-danger mb-0">
                         Are you sure you want to cancel this appointment?
@@ -21,12 +27,12 @@
                 </div>
 
                 <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3">
+                     class="alert alert-danger py-2 mb-4">
                 </div>
 
-                <dl class="row">
+                <dl class="row mb-0">
 
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Animal
                     </dt>
 
@@ -34,8 +40,7 @@
                         @Model.Animal.Name
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Owner
                     </dt>
 
@@ -43,8 +48,7 @@
                         @Model.Animal.Client.User.FullName
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Doctor
                     </dt>
 
@@ -52,8 +56,7 @@
                         @Model.Doctor.User.FullName
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Room
                     </dt>
 
@@ -61,8 +64,7 @@
                         @Model.Room.Name
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Date
                     </dt>
 
@@ -70,8 +72,7 @@
                         @Model.Date.ToString("dd/MM/yyyy")
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Time
                     </dt>
 
@@ -79,8 +80,7 @@
                         @Model.StartTime.ToString(@"hh\:mm") - @Model.EndTime.ToString(@"hh\:mm")
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Motive
                     </dt>
 
@@ -88,20 +88,37 @@
                         @Model.Motive
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Status
                     </dt>
 
                     <dd class="col-sm-8">
-                        <span class="badge bg-primary">
-                            @Model.Status
-                        </span>
+
+                        @if (Model.Status == AppointmentStatus.Completed)
+                        {
+                            <span class="badge bg-success">
+                                Completed
+                            </span>
+                        }
+                        else if (Model.Status == AppointmentStatus.Cancelled)
+                        {
+                            <span class="badge bg-danger">
+                                Cancelled
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge"
+                                  style="background-color: var(--clinic-primary);">
+                                Scheduled
+                            </span>
+                        }
+
                     </dd>
 
                 </dl>
 
-                <hr />
+                <hr class="my-4" />
 
                 <form asp-action="Cancel"
                       method="post">
@@ -112,13 +129,14 @@
                     <div class="d-flex gap-2">
 
                         <button type="submit"
-                                class="btn btn-danger">
+                                class="btn btn-danger px-4 rounded-3">
+                            <i class="bi bi-x-circle me-1"></i>
                             Cancel Appointment
                         </button>
 
                         <a asp-action="Details"
                            asp-route-id="@Model.Id"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary px-4 rounded-3">
                             Back
                         </a>
 

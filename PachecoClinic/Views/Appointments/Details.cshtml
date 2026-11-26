@@ -5,19 +5,28 @@
     ViewData["Title"] = "Appointment Details";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-9 col-lg-8">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-4">
-                    Appointment Details
-                </h2>
+            <div class="card-body p-4 p-md-5">
 
-                <dl class="row">
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-1"
+                        style="color: var(--clinic-primary);">
+                        Appointment Details
+                    </h2>
 
-                    <dt class="col-sm-4">
+                    <p class="text-muted mb-0">
+                        View the appointment information and available actions.
+                    </p>
+                </div>
+
+                <dl class="row mb-0">
+
+                    <dt class="col-sm-4 fw-semibold">
                         Animal
                     </dt>
 
@@ -25,8 +34,7 @@
                         @Model.Animal.Name
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Owner
                     </dt>
 
@@ -34,8 +42,7 @@
                         @Model.Animal.Client.User.FullName
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Doctor
                     </dt>
 
@@ -43,8 +50,7 @@
                         @Model.Doctor.User.FullName
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Room
                     </dt>
 
@@ -52,8 +58,7 @@
                         @Model.Room.Name
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Date
                     </dt>
 
@@ -61,8 +66,7 @@
                         @Model.Date.ToString("dd/MM/yyyy")
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Start Time
                     </dt>
 
@@ -70,8 +74,7 @@
                         @Model.StartTime.ToString(@"hh\:mm")
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         End Time
                     </dt>
 
@@ -79,8 +82,7 @@
                         @Model.EndTime.ToString(@"hh\:mm")
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Motive
                     </dt>
 
@@ -88,8 +90,7 @@
                         @Model.Motive
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Status
                     </dt>
 
@@ -109,7 +110,8 @@
                         }
                         else
                         {
-                            <span class="badge bg-primary">
+                            <span class="badge"
+                                  style="background-color: var(--clinic-primary);">
                                 Scheduled
                             </span>
                         }
@@ -118,52 +120,59 @@
 
                 </dl>
 
-                <hr />
+                <hr class="my-4" />
 
                 <div class="d-flex flex-wrap gap-2">
 
                     @if (User.IsInRole("Client"))
                     {
-                        @if (Model.Status == AppointmentStatus.Scheduled && Model.Date.Date + Model.StartTime > DateTime.Now)
+                        @if (Model.Status == AppointmentStatus.Scheduled &&
+                                            Model.Date.Date + Model.StartTime > DateTime.Now)
                         {
                             <a asp-controller="AppointmentRequests"
                                asp-action="Create"
                                asp-route-appointmentId="@Model.Id"
-                               class="btn btn-primary">
+                               class="btn btn-primary rounded-3">
+                                <i class="bi bi-arrow-repeat me-1"></i>
                                 Request Change
                             </a>
                         }
 
                         <a asp-action="MyAppointments"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary rounded-3">
                             Back to My Appointments
                         </a>
                     }
                     else
                     {
-                        <a asp-action="Edit"
-                           asp-route-id="@Model.Id"
-                           class="btn btn-primary">
-                            Edit
-                        </a>
-
-                        @if (Model.Status == AppointmentStatus.Scheduled && Model.Date.Date + Model.StartTime > DateTime.Now)
+                       
+                        @if (Model.Status == AppointmentStatus.Scheduled &&
+                                            Model.Date.Date + Model.StartTime > DateTime.Now)
                         {
+                            <a asp-action="Edit"
+                               asp-route-id="@Model.Id"
+                               class="btn btn-outline-primary rounded-3">
+                                Edit
+                            </a>
+
                             <a asp-action="Cancel"
                                asp-route-id="@Model.Id"
-                               class="btn btn-danger">
+                               class="btn btn-danger rounded-3">
                                 Cancel
                             </a>
                         }
 
-                        @if (User.IsInRole("Doctor") && Model.Doctor.User.Email == User.Identity!.Name)
+                        @if (User.IsInRole("Doctor") &&
+                                            Model.Doctor.User.Email == User.Identity!.Name)
                         {
-                            @if (Model.Intervention == null && Model.Status != AppointmentStatus.Cancelled)
+                            @if (Model.Intervention == null &&
+                                                Model.Status != AppointmentStatus.Cancelled)
                             {
                                 <a asp-controller="Interventions"
                                    asp-action="Create"
                                    asp-route-appointmentId="@Model.Id"
-                                   class="btn btn-success">
+                                   class="btn btn-success rounded-3">
+                                    <i class="bi bi-plus-circle me-1"></i>
                                     Add Intervention
                                 </a>
                             }
@@ -172,12 +181,13 @@
                                 <a asp-controller="Interventions"
                                    asp-action="Details"
                                    asp-route-id="@Model.Intervention.Id"
-                                   class="btn btn-info">
+                                   class="btn btn-outline-primary rounded-3">
                                     View Intervention
                                 </a>
                             }
 
-                            @if (Model.Status == AppointmentStatus.Scheduled && Model.Date.Date + Model.StartTime <= DateTime.Now)
+                            @if (Model.Status == AppointmentStatus.Scheduled &&
+                                                Model.Date.Date + Model.StartTime <= DateTime.Now)
                             {
                                 <form asp-action="Complete"
                                       asp-route-id="@Model.Id"
@@ -185,7 +195,8 @@
                                       class="d-inline">
 
                                     <button type="submit"
-                                            class="btn btn-success">
+                                            class="btn btn-success rounded-3">
+                                        <i class="bi bi-check-circle me-1"></i>
                                         Mark as Completed
                                     </button>
 
@@ -197,13 +208,13 @@
                             <a asp-controller="Interventions"
                                asp-action="Details"
                                asp-route-id="@Model.Intervention.Id"
-                               class="btn btn-info">
+                               class="btn btn-outline-primary rounded-3">
                                 View Intervention
                             </a>
                         }
 
                         <a asp-action="Index"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary rounded-3">
                             Back to List
                         </a>
                     }

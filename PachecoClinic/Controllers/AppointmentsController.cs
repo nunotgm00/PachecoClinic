@@ -43,7 +43,29 @@ namespace PachecoClinic.Controllers
         [Authorize(Roles = "Admin,Employee,Doctor")]
         public IActionResult Index()
         {
-            return View(_appointmentRepository.GetAllWithDetails());
+            string? currentUserEmail = User.Identity?.Name;
+            bool isDoctor = User.IsInRole("Doctor");
+
+            List<AppointmentListViewModel> model = _appointmentRepository
+                .GetAllWithDetails()
+                .Select(a => new AppointmentListViewModel
+                {
+                    Id = a.Id,
+                    Animal = a.Animal.Name,
+                    Owner = a.Animal.Client.User.FullName,
+                    Doctor = a.Doctor.User.FullName,
+                    Room = $"{a.Room.Name} - {a.Room.Type}",
+                    Date = a.Date,
+                    Time = $"{a.StartTime:hh\\:mm} - {a.EndTime:hh\\:mm}",
+                    Status = a.Status.ToString(),
+                    CanManage =
+                        a.Status == AppointmentStatus.Scheduled &&
+                        a.Date.Date + a.StartTime > DateTime.Now &&
+                        (!isDoctor || a.Doctor.User.Email == currentUserEmail)
+                })
+                .ToList();
+
+            return View(model);
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]
@@ -595,13 +617,32 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
-            IQueryable<Appointment> appointments = _appointmentRepository
+            List<MyAppointmentListViewModel> model = _appointmentRepository
                 .GetAllWithDetails()
                 .Where(a => a.Animal.ClientId == client.Id)
                 .OrderBy(a => a.Date)
-                .ThenBy(a => a.StartTime);
+                .ThenBy(a => a.StartTime)
+                .Select(a => new MyAppointmentListViewModel
+                {
+                    Id = a.Id,
+                    Animal = a.Animal.Name,
+                    Doctor = a.Doctor.User.FullName,
+                    Room = $"{a.Room.Name} - {a.Room.Type}",
+                    Date = a.Date,
+                    Time = $"{a.StartTime:hh\\:mm} - {a.EndTime:hh\\:mm}",
+                    Status = a.Status.ToString(),
 
-            return View(appointments);
+                    HasPendingRequest = a.Requests.Any(r =>
+                        r.Status == AppointmentRequestStatus.Pending),
+
+                    CanRequestChange =
+                        a.Status == AppointmentStatus.Scheduled &&
+                        a.Date.Date + a.StartTime > DateTime.Now &&
+                        !a.Requests.Any(r => r.Status == AppointmentRequestStatus.Pending)
+                })
+                .ToList();
+
+            return View(model);
         }
 
         [HttpPost]
