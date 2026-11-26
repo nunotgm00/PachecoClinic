@@ -4,11 +4,13 @@
     ViewData["Title"] = "Client Details";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-8 col-lg-7">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
+
+            <div class="card-body p-4 p-md-5">
 
                 <div class="text-center mb-4">
 
@@ -16,11 +18,12 @@
                     {
                         <img src="@Model.User.ImageUrl"
                              alt="@Model.User.FullName"
-                             class="rounded-circle mb-3"
+                             class="rounded-circle shadow-sm mb-3"
                              style="width: 130px; height: 130px; object-fit: cover;" />
                     }
 
-                    <h2 class="mb-1">
+                    <h2 class="fw-bold mb-1"
+                        style="color: var(--clinic-primary);">
                         @Model.User.FullName
                     </h2>
 
@@ -30,18 +33,17 @@
 
                 </div>
 
-                <dl class="row">
+                <dl class="row mb-0">
 
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Email
                     </dt>
 
-                    <dd class="col-sm-8">
+                    <dd class="col-sm-8 text-break">
                         @Model.User.Email
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Phone Number
                     </dt>
 
@@ -49,8 +51,7 @@
                         @(string.IsNullOrEmpty(Model.User.PhoneNumber) ? "-" : Model.User.PhoneNumber)
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         NIF
                     </dt>
 
@@ -58,29 +59,29 @@
                         @(string.IsNullOrEmpty(Model.Nif) ? "-" : Model.Nif)
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Address
                     </dt>
 
-                    <dd class="col-sm-8">
+                    <dd class="col-sm-8 text-break">
                         @(string.IsNullOrEmpty(Model.Address) ? "-" : Model.Address)
                     </dd>
 
                 </dl>
 
-                <hr />
+                <hr class="my-4" />
 
                 <div class="d-flex gap-2">
 
                     <a asp-action="Edit"
                        asp-route-id="@Model.Id"
-                       class="btn btn-primary">
+                       class="btn btn-primary rounded-3 px-4">
+                        <i class="bi bi-pencil me-1"></i>
                         Edit
                     </a>
 
                     <a asp-action="Index"
-                       class="btn btn-outline-secondary">
+                       class="btn btn-outline-secondary rounded-3 px-4">
                         Back to List
                     </a>
 

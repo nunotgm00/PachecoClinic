@@ -4,17 +4,26 @@
     ViewData["Title"] = "Edit Client";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-9 col-lg-8">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-2">Edit Client</h2>
+            <div class="card-body p-4 p-md-5">
 
-                <p class="text-muted mb-4">
-                    Update the client's information.
-                </p>
+                <div class="mb-4">
+
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Edit Client
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Update the client's information.
+                    </p>
+
+                </div>
 
                 <form asp-action="Edit" method="post">
 
@@ -25,116 +34,119 @@
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="UserId" />
 
-                    <div class="row">
+                    <div class="row g-3">
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
 
                             <label asp-for="FirstName"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 First Name
                             </label>
 
                             <input asp-for="FirstName"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="FirstName"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
 
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
 
                             <label asp-for="LastName"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Last Name
                             </label>
 
                             <input asp-for="LastName"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="LastName"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
 
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
 
                             <label asp-for="Email"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Email
                             </label>
 
                             <input asp-for="Email"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="Email"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
 
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
 
                             <label asp-for="PhoneNumber"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Phone Number
                             </label>
 
                             <input asp-for="PhoneNumber"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="PhoneNumber"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
 
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
 
                             <label asp-for="Nif"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 NIF
                             </label>
 
                             <input asp-for="Nif"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="Nif"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
 
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
 
                             <label asp-for="Address"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Address
                             </label>
 
                             <input asp-for="Address"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="Address"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
 
                         </div>
 
                     </div>
 
+                    <hr class="my-4" />
+
                     <div class="d-flex gap-2">
 
                         <button type="submit"
-                                class="btn btn-primary">
+                                class="btn btn-primary px-4 rounded-3">
+                            <i class="bi bi-check-circle me-1"></i>
                             Save Changes
                         </button>
 
                         <a asp-action="Details"
                            asp-route-id="@Model.Id"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary px-4 rounded-3">
                             Cancel
                         </a>
 

@@ -22,7 +22,38 @@ namespace PachecoClinic.Controllers
         [Authorize(Roles = "Admin,Employee,Doctor")]
         public IActionResult Index()
         {
-            return View(_clientRepository.GetAllWithUsers());
+            List<ClientListViewModel> model = _clientRepository
+                .GetAllWithUsers()
+                .Select(c => new ClientListViewModel
+                {
+                    Id = c.Id,
+                    Name = c.User.FullName,
+                    Email = c.User.Email!,
+                    PhoneNumber = c.User.PhoneNumber,
+                    Nif = c.Nif,
+                    Address = c.Address
+                })
+                .ToList();
+
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin,Employee,Doctor")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            Client? client = await _clientRepository.GetByIdWithUserAsync(id.Value);
+
+            if (client == null)
+            {
+                return NotFound();
+            }
+
+            return View(client);
         }
 
         [Authorize(Roles = "Admin,Employee,Doctor")]

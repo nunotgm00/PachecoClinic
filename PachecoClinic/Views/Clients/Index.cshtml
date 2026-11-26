@@ -1,102 +1,149 @@
-﻿@model IEnumerable<PachecoClinic.Data.Entities.Client>
+﻿@model IEnumerable<PachecoClinic.Models.ClientListViewModel>
 
 @{
     ViewData["Title"] = "Clients";
 }
 
+<style>
+    #ClientsGrid .e-headercell {
+        position: relative;
+    }
+
+        #ClientsGrid .e-headercell .e-filtermenudiv {
+            position: absolute !important;
+            left: 10px !important;
+            right: auto !important;
+            top: 50% !important;
+            transform: translateY(-50%);
+            float: none !important;
+            margin: 0 !important;
+        }
+
+        #ClientsGrid .e-headercell:has(.e-filtermenudiv) .e-headercelldiv {
+            padding-left: 28px !important;
+            margin: 0 !important;
+        }
+
+    #ClientsGrid .e-row:nth-child(even) .e-rowcell {
+        background-color: #eef4f4;
+    }
+
+    #ClientsGrid .e-row:hover .e-rowcell {
+        background-color: #e3eeee;
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <h1 class="mb-0">
-        Clients
-    </h1>
+    <div>
 
-    @if (User.IsInRole("Admin"))
+        <h1 class="fw-bold mb-1"
+            style="color: var(--clinic-primary);">
+            Clients
+        </h1>
+
+        <p class="text-muted mb-0">
+            View and manage the clinic's registered clients.
+        </p>
+
+    </div>
+
+    @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
     {
-        <a asp-action="Create"
-           class="btn btn-primary">
-            Create Client
+        <a asp-controller="Users"
+           asp-action="Create"
+           class="btn btn-primary rounded-3 px-3">
+            <i class="bi bi-person-plus me-1"></i>
+            Create User
         </a>
     }
 
 </div>
 
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-5"
+     style="border-top: 5px solid var(--clinic-primary) !important;">
 
-<div class="card shadow-sm">
-    <div class="card-body p-4">
+    <div class="card-body p-3">
 
-        <div class="table-responsive">
+        <ejs-grid id="ClientsGrid"
+                  dataSource="@Model"
+                  allowSorting="true"
+                  allowFiltering="true"
+                  allowPaging="true">
 
-            <table class="table table-hover align-middle">
+            <e-grid-filtersettings type="Menu">
+            </e-grid-filtersettings>
 
-                <thead class="table-light">
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>NIF</th>
-                        <th>Address</th>
-                        <th class="text-end">Actions</th>
-                    </tr>
-                </thead>
+            <e-grid-pagesettings pageSize="10">
+            </e-grid-pagesettings>
 
-                <tbody>
+            <e-grid-columns>
 
-                    @foreach (var item in Model)
-                    {
-                        <tr>
+                <e-grid-column field="Name"
+                               headerText="Name"
+                               width="220">
+                </e-grid-column>
 
-                            <td>
-                                <strong>
-                                    @item.User.FullName
-                                </strong>
-                            </td>
+                <e-grid-column field="Email"
+                               headerText="Email"
+                               width="240">
+                </e-grid-column>
 
-                            <td>
-                                @item.User.Email
-                            </td>
+                <e-grid-column field="PhoneNumber"
+                               headerText="Phone"
+                               width="130">
+                </e-grid-column>
 
-                            <td>
-                                @(string.IsNullOrEmpty(item.User.PhoneNumber) ? "-" : item.User.PhoneNumber)
-                            </td>
+                <e-grid-column field="Nif"
+                               headerText="NIF"
+                               width="120">
+                </e-grid-column>
 
-                            <td>
-                                @(string.IsNullOrEmpty(item.Nif) ? "-" : item.Nif)
-                            </td>
+                <e-grid-column field="Address"
+                               headerText="Address"
+                               clipMode="EllipsisWithTooltip"
+                               width="220">
+                </e-grid-column>
 
-                            <td>
-                                @(string.IsNullOrEmpty(item.Address) ? "-" : item.Address)
-                            </td>
+                <e-grid-column headerText="Actions"
+                               template="#actionsTemplate"
+                               allowFiltering="false"
+                               allowSorting="false"
+                               textAlign="Center"
+                               width="170">
+                </e-grid-column>
 
-                            <td class="text-end">
+            </e-grid-columns>
 
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-primary">
-                                    Details
-                                </a>
-
-                                <a asp-action="Edit"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-secondary">
-                                    Edit
-                                </a>
-
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-danger">
-                                    Delete
-                                </a>
-
-                            </td>
-
-                        </tr>
-                    }
-
-                </tbody>
-
-            </table>
-
-        </div>
+        </ejs-grid>
 
     </div>
+
 </div>
+
+<script id="actionsTemplate"
+        type="text/x-template">
+
+    <div class="d-flex gap-2">
+
+        <a href="/Clients/Details/${Id}"
+           class="btn btn-sm btn-outline-primary rounded-3">
+            Details
+        </a>
+
+        <a href="/Clients/Edit/${Id}"
+           class="btn btn-sm btn-outline-secondary rounded-3">
+            Edit
+        </a>
+
+        @if (User.IsInRole("Admin") || User.IsInRole("Employee"))
+        {
+                <a href="/Clients/Delete/${Id}"
+                   class="btn btn-sm btn-outline-danger rounded-3">
+                    Delete
+                </a>
+        }
+
+    </div>
+
+</script>

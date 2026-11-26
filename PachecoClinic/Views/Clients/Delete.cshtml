@@ -4,15 +4,20 @@
     ViewData["Title"] = "Delete Client";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-7 col-lg-6">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
+
+            <div class="card-body p-4 p-md-5">
 
                 <div class="text-center mb-4">
 
-                    <h2>Delete Client</h2>
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Delete Client
+                    </h2>
 
                     <p class="text-danger mb-0">
                         Are you sure you want to delete this client?
@@ -24,9 +29,9 @@
                      class="text-danger mb-3">
                 </div>
 
-                <dl class="row">
+                <dl class="row mb-0">
 
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Name
                     </dt>
 
@@ -34,15 +39,15 @@
                         @Model.User.FullName
                     </dd>
 
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Email
                     </dt>
 
-                    <dd class="col-sm-8">
+                    <dd class="col-sm-8 text-break">
                         @Model.User.Email
                     </dd>
 
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Phone Number
                     </dt>
 
@@ -50,7 +55,7 @@
                         @(string.IsNullOrEmpty(Model.User.PhoneNumber) ? "-" : Model.User.PhoneNumber)
                     </dd>
 
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         NIF
                     </dt>
 
@@ -58,17 +63,17 @@
                         @(string.IsNullOrEmpty(Model.Nif) ? "-" : Model.Nif)
                     </dd>
 
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Address
                     </dt>
 
-                    <dd class="col-sm-8">
+                    <dd class="col-sm-8 text-break">
                         @(string.IsNullOrEmpty(Model.Address) ? "-" : Model.Address)
                     </dd>
 
                 </dl>
 
-                <hr />
+                <hr class="my-4" />
 
                 <form asp-action="Delete"
                       method="post">
@@ -79,13 +84,13 @@
                     <div class="d-flex gap-2">
 
                         <button type="submit"
-                                class="btn btn-danger">
+                                class="btn btn-danger px-4 rounded-3">
+                            <i class="bi bi-trash me-1"></i>
                             Delete Client
                         </button>
 
-                        <a asp-action="Details"
-                           asp-route-id="@Model.Id"
-                           class="btn btn-outline-secondary">
+                        <a asp-action="Index"
+                           class="btn btn-outline-secondary px-4 rounded-3">
                             Cancel
                         </a>
 
