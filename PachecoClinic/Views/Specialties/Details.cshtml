@@ -4,24 +4,37 @@
     ViewData["Title"] = "Specialty Details";
 }
 
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger mb-4">
-        @TempData["ErrorMessage"]
-    </div>
-}
+<div class="row justify-content-center mb-5">
+    <div class="col-md-7 col-lg-6">
 
-<div class="row justify-content-center">
-    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+            <div class="card-body p-4 p-md-5">
 
-                <h2 class="mb-4">Specialty Details</h2>
+                <div class="mb-4">
 
-                <dl class="row mb-4">
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Specialty Details
+                    </h2>
 
-                    <dt class="col-sm-4">
+                    <p class="text-muted mb-0">
+                        View the veterinary specialty information.
+                    </p>
+
+                </div>
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger rounded-3 mb-4">
+                        @TempData["ErrorMessage"]
+                    </div>
+                }
+
+                <dl class="row mb-0">
+
+                    <dt class="col-sm-4 fw-semibold">
                         Name
                     </dt>
 
@@ -31,25 +44,29 @@
 
                 </dl>
 
-                <div class="d-flex gap-2">
+                <hr class="my-4" />
+
+                <div class="d-flex flex-wrap gap-2">
 
                     @if (User.IsInRole("Admin"))
                     {
                         <a asp-action="Edit"
                            asp-route-id="@Model.Id"
-                           class="btn btn-primary">
+                           class="btn btn-primary rounded-3 px-4">
+                            <i class="bi bi-pencil me-1"></i>
                             Edit Specialty
                         </a>
                     }
 
                     <a asp-action="Index"
-                       class="btn btn-outline-secondary">
+                       class="btn btn-outline-secondary rounded-3 px-4">
                         Back to Specialties
                     </a>
 
                 </div>
 
             </div>
+
         </div>
 
     </div>

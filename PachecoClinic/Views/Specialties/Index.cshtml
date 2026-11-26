@@ -4,32 +4,51 @@
     ViewData["Title"] = "Specialties";
 }
 
-<div class="card shadow-sm">
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h1 class="fw-bold mb-1"
+            style="color: var(--clinic-primary);">
+            Specialties
+        </h1>
+
+        <p class="text-muted mb-0">
+            View the veterinary specialties available at the clinic.
+        </p>
+
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create"
+           class="btn btn-primary rounded-3 px-3">
+            <i class="bi bi-plus-circle me-1"></i>
+            Create Specialty
+        </a>
+    }
+
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-5"
+     style="border-top: 5px solid var(--clinic-primary) !important;">
+
     <div class="card-body p-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="table-responsive rounded-3 border">
 
-            <h2 class="mb-0">Specialties</h2>
-
-            @if (User.IsInRole("Admin"))
-            {
-                <a asp-action="Create"
-                   class="btn btn-primary">
-                    Create Specialty
-                </a>
-            }
-
-        </div>
-
-        <div class="table-responsive">
-
-            <table class="table table-hover align-middle">
+            <table class="table table-hover table-striped align-middle mb-0"
+                   style="--bs-table-striped-bg: #eef4f4;">
 
                 <thead class="table-light">
+
                     <tr>
                         <th>Name</th>
-                        <th></th>
+                        <th class="text-center" style="width: 260px;">
+                            Actions
+                        </th>
                     </tr>
+
                 </thead>
 
                 <tbody>
@@ -38,35 +57,49 @@
                     {
                         <tr>
 
-                            <td>
+                            <td class="fw-semibold">
                                 @item.Name
                             </td>
 
                             <td class="text-nowrap">
 
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-primary">
-                                    Details
-                                </a>
+                                <div class="d-flex justify-content-center gap-2">
 
-                                @if (User.IsInRole("Admin"))
-                                {
-                                    <a asp-action="Edit"
+                                    <a asp-action="Details"
                                        asp-route-id="@item.Id"
-                                       class="btn btn-sm btn-outline-secondary">
-                                        Edit
+                                       class="btn btn-sm btn-outline-primary rounded-3">
+                                        Details
                                     </a>
 
-                                    <a asp-action="Delete"
-                                       asp-route-id="@item.Id"
-                                       class="btn btn-sm btn-outline-danger">
-                                        Delete
-                                    </a>
-                                }
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary rounded-3">
+                                            Edit
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger rounded-3">
+                                            Delete
+                                        </a>
+                                    }
+
+                                </div>
 
                             </td>
 
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="2"
+                                class="text-center text-muted py-4">
+                                No specialties found.
+                            </td>
                         </tr>
                     }
 
@@ -77,4 +110,5 @@
         </div>
 
     </div>
+
 </div>
