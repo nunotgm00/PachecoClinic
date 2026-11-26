@@ -19,20 +19,34 @@
     };
 }
 
-<div class="row justify-content-center">
-    <div class="col-lg-9">
+<div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
+
+            <div class="card-body p-4 p-md-5">
 
                 <div class="mb-4">
-                    <h2 class="mb-1">Doctor Schedule</h2>
-                    <p class="text-muted mb-0">@Model.DoctorName</p>
+
+                    <h2 class="fw-bold mb-1"
+                        style="color: var(--clinic-primary);">
+                        Doctor Schedule
+                    </h2>
+
+                    <h5 class="text-muted mb-2">
+                        @Model.DoctorName
+                    </h5>
+
+                    <p class="text-muted mb-0">
+                        Manage the doctor's weekly working hours.
+                    </p>
+
                 </div>
 
                 @if (TempData["SuccessMessage"] != null)
                 {
-                    <div class="alert alert-success">
+                    <div class="alert alert-success rounded-3">
                         @TempData["SuccessMessage"]
                     </div>
                 }
@@ -41,7 +55,9 @@
 
                     <input type="hidden" asp-for="DoctorId" />
 
-                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    <div asp-validation-summary="All"
+                         class="text-danger mb-3">
+                    </div>
 
                     @for (int i = 0; i < Model.Days.Count; i++)
                     {
@@ -55,7 +71,6 @@
                                asp-for="Days[i].EndTime"
                                id="endTime-@i" />
                     }
-
 
                     <div class="mb-4">
 
@@ -71,7 +86,7 @@
 
                                 <button type="button"
                                         id="dayButton-@i"
-                                        class="btn btn-outline-secondary flex-fill py-3"
+                                        class="btn btn-outline-secondary rounded-3 flex-fill py-3"
                                         style="min-width: 105px;"
                                         onclick="selectDay(@i)">
 
@@ -83,7 +98,7 @@
                                         @date.ToString("dd/MM")
                                     </small>
 
-                                    <div class="small mt-1"
+                                    <div class="small mt-2"
                                          id="daySummary-@i">
                                     </div>
 
@@ -94,14 +109,14 @@
 
                     </div>
 
-
-                    <hr />
-
+                    <hr class="my-4" />
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
 
                         <div>
-                            <h4 class="mb-1"
+
+                            <h4 class="fw-bold mb-1"
+                                style="color: var(--clinic-primary);"
                                 id="selectedDayName">
                                 Monday
                             </h4>
@@ -109,22 +124,24 @@
                             <span class="text-muted"
                                   id="dayStatus">
                             </span>
+
                         </div>
 
                         <button type="button"
-                                class="btn btn-outline-danger"
+                                class="btn btn-outline-danger rounded-3 px-3"
                                 onclick="setDayOff()">
+                            <i class="bi bi-calendar-x me-1"></i>
                             Day Off
                         </button>
 
                     </div>
 
+                    <div class="row g-3">
 
-                    <div class="row">
+                        <div class="col-md-6">
 
-                        <div class="col-md-6 mb-3">
-
-                            <label class="form-label">
+                            <label class="form-label fw-semibold"
+                                   for="startTimePicker">
                                 Start Time
                             </label>
 
@@ -137,9 +154,10 @@
 
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6">
 
-                            <label class="form-label">
+                            <label class="form-label fw-semibold"
+                                   for="endTimePicker">
                                 End Time
                             </label>
 
@@ -154,18 +172,20 @@
 
                     </div>
 
+                    <hr class="my-4" />
 
-                    <div class="d-flex justify-content-between mt-4">
+                    <div class="d-flex justify-content-between flex-wrap gap-2">
 
                         <a asp-controller="Doctors"
                            asp-action="Details"
                            asp-route-id="@Model.DoctorId"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary rounded-3 px-4">
                             Back to Doctor
                         </a>
 
                         <button type="submit"
-                                class="btn btn-primary">
+                                class="btn btn-primary rounded-3 px-4">
+                            <i class="bi bi-check-circle me-1"></i>
                             Save Schedule
                         </button>
 
@@ -179,7 +199,6 @@
     </div>
 </div>
 
-
 <script>
 
     var selectedDayIndex = 0;
@@ -190,7 +209,9 @@
 
         updateAllDaySummaries();
 
-        selectDay(0);
+        updateDayButtons();
+
+        loadSelectedDay();
 
         document.getElementById("scheduleForm")
             .addEventListener("submit", function () {
@@ -471,7 +492,6 @@
     }
 
 </script>
-
 
 @section Scripts {
     @{
