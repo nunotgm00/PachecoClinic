@@ -1,3 +1,7 @@
+/* =========================
+   VARIABLES
+   ========================= */
+
 :root {
     --clinic-primary: #2D6A6A;
     --clinic-primary-dark: #245757;
@@ -5,17 +9,34 @@
     --clinic-background: #F7F9F9;
 }
 
+
+/* =========================
+   GLOBAL
+   ========================= */
+
 html {
     font-size: 14px;
     position: relative;
     min-height: 100%;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+body {
+    background-color: var(--clinic-background);
+    margin-bottom: 80px;
 }
+
+a {
+    color: var(--clinic-primary);
+}
+
+    a:hover {
+        color: var(--clinic-primary-dark);
+    }
+
+
+/* =========================
+   BUTTONS / FOCUS
+   ========================= */
 
 .btn:focus,
 .btn:active:focus,
@@ -25,58 +46,66 @@ html {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--clinic-primary-light);
 }
 
-body {
-    background-color: var(--clinic-background);
-}
-
-a {
-    color: var(--clinic-primary);
-}
-
-a:hover {
-    color: var(--clinic-primary-dark);
-}
-
 .btn-primary {
     background-color: var(--clinic-primary);
     border-color: var(--clinic-primary);
 }
 
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:active {
-    background-color: var(--clinic-primary-dark);
-    border-color: var(--clinic-primary-dark);
-}
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active {
+        background-color: var(--clinic-primary-dark);
+        border-color: var(--clinic-primary-dark);
+    }
 
 .btn-outline-primary {
     color: var(--clinic-primary);
     border-color: var(--clinic-primary);
 }
 
-.btn-outline-primary:hover {
-    background-color: var(--clinic-primary);
-    border-color: var(--clinic-primary);
-}
+    .btn-outline-primary:hover {
+        background-color: var(--clinic-primary);
+        border-color: var(--clinic-primary);
+    }
+
+
+/* =========================
+   HOME - GENERAL
+   ========================= */
 
 .home-page {
     position: relative;
     min-height: 85vh;
     overflow: hidden;
-    background-color: #f5f6f6;
+    background-color: var(--clinic-background);
     padding: 30px 20px 40px;
 }
 
-.home-card-image {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
+
+/* =========================
+   HOME - HERO
+   ========================= */
+
+.home-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 520px;
+    padding: 3rem 0;
 }
+
+    .home-hero .row {
+        position: relative;
+        z-index: 2;
+    }
+
+
+/* =========================
+   HOME - DECORATION
+   ========================= */
 
 .home-decoration {
     position: absolute;
     right: -180px;
-    left: auto;
     bottom: -170px;
     width: 950px;
     height: 700px;
@@ -92,9 +121,9 @@ a:hover {
 .blob-1 {
     width: 620px;
     height: 560px;
-    background-color: var(--clinic-primary);
-    bottom: -40px;
     right: 170px;
+    bottom: -40px;
+    background-color: var(--clinic-primary);
     border-radius: 58% 42% 63% 37% / 42% 58% 39% 61%;
     transform: rotate(-14deg);
 }
@@ -102,9 +131,9 @@ a:hover {
 .blob-2 {
     width: 480px;
     height: 440px;
-    background-color: #79ACAF;
-    bottom: -30px;
     right: 10px;
+    bottom: -30px;
+    background-color: #79ACAF;
     border-radius: 43% 57% 38% 62% / 60% 36% 64% 40%;
     transform: rotate(18deg);
 }
@@ -112,24 +141,30 @@ a:hover {
 .blob-3 {
     width: 320px;
     height: 290px;
-    background-color: #A9CBCD;
-    bottom: 180px;
     right: -30px;
+    bottom: 180px;
+    background-color: #A9CBCD;
     border-radius: 61% 39% 52% 48% / 44% 61% 39% 56%;
     transform: rotate(-22deg);
 }
 
-.home-hero {
-    position: relative;
-    overflow: hidden;
-    min-height: 520px;
-    padding: 3rem 0;
+
+/* =========================
+   HOME - PUBLIC CARDS
+   ========================= */
+
+.home-card-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
 }
 
-.home-hero .row {
-    position: relative;
-    z-index: 2;
-}
+
+/* =========================
+   HOME - ACTION GRIDS
+   ========================= */
+
+/* Client - 3 cards */
 
 .home-actions-grid {
     display: grid;
@@ -138,17 +173,36 @@ a:hover {
     width: 100%;
 }
 
-.home-actions-grid-admin {
+
+/* Admin + Doctor - 4 + 4 */
+
+.home-actions-grid-4,
+.home-actions-grid-employee {
+    display: grid;
     grid-template-columns: repeat(12, 1fr);
+    gap: 1.25rem;
+    width: 100%;
 }
 
-.home-actions-grid-admin .home-action-card:nth-child(-n+3) {
-    grid-column: span 4;
-}
+    .home-actions-grid-4 .home-action-card {
+        grid-column: span 3;
+    }
 
-.home-actions-grid-admin .home-action-card:nth-child(n+4) {
-    grid-column: span 3;
-}
+
+    /* Employee - 4 + 3 + 3 */
+
+    .home-actions-grid-employee .home-action-card:nth-child(-n+4) {
+        grid-column: span 3;
+    }
+
+    .home-actions-grid-employee .home-action-card:nth-child(n+5) {
+        grid-column: span 4;
+    }
+
+
+/* =========================
+   HOME - ACTION CARDS
+   ========================= */
 
 .home-action-card {
     position: relative;
@@ -156,8 +210,7 @@ a:hover {
     flex-direction: column;
     justify-content: center;
     min-height: 135px;
-    padding: 1.5rem;
-    padding-right: 4.5rem;
+    padding: 1.5rem 4.5rem 1.5rem 1.5rem;
     border: 1px solid #d9e3e3;
     border-radius: 12px;
     background-color: white;
@@ -165,6 +218,17 @@ a:hover {
     text-decoration: none;
     transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
+
+    .home-action-card h5 {
+        margin-bottom: 0.4rem;
+        font-weight: 600;
+        color: var(--clinic-primary);
+    }
+
+    .home-action-card p {
+        margin-bottom: 0;
+        color: #6c757d;
+    }
 
 .home-action-icon {
     position: absolute;
@@ -174,23 +238,6 @@ a:hover {
     color: var(--clinic-primary);
 }
 
-.home-action-card h5 {
-    margin-bottom: 0.4rem;
-    font-weight: 600;
-    color: var(--clinic-primary);
-}
-
-.home-action-card p {
-    margin-bottom: 0;
-    color: #6c757d;
-}
-
-.home-action-card-primary h5,
-.home-action-card-primary p,
-.home-action-card-primary .home-action-icon {
-    color: white;
-}
-
 .home-action-card:hover {
     color: #212529;
     border-color: var(--clinic-primary);
@@ -198,15 +245,29 @@ a:hover {
     transform: translateY(-2px);
 }
 
+
+/* Primary action card */
+
 .home-action-card-primary {
     background-color: var(--clinic-primary);
     border-color: var(--clinic-primary);
 }
 
-.home-action-card-primary:hover {
-    background-color: var(--clinic-primary-dark);
-    border-color: var(--clinic-primary-dark);
-}
+    .home-action-card-primary h5,
+    .home-action-card-primary p,
+    .home-action-card-primary .home-action-icon {
+        color: white;
+    }
+
+    .home-action-card-primary:hover {
+        background-color: var(--clinic-primary-dark);
+        border-color: var(--clinic-primary-dark);
+    }
+
+
+/* =========================
+   HOME - INFO CARDS
+   ========================= */
 
 .home-info-card {
     position: relative;
@@ -214,15 +275,15 @@ a:hover {
     border: 1px solid #dce6e6;
 }
 
-.home-info-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 5px;
-    background-color: var(--clinic-primary);
-}
+    .home-info-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background-color: var(--clinic-primary);
+    }
 
 .home-info-icon {
     position: absolute;
@@ -233,40 +294,34 @@ a:hover {
     opacity: 0.8;
 }
 
-.home-actions-grid-admin {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 1.25rem;
-    width: 100%;
-}
 
-.home-actions-grid-admin .home-action-card:nth-child(-n+3) {
-    grid-column: span 4;
-}
+/* =========================
+   RESPONSIVE
+   ========================= */
 
-.home-actions-grid-admin .home-action-card:nth-child(n+4) {
-    grid-column: span 3;
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 991px) {
     .home-actions-grid,
-    .home-actions-grid-admin {
+    .home-actions-grid-4,
+    .home-actions-grid-employee {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .home-actions-grid-admin .home-action-card:nth-child(n) {
-        grid-column: span 1;
-    }
+        .home-actions-grid-4 .home-action-card,
+        .home-actions-grid-employee .home-action-card {
+            grid-column: span 1;
+        }
 }
 
 @media (max-width: 576px) {
     .home-actions-grid,
-    .home-actions-grid-admin {
+    .home-actions-grid-4,
+    .home-actions-grid-employee {
         grid-template-columns: 1fr;
     }
-
-    .home-actions-grid-admin .home-action-card:nth-child(n) {
-        grid-column: span 1;
-    }
 }
-

@@ -4,17 +4,29 @@
     ViewData["Title"] = "My Animals";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-lg-10">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-4">My Animals</h2>
+            <div class="card-body p-4 p-md-5">
 
-                <div class="table-responsive">
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-1"
+                        style="color: var(--clinic-primary);">
+                        My Animals
+                    </h2>
 
-                    <table class="table table-hover align-middle">
+                    <p class="text-muted mb-0">
+                        View your registered animals and their medical history.
+                    </p>
+                </div>
+
+                <div class="table-responsive rounded-3 border">
+
+                    <table class="table table-hover table-striped align-middle mb-0"
+                           style="--bs-table-striped-bg: #eef4f4;">
 
                         <thead class="table-light">
                             <tr>
@@ -37,7 +49,7 @@
                                     <td>
                                         <img src="@item.ImageUrl"
                                              alt="@item.Name"
-                                             class="rounded"
+                                             class="rounded-3 shadow-sm"
                                              style="width: 70px; height: 70px; object-fit: cover;" />
                                     </td>
 
@@ -53,10 +65,10 @@
 
                                     <td>
                                         @(string.IsNullOrEmpty(item.Breed) ? "-" : item.Breed)
-                                   </td>
+                                    </td>
 
                                     <td>
-                                        @(item.BirthDate.HasValue ? item.BirthDate.Value.ToString("dd/MM/yyyy") : "-")
+                                        @(item.BirthDate.HasValue? item.BirthDate.Value.ToString("dd/MM/yyyy") : "-")
                                     </td>
 
                                     <td>
@@ -65,22 +77,26 @@
 
                                     <td class="text-end">
 
-                                        <a asp-action="Details"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-sm btn-outline-primary">
-                                            Details
-                                        </a>
+                                        <div class="d-flex justify-content-end gap-2">
 
-                                        <a asp-action="History"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-sm btn-outline-secondary">
-                                            Medical History
-                                        </a>
+                                            <a asp-action="Details"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-outline-primary rounded-3">
+                                                Details
+                                            </a>
+
+                                            <a asp-action="History"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-outline-secondary rounded-3">
+                                                Medical History
+                                            </a>
+
+                                        </div>
 
                                     </td>
 
                                 </tr>
-                             }
+                            }
 
                         </tbody>
 

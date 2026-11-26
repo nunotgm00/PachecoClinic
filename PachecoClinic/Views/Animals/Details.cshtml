@@ -4,11 +4,13 @@
     ViewData["Title"] = "Animal Details";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-9 col-lg-8">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
+
+            <div class="card-body p-4 p-md-5">
 
                 <div class="row align-items-start">
 
@@ -16,20 +18,21 @@
 
                         <img src="@Model.ImageUrl"
                              alt="@Model.Name"
-                             class="rounded img-fluid"
+                             class="rounded-3 img-fluid shadow-sm"
                              style="max-height: 300px; object-fit: cover;" />
 
                     </div>
 
                     <div class="col-md-7">
 
-                        <h2 class="mb-4">
+                        <h2 class="fw-bold mb-4"
+                            style="color: var(--clinic-primary);">
                             @Model.Name
                         </h2>
 
                         <dl class="row">
 
-                            <dt class="col-sm-4">
+                            <dt class="col-sm-4 fw-semibold">
                                 Species
                             </dt>
 
@@ -37,8 +40,7 @@
                                 @Model.Species
                             </dd>
 
-
-                            <dt class="col-sm-4">
+                            <dt class="col-sm-4 fw-semibold">
                                 Breed
                             </dt>
 
@@ -46,17 +48,15 @@
                                 @(string.IsNullOrEmpty(Model.Breed) ? "-" : Model.Breed)
                             </dd>
 
-
-                            <dt class="col-sm-4">
+                            <dt class="col-sm-4 fw-semibold">
                                 Birth Date
                             </dt>
 
                             <dd class="col-sm-8">
-                                @(Model.BirthDate.HasValue ? Model.BirthDate.Value.ToString("dd/MM/yyyy") : "-")
+                                @(Model.BirthDate.HasValue? Model.BirthDate.Value.ToString("dd/MM/yyyy") : "-")
                             </dd>
 
-
-                            <dt class="col-sm-4">
+                            <dt class="col-sm-4 fw-semibold">
                                 Weight
                             </dt>
 
@@ -64,8 +64,7 @@
                                 @(Model.Weight.HasValue ? $"{Model.Weight.Value:0.##} kg" : "-")
                             </dd>
 
-
-                            <dt class="col-sm-4">
+                            <dt class="col-sm-4 fw-semibold">
                                 Color
                             </dt>
 
@@ -73,8 +72,7 @@
                                 @(string.IsNullOrEmpty(Model.Color) ? "-" : Model.Color)
                             </dd>
 
-
-                            <dt class="col-sm-4">
+                            <dt class="col-sm-4 fw-semibold">
                                 Sex
                             </dt>
 
@@ -82,8 +80,7 @@
                                 @(string.IsNullOrEmpty(Model.Sex) ? "-" : Model.Sex)
                             </dd>
 
-
-                            <dt class="col-sm-4">
+                            <dt class="col-sm-4 fw-semibold">
                                 Owner
                             </dt>
 
@@ -103,14 +100,15 @@
 
                     <a asp-action="History"
                        asp-route-id="@Model.Id"
-                       class="btn btn-info">
+                       class="btn btn-primary rounded-3">
+                        <i class="bi bi-journal-medical me-1"></i>
                         Medical History
                     </a>
 
                     @if (User.IsInRole("Client"))
                     {
                         <a asp-action="MyAnimals"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary rounded-3">
                             Back to My Animals
                         </a>
                     }
@@ -118,18 +116,18 @@
                     {
                         <a asp-action="Edit"
                            asp-route-id="@Model.Id"
-                           class="btn btn-primary">
+                           class="btn btn-outline-primary rounded-3">
                             Edit
                         </a>
 
                         <a asp-action="Delete"
                            asp-route-id="@Model.Id"
-                           class="btn btn-danger">
+                           class="btn btn-danger rounded-3">
                             Delete
                         </a>
 
                         <a asp-action="Index"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary rounded-3">
                             Back to List
                         </a>
                     }

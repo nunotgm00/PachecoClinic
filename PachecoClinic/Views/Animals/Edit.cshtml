@@ -4,24 +4,31 @@
     ViewData["Title"] = "Edit Animal";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-9 col-lg-8">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-2">Edit Animal</h2>
+            <div class="card-body p-4 p-md-5">
 
-                <p class="text-muted mb-4">
-                    Update the animal's information.
-                </p>
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Edit Animal
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Update the animal's information.
+                    </p>
+                </div>
 
                 <form asp-action="Edit"
                       method="post"
                       enctype="multipart/form-data">
 
                     <div asp-validation-summary="ModelOnly"
-                         class="text-danger mb-3">
+                         class="alert alert-danger py-2 mb-4">
                     </div>
 
                     <input type="hidden"
@@ -30,189 +37,173 @@
                     <input type="hidden"
                            asp-for="CurrentImageURL" />
 
-
                     <div class="text-center mb-4">
 
                         <img src="@Model.CurrentImageURL"
                              alt="@Model.Name"
-                             class="rounded"
+                             class="rounded-3 shadow-sm"
                              style="width: 180px; height: 180px; object-fit: cover;" />
 
                     </div>
 
+                    <div class="row g-3">
 
-                    <div class="row">
-
-                        <div class="col-md-6 mb-3">
-
+                        <div class="col-md-6">
                             <label asp-for="Name"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Name
                             </label>
 
                             <input asp-for="Name"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="Name"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
-
                         </div>
 
-
-                        <div class="col-md-6 mb-3">
-
+                        <div class="col-md-6">
                             <label asp-for="Species"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Species
                             </label>
 
                             <input asp-for="Species"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="Species"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
-
                         </div>
 
-
-                        <div class="col-md-6 mb-3">
-
+                        <div class="col-md-6">
                             <label asp-for="Breed"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Breed
                             </label>
 
                             <input asp-for="Breed"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="Breed"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
-
                         </div>
 
-
-                        <div class="col-md-6 mb-3">
-
+                        <div class="col-md-6">
                             <label asp-for="BirthDate"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Birth Date
                             </label>
 
                             <input asp-for="BirthDate"
                                    type="date"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="BirthDate"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
-
                         </div>
 
-
-                        <div class="col-md-6 mb-3">
-
+                        <div class="col-md-6">
                             <label asp-for="Weight"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Weight
                             </label>
 
-                            <input asp-for="Weight"
-                                   class="form-control" />
+                            <div class="input-group">
+                                <input asp-for="Weight"
+                                       class="form-control" />
+
+                                <span class="input-group-text">kg</span>
+                            </div>
 
                             <span asp-validation-for="Weight"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
-
                         </div>
 
-
-                        <div class="col-md-6 mb-3">
-
+                        <div class="col-md-6">
                             <label asp-for="Color"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Color
                             </label>
 
                             <input asp-for="Color"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="Color"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
-
                         </div>
 
-
-                        <div class="col-md-6 mb-3">
-
+                        <div class="col-md-6">
                             <label asp-for="Sex"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Sex
                             </label>
 
                             <input asp-for="Sex"
-                                   class="form-control" />
+                                   class="form-control rounded-3" />
 
                             <span asp-validation-for="Sex"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
-
                         </div>
 
-
-                        <div class="col-md-6 mb-3">
-
+                        <div class="col-md-6">
                             <label asp-for="ClientId"
-                                   class="form-label">
+                                   class="form-label fw-semibold">
                                 Owner
                             </label>
 
                             <select asp-for="ClientId"
                                     asp-items="Model.Clients"
-                                    class="form-select">
+                                    class="form-select rounded-3">
                             </select>
 
                             <span asp-validation-for="ClientId"
-                                  class="text-danger">
+                                  class="text-danger small">
                             </span>
-
                         </div>
 
                     </div>
 
+                    <hr class="my-4" />
 
                     <div class="mb-4">
 
                         <label asp-for="ImageFile"
-                               class="form-label">
+                               class="form-label fw-semibold">
                             Change Image
                         </label>
 
                         <input asp-for="ImageFile"
                                type="file"
                                accept="image/*"
-                               class="form-control" />
+                               class="form-control rounded-3" />
+
+                        <div class="form-text">
+                            Leave empty to keep the current image.
+                        </div>
 
                         <span asp-validation-for="ImageFile"
-                              class="text-danger">
+                              class="text-danger small">
                         </span>
 
                     </div>
 
-
-                    <div class="d-flex gap-2">
+                    <div class="d-flex gap-2 pt-2">
 
                         <button type="submit"
-                                class="btn btn-primary">
+                                class="btn btn-primary px-4 rounded-3">
+                            <i class="bi bi-check-circle me-1"></i>
                             Save Changes
                         </button>
 
                         <a asp-action="Details"
                            asp-route-id="@Model.Id"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary px-4 rounded-3">
                             Cancel
                         </a>
 

@@ -213,7 +213,7 @@
 
                     @if (User.IsInRole("Doctor"))
                     {
-                        <div class="home-actions-grid">
+                        <div class="home-actions-grid-4">
 
                             <a asp-controller="Appointments"
                                asp-action="Index"
@@ -324,7 +324,7 @@
 
                     @if (User.IsInRole("Employee"))
                     {
-                        <div class="home-actions-grid">
+                        <div class="home-actions-grid-employee">
 
                             <a asp-controller="Appointments"
                                asp-action="Index"
@@ -412,7 +412,7 @@
 
                     @if (User.IsInRole("Admin"))
                     {
-                        <div class="home-actions-grid-admin">
+                        <div class="home-actions-grid-4">
 
                             <a asp-controller="Appointments"
                                asp-action="Index"
