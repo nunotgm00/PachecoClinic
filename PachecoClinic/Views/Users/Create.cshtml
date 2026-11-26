@@ -1,97 +1,173 @@
 ﻿@model PachecoClinic.Models.CreateUserViewModel
 
 @{
-    ViewData["Ttile"] = "Create User";
+    ViewData["Title"] = "Create User";
 }
 
-<h1>Create User</h1>
+<div class="row justify-content-center mb-5">
+    <div class="col-md-7 col-lg-6">
 
-<hr/>
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-<div class="row">
-    <div class="col-md-4">
+            <div class="card-body p-4 p-md-5">
 
-        <form asp-action="Create" method="post">
+                <div class="mb-4">
 
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger"></div>
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Create User
+                    </h2>
 
-            <div class="form-group">
-                <label asp-for="Email"></label>
+                    <p class="text-muted mb-0">
+                        Register a new user and assign their role within the clinic.
+                    </p>
 
-                <input asp-for="Email"
-                       class="form-control"/>
+                </div>
 
-                <span asp-validation-for="Email"
-                      class="text-danger"></span>
+                <form asp-action="Create" method="post">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="Email"
+                               class="form-label fw-semibold">
+                            Email
+                        </label>
+
+                        <input asp-for="Email"
+                               class="form-control rounded-3"
+                               placeholder="Enter the user's email address..." />
+
+                        <span asp-validation-for="Email"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="Role"
+                               class="form-label fw-semibold">
+                            Role
+                        </label>
+
+                        <select asp-for="Role"
+                                asp-items="Model.Roles"
+                                class="form-select rounded-3"
+                                id="roleSelect">
+
+                            <option value="">Select Role</option>
+
+                        </select>
+
+                        <span asp-validation-for="Role"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                    <div class="mb-3"
+                         id="specialtyGroup"
+                         style="display: none;">
+
+                        <label asp-for="SpecialtyId"
+                               class="form-label fw-semibold">
+                            Specialty
+                        </label>
+
+                        <select asp-for="SpecialtyId"
+                                asp-items="Model.Specialties"
+                                class="form-select rounded-3"
+                                id="specialtySelect">
+
+                            <option value="">Select Specialty</option>
+
+                        </select>
+
+                        <span asp-validation-for="SpecialtyId"
+                              class="text-danger small">
+                        </span>
+
+                    </div>
+
+                    <div class="rounded-3 border p-3 mt-4"
+                         style="background-color: var(--clinic-background);">
+
+                        <div class="d-flex align-items-start gap-2">
+
+                            <i class="bi bi-info-circle"
+                               style="color: var(--clinic-primary);">
+                            </i>
+
+                            <small class="text-muted">
+                                The user will receive an email with instructions
+                                to complete their registration.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex flex-wrap gap-2">
+
+                        <button type="submit"
+                                class="btn btn-primary rounded-3 px-4">
+                            <i class="bi bi-person-plus me-1"></i>
+                            Create User
+                        </button>
+
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           class="btn btn-outline-secondary rounded-3 px-4">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
             </div>
 
-            <div class="form-group">
-                <label asp-for="Role"></label>
+        </div>
 
-                <select asp-for="Role"
-                       asp-items="Model.Roles"
-                       class="form-control"
-                       id="roleSelect">
-                
-                     <option value="">Select Role</option>  
-                </select>
-
-                <span asp-validation-for="Role"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group"
-                 id="specialtyGroup"
-                 style="display:none;">
-                <label asp-for="SpecialtyId"></label>
-
-                <select asp-for="SpecialtyId"
-                        asp-items="Model.Specialties"
-                       class="form-control">
-                   
-                    <option value="">Select specialty</option>    
-                </select>
-
-                <span asp-validation-for="SpecialtyId"
-                      class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit"
-                       value="Create User"
-                       class="btn btn-primary"/>
-            </div>
-        </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">
-        Back to List
-    </a>
-</div>
-
-@section Scripts{
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
     <script>
+
         const roleSelect = document.getElementById("roleSelect");
         const specialtyGroup = document.getElementById("specialtyGroup");
+        const specialtySelect = document.getElementById("specialtySelect");
 
-        function updateSpecialtyVisibility(){
-            if(roleSelect.value === "Doctor"){
+        function updateSpecialtyVisibility() {
+
+            if (roleSelect.value === "Doctor") {
+
                 specialtyGroup.style.display = "block";
+                specialtySelect.disabled = false;
             }
-            else{
+            else {
+
                 specialtyGroup.style.display = "none";
+                specialtySelect.value = "";
+                specialtySelect.disabled = true;
             }
         }
 
         roleSelect.addEventListener("change", updateSpecialtyVisibility);
 
         updateSpecialtyVisibility();
+
     </script>
 }
