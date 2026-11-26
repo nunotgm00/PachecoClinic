@@ -4,13 +4,26 @@
     ViewData["Title"] = "Edit Intervention";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-lg-8">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-4">Edit Intervention</h2>
+            <div class="card-body p-4 p-md-5">
+
+                <div class="mb-4">
+
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Edit Intervention
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Update the clinical information associated with this appointment.
+                    </p>
+
+                </div>
 
                 <form asp-action="Edit" method="post">
 
@@ -21,97 +34,99 @@
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="AppointmentId" />
 
+                    <div class="row g-3">
 
-                    <div class="mb-3">
+                        <div class="col-12">
 
-                        <label asp-for="Description"
-                               class="form-label">
-                            Description
-                        </label>
+                            <label asp-for="Description"
+                                   class="form-label fw-semibold">
+                                Description
+                            </label>
 
-                        <textarea asp-for="Description"
-                                  class="form-control"
-                                  rows="4"
-                                  placeholder="Describe the intervention performed...">
-                        </textarea>
+                            <textarea asp-for="Description"
+                                      class="form-control rounded-3"
+                                      rows="4"
+                                      placeholder="Describe the intervention performed...">
+                            </textarea>
 
-                        <span asp-validation-for="Description"
-                              class="text-danger">
-                        </span>
+                            <span asp-validation-for="Description"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Diagnosis"
+                                   class="form-label fw-semibold">
+                                Diagnosis
+                            </label>
+
+                            <textarea asp-for="Diagnosis"
+                                      class="form-control rounded-3"
+                                      rows="4"
+                                      placeholder="Enter the diagnosis...">
+                            </textarea>
+
+                            <span asp-validation-for="Diagnosis"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Treatment"
+                                   class="form-label fw-semibold">
+                                Treatment
+                            </label>
+
+                            <textarea asp-for="Treatment"
+                                      class="form-control rounded-3"
+                                      rows="4"
+                                      placeholder="Enter the prescribed treatment...">
+                            </textarea>
+
+                            <span asp-validation-for="Treatment"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-12">
+
+                            <label asp-for="Observations"
+                                   class="form-label fw-semibold">
+                                Observations
+                            </label>
+
+                            <textarea asp-for="Observations"
+                                      class="form-control rounded-3"
+                                      rows="4"
+                                      placeholder="Additional observations...">
+                            </textarea>
+
+                            <span asp-validation-for="Observations"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
 
                     </div>
 
+                    <hr class="my-4" />
 
-                    <div class="mb-3">
-
-                        <label asp-for="Diagnosis"
-                               class="form-label">
-                            Diagnosis
-                        </label>
-
-                        <textarea asp-for="Diagnosis"
-                                  class="form-control"
-                                  rows="3"
-                                  placeholder="Enter the diagnosis...">
-                        </textarea>
-
-                        <span asp-validation-for="Diagnosis"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-
-                    <div class="mb-3">
-
-                        <label asp-for="Treatment"
-                               class="form-label">
-                            Treatment
-                        </label>
-
-                        <textarea asp-for="Treatment"
-                                  class="form-control"
-                                  rows="3"
-                                  placeholder="Enter the prescribed treatment...">
-                        </textarea>
-
-                        <span asp-validation-for="Treatment"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-
-                    <div class="mb-4">
-
-                        <label asp-for="Observations"
-                               class="form-label">
-                            Observations
-                        </label>
-
-                        <textarea asp-for="Observations"
-                                  class="form-control"
-                                  rows="4"
-                                  placeholder="Additional observations...">
-                        </textarea>
-
-                        <span asp-validation-for="Observations"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-
-                    <div class="d-flex gap-2">
+                    <div class="d-flex flex-wrap gap-2">
 
                         <button type="submit"
-                                class="btn btn-primary">
+                                class="btn btn-primary rounded-3 px-4">
+                            <i class="bi bi-check-circle me-1"></i>
                             Save Changes
                         </button>
 
                         <a asp-action="Details"
                            asp-route-id="@Model.Id"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary rounded-3 px-4">
                             Back to Details
                         </a>
 

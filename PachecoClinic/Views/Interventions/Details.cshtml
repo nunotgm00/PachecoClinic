@@ -4,38 +4,66 @@
     ViewData["Title"] = "Intervention Details";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-lg-9">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-4">Intervention Details</h2>
+            <div class="card-body p-4 p-md-5">
 
-                <div class="row mb-4">
+                <div class="mb-4">
+
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Intervention Details
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        View the clinical information recorded for this appointment.
+                    </p>
+
+                </div>
+
+                <h5 class="fw-bold mb-3"
+                    style="color: var(--clinic-primary);">
+                    Appointment
+                </h5>
+
+                <div class="row g-3">
 
                     <div class="col-md-6">
 
-                        <h5 class="mb-3">Appointment</h5>
+                        <dl class="row mb-0">
+
+                            <dt class="col-sm-4 fw-semibold">Animal</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Animal.Name</dd>
+
+                            <dt class="col-sm-4 fw-semibold">Owner</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Animal.Client.User.FullName</dd>
+
+                            <dt class="col-sm-4 fw-semibold">Doctor</dt>
+                            <dd class="col-sm-8">@Model.Appointment.Doctor.User.FullName</dd>
+
+                        </dl>
+
+                    </div>
+
+                    <div class="col-md-6">
 
                         <dl class="row mb-0">
 
-                            <dt class="col-sm-4">Animal</dt>
-                            <dd class="col-sm-8">@Model.Appointment.Animal.Name</dd>
+                            <dt class="col-sm-4 fw-semibold">Room</dt>
+                            <dd class="col-sm-8">
+                                @Model.Appointment.Room.Name - @Model.Appointment.Room.Type
+                            </dd>
 
-                            <dt class="col-sm-4">Owner</dt>
-                            <dd class="col-sm-8">@Model.Appointment.Animal.Client.User.FullName</dd>
+                            <dt class="col-sm-4 fw-semibold">Date</dt>
+                            <dd class="col-sm-8">
+                                @Model.Appointment.Date.ToString("dd/MM/yyyy")
+                            </dd>
 
-                            <dt class="col-sm-4">Doctor</dt>
-                            <dd class="col-sm-8">@Model.Appointment.Doctor.User.FullName</dd>
-
-                            <dt class="col-sm-4">Room</dt>
-                            <dd class="col-sm-8">@Model.Appointment.Room.Name</dd>
-
-                            <dt class="col-sm-4">Date</dt>
-                            <dd class="col-sm-8">@Model.Appointment.Date.ToString("dd/MM/yyyy")</dd>
-
-                            <dt class="col-sm-4">Time</dt>
+                            <dt class="col-sm-4 fw-semibold">Time</dt>
                             <dd class="col-sm-8">
                                 @Model.Appointment.StartTime.ToString(@"hh\:mm") -
                                 @Model.Appointment.EndTime.ToString(@"hh\:mm")
@@ -47,72 +75,115 @@
 
                 </div>
 
-                <hr />
+                <hr class="my-4" />
 
-                <div class="mb-4">
+                <h5 class="fw-bold mb-3"
+                    style="color: var(--clinic-primary);">
+                    Clinical Information
+                </h5>
 
-                    <h5>Description</h5>
+                <div class="row g-3">
 
-                    <p class="mb-0 text-break">
-                        @(string.IsNullOrWhiteSpace(Model.Description) ? "-" : Model.Description)
-                    </p>
+                    <div class="col-12">
+
+                        <div class="border rounded-3 p-3 h-100"
+                             style="background-color: var(--clinic-background);">
+
+                            <h6 class="fw-bold mb-2">
+                                Description
+                            </h6>
+
+                            <p class="mb-0 text-break"
+                               style="white-space: pre-wrap;">@(string.IsNullOrWhiteSpace(Model.Description) ? "-" : Model.Description)</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="border rounded-3 p-3 h-100"
+                             style="background-color: var(--clinic-background);">
+
+                            <h6 class="fw-bold mb-2">
+                                Diagnosis
+                            </h6>
+
+                            <p class="mb-0 text-break"
+                               style="white-space: pre-wrap;">@(string.IsNullOrWhiteSpace(Model.Diagnosis) ? "-" : Model.Diagnosis)</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <div class="border rounded-3 p-3 h-100"
+                             style="background-color: var(--clinic-background);">
+
+                            <h6 class="fw-bold mb-2">
+                                Treatment
+                            </h6>
+
+                            <p class="mb-0 text-break"
+                               style="white-space: pre-wrap;">@(string.IsNullOrWhiteSpace(Model.Treatment) ? "-" : Model.Treatment)</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <div class="border rounded-3 p-3 h-100"
+                             style="background-color: var(--clinic-background);">
+
+                            <h6 class="fw-bold mb-2">
+                                Observations
+                            </h6>
+
+                            <p class="mb-0 text-break"
+                               style="white-space: pre-wrap;">@(string.IsNullOrWhiteSpace(Model.Observations) ? "-" : Model.Observations)</p>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-                <div class="mb-4">
+                <hr class="my-4" />
 
-                    <h5>Diagnosis</h5>
-
-                    <p class="mb-0 text-break">
-                        @(string.IsNullOrWhiteSpace(Model.Diagnosis) ? "-" : Model.Diagnosis)
-                    </p>
-
-                </div>
-
-                <div class="mb-4">
-
-                    <h5>Treatment</h5>
-
-                    <p class="mb-0 text-break">
-                        @(string.IsNullOrWhiteSpace(Model.Treatment) ? "-" : Model.Treatment)
-                    </p>
-
-                </div>
-
-                <div class="mb-4">
-
-                    <h5>Observations</h5>
-
-                    <p class="mb-0 text-break">
-                        @(string.IsNullOrWhiteSpace(Model.Observations) ? "-" : Model.Observations)
-                    </p>
-
-                </div>
-
-                <div class="d-flex gap-2">
+                <div class="d-flex flex-wrap gap-2">
 
                     @if (User.IsInRole("Doctor") && Model.Appointment.Doctor.User.Email == User.Identity!.Name)
                     {
                         <a asp-action="Edit"
                            asp-route-id="@Model.Id"
-                           class="btn btn-primary">
+                           class="btn btn-primary rounded-3">
+                            <i class="bi bi-pencil me-1"></i>
                             Edit Intervention
                         </a>
                     }
+
+                    <a asp-controller="Appointments"
+                       asp-action="Details"
+                       asp-route-id="@Model.AppointmentId"
+                       class="btn btn-outline-primary rounded-3">
+                        View Appointment
+                    </a>
 
                     @if (User.IsInRole("Client"))
                     {
                         <a asp-controller="Animals"
                            asp-action="History"
                            asp-route-id="@Model.Appointment.AnimalId"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary rounded-3">
                             Back to Medical History
                         </a>
                     }
                     else
                     {
                         <a asp-action="Index"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary rounded-3">
                             Back to Interventions
                         </a>
                     }
@@ -120,6 +191,7 @@
                 </div>
 
             </div>
+
         </div>
 
     </div>

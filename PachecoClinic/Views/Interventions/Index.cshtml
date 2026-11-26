@@ -5,18 +5,31 @@
     ViewData["Title"] = "Interventions";
 }
 
-<div class="card shadow-sm">
+<div class="mb-4">
+
+    <h1 class="fw-bold mb-1"
+        style="color: var(--clinic-primary);">
+        Interventions
+    </h1>
+
+    <p class="text-muted mb-0">
+        View the clinic's recorded medical interventions.
+    </p>
+
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-5"
+     style="border-top: 5px solid var(--clinic-primary) !important;">
+
     <div class="card-body p-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="mb-0">Interventions</h2>
-        </div>
+        <div class="table-responsive rounded-3 border">
 
-        <div class="table-responsive">
-
-            <table class="table table-hover align-middle">
+            <table class="table table-hover table-striped align-middle mb-0"
+                   style="--bs-table-striped-bg: #eef4f4;">
 
                 <thead class="table-light">
+
                     <tr>
                         <th>Animal</th>
                         <th>Owner</th>
@@ -24,8 +37,9 @@
                         <th>Appointment Date</th>
                         <th>Description</th>
                         <th>Diagnosis</th>
-                        <th></th>
+                        <th class="text-center">Actions</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
@@ -34,7 +48,7 @@
                     {
                         <tr>
 
-                            <td>
+                            <td class="fw-semibold">
                                 @item.Appointment.Animal.Name
                             </td>
 
@@ -46,61 +60,63 @@
                                 @item.Appointment.Doctor.User.FullName
                             </td>
 
-                            <td>
+                            <td class="text-nowrap">
                                 @item.Appointment.Date.ToString("dd/MM/yyyy")
                             </td>
 
                             <td style="max-width: 220px;">
 
-                                @if (string.IsNullOrWhiteSpace(item.Description))
-                                {
-                                    <span>-</span>
-                                }
-                                else
-                                {
-                                    <span class="d-inline-block text-truncate"
-                                          style="max-width: 200px;">
-                                        @item.Description
-                                    </span>
-                                }
+                                <span class="d-block text-truncate"
+                                      style="max-width: 200px;"
+                                      title="@item.Description">
+                                    @(string.IsNullOrWhiteSpace(item.Description) ? "-" : item.Description)
+                                </span>
 
                             </td>
 
                             <td style="max-width: 220px;">
 
-                                @if (string.IsNullOrWhiteSpace(item.Diagnosis))
-                                {
-                                    <span>-</span>
-                                }
-                                else
-                                {
-                                    <span class="d-inline-block text-truncate"
-                                          style="max-width: 200px;">
-                                        @item.Diagnosis
-                                    </span>
-                                }
+                                <span class="d-block text-truncate"
+                                      style="max-width: 200px;"
+                                      title="@item.Diagnosis">
+                                    @(string.IsNullOrWhiteSpace(item.Diagnosis) ? "-" : item.Diagnosis)
+                                </span>
 
                             </td>
 
                             <td class="text-nowrap">
 
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-primary">
-                                    Details
-                                </a>
+                                <div class="d-flex justify-content-center gap-2">
 
-                                @if (User.IsInRole("Doctor") && item.Appointment.Doctor.User.Email == User.Identity!.Name)
-                                {
-                                    <a asp-action="Edit"
+                                    <a asp-action="Details"
                                        asp-route-id="@item.Id"
-                                       class="btn btn-sm btn-outline-secondary">
-                                        Edit
+                                       class="btn btn-sm btn-outline-primary rounded-3">
+                                        Details
                                     </a>
-                                }
+
+                                    @if (User.IsInRole("Doctor") && item.Appointment.Doctor.User.Email == User.Identity!.Name)
+                                    {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary rounded-3">
+                                            Edit
+                                        </a>
+                                    }
+
+                                </div>
 
                             </td>
 
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7"
+                                class="text-center text-muted py-4">
+                                No interventions found.
+                            </td>
                         </tr>
                     }
 
@@ -111,4 +127,5 @@
         </div>
 
     </div>
+
 </div>
