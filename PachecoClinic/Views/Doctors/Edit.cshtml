@@ -4,17 +4,26 @@
     ViewData["Title"] = "Edit Doctor";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-7 col-lg-6">
+<div class="row justify-content-center mb-5">
+    <div class="col-md-9 col-lg-8">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-2">Edit Doctor</h2>
+            <div class="card-body p-4 p-md-5">
 
-                <p class="text-muted mb-4">
-                    Update the doctor's information and specialty.
-                </p>
+                <div class="mb-4">
+
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Edit Doctor
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Update the doctor's information and specialty.
+                    </p>
+
+                </div>
 
                 <form asp-action="Edit" method="post">
 
@@ -22,102 +31,124 @@
                          class="text-danger mb-3">
                     </div>
 
-                    <input type="hidden"
-                           asp-for="Id" />
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="UserId" />
 
-                    <input type="hidden"
-                           asp-for="UserId" />
+                    <div class="row g-3">
 
-                    <div class="mb-3">
-                        <label asp-for="FirstName"
-                               class="form-label">
-                               First Name
-                        </label>
+                        <div class="col-md-6">
 
-                        <input asp-for="FirstName"
-                               class="form-control" />
+                            <label asp-for="FirstName"
+                                   class="form-label fw-semibold">
+                                First Name
+                            </label>
 
-                        <span asp-validation-for="FirstName"
-                              class="text-danger">
-                        </span>
+                            <input asp-for="FirstName"
+                                   class="form-control rounded-3" />
+
+                            <span asp-validation-for="FirstName"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="LastName"
+                                   class="form-label fw-semibold">
+                                Last Name
+                            </label>
+
+                            <input asp-for="LastName"
+                                   class="form-control rounded-3" />
+
+                            <span asp-validation-for="LastName"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Email"
+                                   class="form-label fw-semibold">
+                                Email
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control rounded-3" />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="PhoneNumber"
+                                   class="form-label fw-semibold">
+                                Phone Number
+                            </label>
+
+                            <input asp-for="PhoneNumber"
+                                   class="form-control rounded-3" />
+
+                            <span asp-validation-for="PhoneNumber"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="SpecialtyId"
+                                   class="form-label fw-semibold">
+                                Specialty
+                            </label>
+
+                            <select asp-for="SpecialtyId"
+                                    asp-items="Model.Specialties"
+                                    class="form-select rounded-3">
+                            </select>
+
+                            <span asp-validation-for="SpecialtyId"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-12">
+
+                            <div class="form-check form-switch mt-2">
+
+                                <input asp-for="Active"
+                                       class="form-check-input" />
+
+                                <label asp-for="Active"
+                                       class="form-check-label fw-semibold">
+                                    Active
+                                </label>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    <div class="mb-3">
-                        <label asp-for="LastName"
-                               class="form-label">
-                               Last Name
-                        </label>
-
-                        <input asp-for="LastName"
-                               class="form-control" />
-
-                        <span asp-validation-for="LastName"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Email"
-                               class="form-label">
-                        </label>
-
-                        <input asp-for="Email"
-                               class="form-control" />
-
-                        <span asp-validation-for="Email"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="PhoneNumber"
-                               class="form-label">
-                               Phone Number
-                        </label>
-
-                        <input asp-for="PhoneNumber"
-                               class="form-control" />
-
-                        <span asp-validation-for="PhoneNumber"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="mb-3">
-                        <label asp-for="SpecialtyId"
-                               class="form-label">
-                            Specialty
-                        </label>
-
-                        <select asp-for="SpecialtyId"
-                                asp-items="Model.Specialties"
-                                class="form-select">
-                        </select>
-
-                        <span asp-validation-for="SpecialtyId"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-                    <div class="form-check mb-4">
-                        <input asp-for="Active"
-                               class="form-check-input" />
-
-                        <label asp-for="Active"
-                               class="form-check-label">
-                        </label>
-                    </div>
+                    <hr class="my-4" />
 
                     <div class="d-flex gap-2">
 
                         <button type="submit"
-                                class="btn btn-primary">
+                                class="btn btn-primary px-4 rounded-3">
+                            <i class="bi bi-check-circle me-1"></i>
                             Save Changes
                         </button>
 
                         <a asp-action="Details"
                            asp-route-id="@Model.Id"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary px-4 rounded-3">
                             Cancel
                         </a>
 

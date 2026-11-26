@@ -16,11 +16,13 @@
         (User.IsInRole("Doctor") && Model.User.Email == User.Identity!.Name);
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-lg-10">
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
+
+            <div class="card-body p-4 p-md-5">
 
                 <div class="row align-items-center">
 
@@ -30,7 +32,7 @@
                         {
                             <img src="@Model.User.ImageUrl"
                                  alt="@Model.User.FullName"
-                                 class="rounded-circle"
+                                 class="rounded-circle shadow-sm"
                                  style="width: 160px; height: 160px; object-fit: cover;" />
                         }
 
@@ -38,7 +40,8 @@
 
                     <div class="col-md-9">
 
-                        <h2 class="mb-1">
+                        <h2 class="fw-bold mb-1"
+                            style="color: var(--clinic-primary);">
                             @Model.User.FullName
                         </h2>
 
@@ -48,15 +51,15 @@
 
                         <dl class="row mb-0">
 
-                            <dt class="col-sm-3">
+                            <dt class="col-sm-3 fw-semibold">
                                 Email
                             </dt>
 
-                            <dd class="col-sm-9">
+                            <dd class="col-sm-9 text-break">
                                 @Model.User.Email
                             </dd>
 
-                            <dt class="col-sm-3">
+                            <dt class="col-sm-3 fw-semibold">
                                 Phone Number
                             </dt>
 
@@ -64,7 +67,7 @@
                                 @(string.IsNullOrEmpty(Model.User.PhoneNumber) ? "-" : Model.User.PhoneNumber)
                             </dd>
 
-                            <dt class="col-sm-3">
+                            <dt class="col-sm-3 fw-semibold">
                                 Status
                             </dt>
 
@@ -91,33 +94,31 @@
 
                 </div>
 
-                @if (User.IsInRole("Admin") || User.IsInRole("Employee") || User.IsInRole("Doctor"))
+                @if (canManageSchedule)
                 {
-                    <hr />
+                    <hr class="my-4" />
 
                     <div class="d-flex flex-wrap gap-2">
 
-                        @if (canManageSchedule)
-                        {
-                            <a asp-controller="DoctorSchedules"
-                               asp-action="Manage"
-                               asp-route-id="@Model.Id"
-                               class="btn btn-primary">
-                                Manage Schedule
-                            </a>
-                        }
+                        <a asp-controller="DoctorSchedules"
+                           asp-action="Manage"
+                           asp-route-id="@Model.Id"
+                           class="btn btn-primary rounded-3">
+                            <i class="bi bi-calendar-week me-1"></i>
+                            Manage Schedule
+                        </a>
 
                         @if (User.IsInRole("Admin"))
                         {
                             <a asp-action="Edit"
                                asp-route-id="@Model.Id"
-                               class="btn btn-outline-secondary">
+                               class="btn btn-outline-primary rounded-3">
                                 Edit Doctor
                             </a>
 
                             <a asp-action="Delete"
                                asp-route-id="@Model.Id"
-                               class="btn btn-outline-danger">
+                               class="btn btn-outline-danger rounded-3">
                                 Delete Doctor
                             </a>
                         }
@@ -128,15 +129,25 @@
             </div>
         </div>
 
-
         @if (User.IsInRole("Admin") || User.IsInRole("Employee") || User.IsInRole("Doctor"))
         {
-            <div class="card shadow-sm mb-4">
+            <div class="card shadow-sm border-0 rounded-4 mb-4"
+                 style="border-top: 5px solid var(--clinic-primary) !important;">
+
                 <div class="card-body p-4">
 
-                    <h3 class="mb-4">
-                        Appointments
-                    </h3>
+                    <div class="mb-4">
+
+                        <h3 class="fw-bold mb-1"
+                            style="color: var(--clinic-primary);">
+                            Appointments
+                        </h3>
+
+                        <p class="text-muted mb-0">
+                            View the doctor's scheduled appointments.
+                        </p>
+
+                    </div>
 
                     <div class="row">
 
@@ -175,15 +186,13 @@
             </div>
         }
 
-
         <a asp-action="Index"
-           class="btn btn-outline-secondary">
+           class="btn btn-outline-secondary rounded-3 px-4">
             Back to Doctors
         </a>
 
     </div>
 </div>
-
 
 <script>
 
