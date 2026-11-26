@@ -4,17 +4,26 @@
     ViewData["Title"] = "Complete Registration";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-7 col-lg-6">
+<div class="row justify-content-center mb-5">
+    <div class="col-md-9 col-lg-8">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-2">Complete Registration</h2>
+            <div class="card-body p-4 p-md-5">
 
-                <p class="text-muted mb-4">
-                    Complete your personal information and create a password for your account.
-                </p>
+                <div class="mb-4">
+
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Complete Registration
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Complete your personal information and create a password for your account.
+                    </p>
+
+                </div>
 
                 <form asp-action="CompleteRegistration" method="post">
 
@@ -22,145 +31,176 @@
                          class="text-danger mb-3">
                     </div>
 
-                    <input type="hidden"
-                           asp-for="Token" />
+                    <input type="hidden" asp-for="Token" />
+                    <input type="hidden" asp-for="Role" />
 
-                    <input type="hidden"
-                           asp-for="Role" />
+                    <div class="row g-3">
 
+                        <div class="col-12">
 
-                    <div class="mb-3">
-                        <label asp-for="Email"
-                               class="form-label">
-                            Email
-                        </label>
-
-                        <input asp-for="Email"
-                               class="form-control"
-                               readonly />
-
-                        <span asp-validation-for="Email"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-
-                    <div class="mb-3">
-                        <label asp-for="FirstName"
-                               class="form-label">
-                            First Name
-                        </label>
-
-                        <input asp-for="FirstName"
-                               class="form-control" />
-
-                        <span asp-validation-for="FirstName"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-
-                    <div class="mb-3">
-                        <label asp-for="LastName"
-                               class="form-label">
-                            Last Name
-                        </label>
-
-                        <input asp-for="LastName"
-                               class="form-control" />
-
-                        <span asp-validation-for="LastName"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-
-                    <div class="mb-3">
-                        <label asp-for="PhoneNumber"
-                               class="form-label">
-                            Phone Number
-                        </label>
-
-                        <input asp-for="PhoneNumber"
-                               class="form-control" />
-
-                        <span asp-validation-for="PhoneNumber"
-                              class="text-danger">
-                        </span>
-                    </div>
-
-
-                    @if (Model.Role == "Client")
-                    {
-                        <div class="mb-3">
-                            <label asp-for="Address"
-                                   class="form-label">
-                                Address
+                            <label asp-for="Email"
+                                   class="form-label fw-semibold">
+                                Email
                             </label>
 
-                            <input asp-for="Address"
-                                   class="form-control" />
+                            <input asp-for="Email"
+                                   class="form-control rounded-3 bg-light"
+                                   readonly />
 
-                            <span asp-validation-for="Address"
-                                  class="text-danger">
+                            <span asp-validation-for="Email"
+                                  class="text-danger small">
                             </span>
+
                         </div>
 
+                        <div class="col-md-6">
 
-                        <div class="mb-3">
-                            <label asp-for="Nif"
-                                   class="form-label">
-                                NIF
+                            <label asp-for="FirstName"
+                                   class="form-label fw-semibold">
+                                First Name
                             </label>
 
-                            <input asp-for="Nif"
-                                   class="form-control" />
+                            <input asp-for="FirstName"
+                                   class="form-control rounded-3" />
 
-                            <span asp-validation-for="Nif"
-                                  class="text-danger">
+                            <span asp-validation-for="FirstName"
+                                  class="text-danger small">
                             </span>
+
                         </div>
-                    }
 
+                        <div class="col-md-6">
 
-                    <div class="mb-3">
-                        <label asp-for="Password"
-                               class="form-label">
-                            Password
-                        </label>
+                            <label asp-for="LastName"
+                                   class="form-label fw-semibold">
+                                Last Name
+                            </label>
 
-                        <input asp-for="Password"
-                               class="form-control" />
+                            <input asp-for="LastName"
+                                   class="form-control rounded-3" />
 
-                        <span asp-validation-for="Password"
-                              class="text-danger">
-                        </span>
+                            <span asp-validation-for="LastName"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="@(Model.Role == "Client" ? "col-md-6" : "col-12")">
+
+                            <label asp-for="PhoneNumber"
+                                   class="form-label fw-semibold">
+                                Phone Number
+                            </label>
+
+                            <input asp-for="PhoneNumber"
+                                   class="form-control rounded-3" />
+
+                            <span asp-validation-for="PhoneNumber"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        @if (Model.Role == "Client")
+                        {
+                            <div class="col-md-6">
+
+                                <label asp-for="Nif"
+                                       class="form-label fw-semibold">
+                                    NIF
+                                </label>
+
+                                <input asp-for="Nif"
+                                       class="form-control rounded-3" />
+
+                                <span asp-validation-for="Nif"
+                                      class="text-danger small">
+                                </span>
+
+                            </div>
+
+                            <div class="col-12">
+
+                                <label asp-for="Address"
+                                       class="form-label fw-semibold">
+                                    Address
+                                </label>
+
+                                <input asp-for="Address"
+                                       class="form-control rounded-3" />
+
+                                <span asp-validation-for="Address"
+                                      class="text-danger small">
+                                </span>
+
+                            </div>
+                        }
+
                     </div>
 
+                    <hr class="my-4" />
 
-                    <div class="mb-4">
-                        <label asp-for="ConfirmPassword"
-                               class="form-label">
-                            Confirm Password
-                        </label>
+                    <h5 class="fw-bold mb-3"
+                        style="color: var(--clinic-primary);">
+                        Account Security
+                    </h5>
 
-                        <input asp-for="ConfirmPassword"
-                               class="form-control" />
+                    <div class="row g-3">
 
-                        <span asp-validation-for="ConfirmPassword"
-                              class="text-danger">
-                        </span>
+                        <div class="col-md-6">
+
+                            <label asp-for="Password"
+                                   class="form-label fw-semibold">
+                                Password
+                            </label>
+
+                            <input asp-for="Password"
+                                   type="password"
+                                   autocomplete="new-password"
+                                   class="form-control rounded-3" />
+
+                            <span asp-validation-for="Password"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="ConfirmPassword"
+                                   class="form-label fw-semibold">
+                                Confirm Password
+                            </label>
+
+                            <input asp-for="ConfirmPassword"
+                                   type="password"
+                                   autocomplete="new-password"
+                                   class="form-control rounded-3" />
+
+                            <span asp-validation-for="ConfirmPassword"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
                     </div>
 
+                    <hr class="my-4" />
 
-                    <button type="submit"
-                            class="btn btn-primary">
-                        Complete Registration
-                    </button>
+                    <div class="d-grid">
+
+                        <button type="submit"
+                                class="btn btn-primary rounded-3 py-2">
+                            <i class="bi bi-check-circle me-1"></i>
+                            Complete Registration
+                        </button>
+
+                    </div>
 
                 </form>
 
             </div>
+
         </div>
 
     </div>

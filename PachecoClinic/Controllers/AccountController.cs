@@ -14,17 +14,20 @@ namespace PachecoClinic.Controllers
         private readonly IClientRepository _clientRepository;
         private readonly IDoctorRepository _doctorRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IMailHelper _mailHelper;
 
         public AccountController(
             IUserHelper userHelper,
             IClientRepository clientRepository,
             IDoctorRepository doctorRepository,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IMailHelper mailHelper)
         {
             _userHelper = userHelper;
             _clientRepository = clientRepository;
             _doctorRepository = doctorRepository;
             _webHostEnvironment = webHostEnvironment;
+            _mailHelper = mailHelper;
         }
 
         public IActionResult Login()
@@ -70,18 +73,69 @@ namespace PachecoClinic.Controllers
         }
 
         [AllowAnonymous]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            User? user = await _userHelper.GetUserByEmailAsync(model.Email);
+
+            if (user != null && user.ProfileCompleted && user.EmailConfirmed)
+            {
+                string token = await _userHelper.GeneratePasswordResetTokenAsync(user);
+
+                string? resetLink = Url.Action("SetPassword", "Account", new
+                {
+                    email = user.Email,
+                    token = token
+                }, Request.Scheme);
+
+                if (resetLink != null)
+                {
+                    _mailHelper.SendEmail(
+                        user.Email!,
+                        "Pacheco Clinic - Password Recovery",
+                        $"<h1>Password Recovery</h1>" +
+                        $"<p>A password reset has been requested for your account.</p>" +
+                        $"<p><a href=\"{System.Net.WebUtility.HtmlEncode(resetLink)}\">Reset Password</a></p>" +
+                        $"<p>If you did not request this change, please ignore this email.</p>");
+                }
+            }
+
+            TempData["SuccessMessage"] =
+                "If an eligible account exists with this email, you will receive password reset instructions.";
+
+            return RedirectToAction(nameof(Login));
+        }
+
+        [AllowAnonymous]
         public async Task<IActionResult> SetPassword(string email, string token)
         {
-            if(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
             {
                 return BadRequest();
             }
 
             User? user = await _userHelper.GetUserByEmailAsync(email);
 
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
+            }
+
+            if (!user.ProfileCompleted || !user.EmailConfirmed)
+            {
+                return BadRequest();
             }
 
             SetPasswordViewModel model = new SetPasswordViewModel
@@ -110,11 +164,17 @@ namespace PachecoClinic.Controllers
                 return NotFound();
             }
 
-            IdentityResult result = await _userHelper.ResetPasswordAsync(user, model.Token, model.Password);
+            if (!user.ProfileCompleted || !user.EmailConfirmed)
+            {
+                return BadRequest();
+            }
+
+            IdentityResult result = await _userHelper.ResetPasswordAsync(
+                user, model.Token, model.Password);
 
             if (!result.Succeeded)
             {
-                foreach(IdentityError error in result.Errors)
+                foreach (IdentityError error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
@@ -122,7 +182,7 @@ namespace PachecoClinic.Controllers
                 return View(model);
             }
 
-            TempData["SuccessMessage"] = "Your password has been set successfully.";
+            TempData["SuccessMessage"] = "Your password has been reset successfully.";
 
             return RedirectToAction(nameof(Login));
         }

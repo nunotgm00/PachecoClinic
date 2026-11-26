@@ -4,13 +4,33 @@
     ViewData["Title"] = "Login";
 }
 
-<div class="row justify-content-center">
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success rounded-3 mb-4">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="row justify-content-center mt-4 mb-5">
     <div class="col-md-6 col-lg-5">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-4">Login</h2>
+            <div class="card-body p-4 p-md-5">
+
+                <div class="text-center mb-4">
+
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Welcome Back
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Sign in to your PachecoClinic account.
+                    </p>
+
+                </div>
 
                 <form asp-action="Login" method="post">
 
@@ -21,15 +41,17 @@
                     <div class="mb-3">
 
                         <label asp-for="Email"
-                               class="form-label">
+                               class="form-label fw-semibold">
                             Email
                         </label>
 
                         <input asp-for="Email"
-                               class="form-control" />
+                               class="form-control rounded-3"
+                               placeholder="Enter your email"
+                               autocomplete="username" />
 
                         <span asp-validation-for="Email"
-                              class="text-danger">
+                              class="text-danger small">
                         </span>
 
                     </div>
@@ -37,39 +59,56 @@
                     <div class="mb-3">
 
                         <label asp-for="Password"
-                               class="form-label">
+                               class="form-label fw-semibold">
                             Password
                         </label>
 
                         <input asp-for="Password"
-                               class="form-control" />
+                               type="password"
+                               class="form-control rounded-3"
+                               placeholder="Enter your password"
+                               autocomplete="current-password" />
 
                         <span asp-validation-for="Password"
-                              class="text-danger">
+                              class="text-danger small">
                         </span>
 
                     </div>
 
-                    <div class="form-check mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
 
-                        <input asp-for="RememberMe"
-                               class="form-check-input" />
+                        <div class="form-check">
 
-                        <label asp-for="RememberMe"
-                               class="form-check-label">
-                            Remember Me
-                        </label>
+                            <input asp-for="RememberMe"
+                                   class="form-check-input" />
+
+                            <label asp-for="RememberMe"
+                                   class="form-check-label">
+                                Remember Me
+                            </label>
+
+                        </div>
+
+                        <a asp-action="ForgotPassword"
+                           class="small text-decoration-none">
+                            Forgot Password?
+                        </a>
 
                     </div>
 
-                    <button type="submit"
-                            class="btn btn-primary">
-                        Login
-                    </button>
+                    <div class="d-grid">
+
+                        <button type="submit"
+                                class="btn btn-primary rounded-3 py-2">
+                            Login
+                        </button>
+
+                    </div>
 
                 </form>
 
             </div>
+
         </div>
 
     </div>
