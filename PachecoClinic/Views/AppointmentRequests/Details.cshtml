@@ -5,19 +5,28 @@
     ViewData["Title"] = "Appointment Request Details";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-9 col-lg-8">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-4">
-                    Appointment Request Details
-                </h2>
+            <div class="card-body p-4 p-md-5">
 
-                <dl class="row">
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-1"
+                        style="color: var(--clinic-primary);">
+                        Appointment Request Details
+                    </h2>
 
-                    <dt class="col-sm-4">
+                    <p class="text-muted mb-0">
+                        Review the details of this appointment request.
+                    </p>
+                </div>
+
+                <dl class="row mb-0">
+
+                    <dt class="col-sm-4 fw-semibold">
                         Client
                     </dt>
 
@@ -25,8 +34,7 @@
                         @Model.Appointment.Animal.Client.User.FullName
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Animal
                     </dt>
 
@@ -34,8 +42,7 @@
                         @Model.Appointment.Animal.Name
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Doctor
                     </dt>
 
@@ -43,8 +50,7 @@
                         @Model.Appointment.Doctor.User.FullName
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Current Date
                     </dt>
 
@@ -52,8 +58,7 @@
                         @Model.Appointment.Date.ToString("dd/MM/yyyy")
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Current Time
                     </dt>
 
@@ -63,8 +68,7 @@
                         @Model.Appointment.EndTime.ToString(@"hh\:mm")
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Request Type
                     </dt>
 
@@ -72,26 +76,23 @@
                         @Model.Type
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Requested Date
                     </dt>
 
                     <dd class="col-sm-8">
-                        @(Model.RequestedDate.HasValue ? Model.RequestedDate.Value.ToString("dd/MM/yyyy") : "-")
+                        @(Model.RequestedDate.HasValue? Model.RequestedDate.Value.ToString("dd/MM/yyyy") : "-")
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Requested Time
                     </dt>
 
                     <dd class="col-sm-8">
-                        @(Model.RequestedStartTime.HasValue ? Model.RequestedStartTime.Value.ToString(@"hh\:mm") : "-")
+                        @(Model.RequestedStartTime.HasValue? Model.RequestedStartTime.Value.ToString(@"hh\:mm") : "-")
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Message
                     </dt>
 
@@ -99,8 +100,7 @@
                         @(string.IsNullOrEmpty(Model.Message) ? "-" : Model.Message)
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Status
                     </dt>
 
@@ -127,8 +127,7 @@
 
                     </dd>
 
-
-                    <dt class="col-sm-4">
+                    <dt class="col-sm-4 fw-semibold">
                         Created At
                     </dt>
 
@@ -138,31 +137,31 @@
 
                 </dl>
 
-
                 @if (Model.Status == AppointmentRequestStatus.Pending && !User.IsInRole("Client"))
                 {
-                    <hr />
+                    <hr class="my-4" />
 
-                    <div class="d-flex gap-2 mb-3">
+                    <div class="d-flex gap-2">
 
                         <form asp-action="Approve"
                               asp-route-id="@Model.Id"
                               method="post">
 
                             <button type="submit"
-                                    class="btn btn-success">
+                                    class="btn btn-success px-4 rounded-3">
+                                <i class="bi bi-check-circle me-1"></i>
                                 Approve
                             </button>
 
                         </form>
-
 
                         <form asp-action="Reject"
                               asp-route-id="@Model.Id"
                               method="post">
 
                             <button type="submit"
-                                    class="btn btn-danger">
+                                    class="btn btn-danger px-4 rounded-3">
+                                <i class="bi bi-x-circle me-1"></i>
                                 Reject
                             </button>
 
@@ -171,11 +170,22 @@
                     </div>
                 }
 
+                <hr class="my-4" />
 
-                <a asp-action="Index"
-                   class="btn btn-outline-secondary">
-                    Back to List
-                </a>
+                @if (User.IsInRole("Client"))
+                {
+                    <a asp-action="MyRequests"
+                       class="btn btn-outline-secondary rounded-3">
+                        Back to My Requests
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary rounded-3">
+                        Back to List
+                    </a>
+                }
 
             </div>
         </div>

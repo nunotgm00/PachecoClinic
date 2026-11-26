@@ -5,19 +5,49 @@
     ViewData["Title"] = "Appointment Requests";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-lg-12">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-end mb-4">
 
-                <h2 class="mb-4">
+            <div>
+                <h2 class="fw-bold mb-1"
+                    style="color: var(--clinic-primary);">
                     Appointment Requests
                 </h2>
 
-                <div class="table-responsive">
+                <p class="text-muted mb-0">
+                    Review appointment cancellation and reschedule requests.
+                </p>
+            </div>
 
-                    <table class="table table-hover align-middle">
+            <div class="d-flex gap-2">
+
+                <button type="button"
+                        id="pendingOnlyButton"
+                        class="btn btn-primary rounded-3">
+                    Pending Only
+                </button>
+
+                <button type="button"
+                        id="showAllButton"
+                        class="btn btn-outline-secondary rounded-3">
+                    Show All
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
+
+            <div class="card-body p-4">
+
+                <div class="table-responsive rounded-3 border">
+
+                    <table class="table table-hover table-striped align-middle mb-0"
+                           style="--bs-table-striped-bg: #eef4f4;">
 
                         <thead class="table-light">
                             <tr>
@@ -37,10 +67,12 @@
 
                             @foreach (var item in Model)
                             {
-                                <tr>
+                                <tr data-status="@item.Status">
 
                                     <td>
-                                        @item.Appointment.Animal.Client.User.FullName
+                                        <strong>
+                                            @item.Appointment.Animal.Client.User.FullName
+                                        </strong>
                                     </td>
 
                                     <td>
@@ -54,6 +86,7 @@
                                     <td>
                                         @item.Appointment.Date.ToString("dd/MM/yyyy")
                                         <br />
+
                                         <span class="text-muted">
                                             @item.Appointment.StartTime.ToString(@"hh\:mm")
                                         </span>
@@ -64,16 +97,16 @@
                                     </td>
 
                                     <td>
-                                        @(item.RequestedDate.HasValue ? item.RequestedDate.Value.ToString("dd/MM/yyyy") : "-")
+                                        @(item.RequestedDate.HasValue? item.RequestedDate.Value.ToString("dd/MM/yyyy") : "-")
                                     </td>
 
                                     <td>
-                                        @(item.RequestedStartTime.HasValue ? item.RequestedStartTime.Value.ToString(@"hh\:mm") : "-")
+                                        @(item.RequestedStartTime.HasValue? item.RequestedStartTime.Value.ToString(@"hh\:mm") : "-")
                                     </td>
 
                                     <td>
 
-                                    @if (item.Status == AppointmentRequestStatus.Pending)
+                                        @if (item.Status == AppointmentRequestStatus.Pending)
                                         {
                                             <span class="badge bg-warning text-dark">
                                                 Pending
@@ -98,7 +131,7 @@
 
                                         <a asp-action="Details"
                                            asp-route-id="@item.Id"
-                                           class="btn btn-sm btn-outline-primary">
+                                           class="btn btn-sm btn-outline-primary rounded-3">
                                             Details
                                         </a>
 
@@ -118,3 +151,36 @@
 
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const pendingOnlyButton = document.getElementById("pendingOnlyButton");
+        const showAllButton = document.getElementById("showAllButton");
+        const rows = document.querySelectorAll("tbody tr[data-status]");
+
+        pendingOnlyButton.addEventListener("click", function () {
+
+            rows.forEach(function (row) {
+
+                if (row.dataset.status === "Pending") {
+                    row.style.display = "";
+                }
+                else {
+                    row.style.display = "none";
+                }
+
+            });
+
+        });
+
+        showAllButton.addEventListener("click", function () {
+
+            rows.forEach(function (row) {
+                row.style.display = "";
+            });
+
+        });
+
+    });
+</script>

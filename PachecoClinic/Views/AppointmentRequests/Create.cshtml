@@ -5,39 +5,46 @@
     ViewData["Title"] = "Create Appointment Request";
 }
 
-<div class="row justify-content-center">
+<div class="row justify-content-center mb-5">
     <div class="col-md-7 col-lg-6">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
+        <div class="card shadow-sm border-0 rounded-4 overflow-hidden"
+             style="border-top: 5px solid var(--clinic-primary) !important;">
 
-                <h2 class="mb-2">Create Appointment Request</h2>
+            <div class="card-body p-4 p-md-5">
 
-                <p class="text-muted mb-4">
-                    Request a cancellation or a change to your appointment.
-                </p>
+                <div class="mb-4">
+                    <h2 class="fw-bold mb-2"
+                        style="color: var(--clinic-primary);">
+                        Create Appointment Request
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Request a cancellation or a change to your appointment.
+                    </p>
+                </div>
 
                 <form asp-action="Create"
                       method="post">
 
                     <div asp-validation-summary="ModelOnly"
-                         class="text-danger mb-3">
+                         class="alert alert-danger py-2 mb-4">
                     </div>
 
                     <input type="hidden"
                            asp-for="AppointmentId" />
 
-
                     <div class="mb-3">
 
                         <label asp-for="Type"
-                               class="form-label">
+                               class="form-label fw-semibold">
                             Request Type
                         </label>
 
                         <select asp-for="Type"
                                 asp-items="Html.GetEnumSelectList<AppointmentRequestType>()"
-                                class="form-select">
+                                class="form-select rounded-3"
+                                id="requestType">
 
                             <option value="">
                                 Select request type
@@ -46,76 +53,79 @@
                         </select>
 
                         <span asp-validation-for="Type"
-                              class="text-danger">
+                              class="text-danger small">
                         </span>
 
                     </div>
 
+                    <div id="rescheduleFields">
 
-                    <div class="mb-3">
+                        <div class="mb-3">
 
-                        <label asp-for="RequestedDate"
-                               class="form-label">
-                            Requested Date
-                        </label>
+                            <label asp-for="RequestedDate"
+                                   class="form-label fw-semibold">
+                                Requested Date
+                            </label>
 
-                        <input asp-for="RequestedDate"
-                               type="date"
-                               class="form-control" />
+                            <input asp-for="RequestedDate"
+                                   type="date"
+                                   class="form-control rounded-3"
+                                   id="requestedDate" />
 
-                        <span asp-validation-for="RequestedDate"
-                              class="text-danger">
-                        </span>
+                            <span asp-validation-for="RequestedDate"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="RequestedStartTime"
+                                   class="form-label fw-semibold">
+                                Requested Start Time
+                            </label>
+
+                            <input asp-for="RequestedStartTime"
+                                   type="time"
+                                   class="form-control rounded-3"
+                                   id="requestedStartTime" />
+
+                            <span asp-validation-for="RequestedStartTime"
+                                  class="text-danger small">
+                            </span>
+
+                        </div>
 
                     </div>
-
-
-                    <div class="mb-3">
-
-                        <label asp-for="RequestedStartTime"
-                               class="form-label">
-                            Requested Start Time
-                        </label>
-
-                        <input asp-for="RequestedStartTime"
-                               type="time"
-                               class="form-control" />
-
-                        <span asp-validation-for="RequestedStartTime"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
 
                     <div class="mb-4">
 
                         <label asp-for="Message"
-                               class="form-label">
+                               class="form-label fw-semibold">
                             Message
                         </label>
 
                         <textarea asp-for="Message"
-                                  class="form-control"
+                                  class="form-control rounded-3"
                                   rows="4">
                         </textarea>
 
                         <span asp-validation-for="Message"
-                              class="text-danger">
+                              class="text-danger small">
                         </span>
 
                     </div>
 
-
                     <div class="d-flex gap-2">
 
                         <button type="submit"
-                                class="btn btn-primary">
+                                class="btn btn-primary px-4 rounded-3">
+                            <i class="bi bi-send me-1"></i>
                             Submit Request
                         </button>
 
                         <a asp-action="MyRequests"
-                           class="btn btn-outline-secondary">
+                           class="btn btn-outline-secondary px-4 rounded-3">
                             Cancel
                         </a>
 
@@ -133,4 +143,41 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const requestType = document.getElementById("requestType");
+            const rescheduleFields = document.getElementById("rescheduleFields");
+            const requestedDate = document.getElementById("requestedDate");
+            const requestedStartTime = document.getElementById("requestedStartTime");
+
+            const cancellationValue = "@((int)AppointmentRequestType.Cancellation)";
+
+            function updateFields() {
+
+                if (requestType.value === cancellationValue) {
+
+                    rescheduleFields.style.display = "none";
+
+                    requestedDate.value = "";
+                    requestedStartTime.value = "";
+
+                    requestedDate.disabled = true;
+                    requestedStartTime.disabled = true;
+                }
+                else {
+
+                    rescheduleFields.style.display = "block";
+
+                    requestedDate.disabled = false;
+                    requestedStartTime.disabled = false;
+                }
+            }
+
+            requestType.addEventListener("change", updateFields);
+
+            updateFields();
+        });
+    </script>
 }
