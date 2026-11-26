@@ -2,33 +2,55 @@
 
 @{
     ViewData["Title"] = "Rooms";
+
+    bool canManageRooms = User.IsInRole("Admin") || User.IsInRole("Employee");
 }
 
-<div class="card shadow-sm">
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+
+        <h1 class="fw-bold mb-1"
+            style="color: var(--clinic-primary);">
+            Rooms
+        </h1>
+
+        <p class="text-muted mb-0">
+            View the clinic's rooms and their maintenance status.
+        </p>
+
+    </div>
+
+    @if (canManageRooms)
+    {
+        <a asp-action="Create"
+           class="btn btn-primary rounded-3 px-3">
+            <i class="bi bi-plus-circle me-1"></i>
+            Create Room
+        </a>
+    }
+
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-5"
+     style="border-top: 5px solid var(--clinic-primary) !important;">
+
     <div class="card-body p-4">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="table-responsive rounded-3 border">
 
-            <h2 class="mb-0">Rooms</h2>
-
-            <a asp-action="Create"
-               class="btn btn-primary">
-                Create Room
-            </a>
-
-        </div>
-
-        <div class="table-responsive">
-
-            <table class="table table-hover align-middle">
+            <table class="table table-hover table-striped align-middle mb-0"
+                   style="--bs-table-striped-bg: #eef4f4;">
 
                 <thead class="table-light">
+
                     <tr>
                         <th>Name</th>
                         <th>Type</th>
-                        <th>Under Maintenance</th>
-                        <th></th>
+                        <th class="text-center">Under Maintenance</th>
+                        <th class="text-center">Actions</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
@@ -37,7 +59,7 @@
                     {
                         <tr>
 
-                            <td>
+                            <td class="fw-semibold">
                                 @item.Name
                             </td>
 
@@ -45,7 +67,8 @@
                                 @item.Type
                             </td>
 
-                            <td>
+                            <td class="text-center">
+
                                 @if (item.UnderMaintenance)
                                 {
                                     <span class="badge bg-warning text-dark">
@@ -58,30 +81,48 @@
                                         No
                                     </span>
                                 }
+
                             </td>
 
                             <td class="text-nowrap">
 
-                                <a asp-action="Details"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-primary">
-                                    Details
-                                </a>
+                                <div class="d-flex justify-content-center gap-2">
 
-                                <a asp-action="Edit"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-secondary">
-                                    Edit
-                                </a>
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-outline-primary rounded-3">
+                                        Details
+                                    </a>
 
-                                <a asp-action="Delete"
-                                   asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-danger">
-                                    Delete
-                                </a>
+                                    @if (canManageRooms)
+                                    {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-secondary rounded-3">
+                                            Edit
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger rounded-3">
+                                            Delete
+                                        </a>
+                                    }
+
+                                </div>
 
                             </td>
 
+                        </tr>
+                    }
+
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4"
+                                class="text-center text-muted py-4">
+                                No rooms found.
+                            </td>
                         </tr>
                     }
 
@@ -92,4 +133,5 @@
         </div>
 
     </div>
+
 </div>
