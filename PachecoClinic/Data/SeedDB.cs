@@ -8,15 +8,18 @@ namespace PachecoClinic.Data
         private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _configuration;
 
         public SeedDB(
             DataContext context,
             UserManager<User> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _configuration = configuration;
         }
 
         public async Task SeedAsync()
@@ -28,21 +31,23 @@ namespace PachecoClinic.Data
             await CheckRoleAsync("Doctor");
             await CheckRoleAsync("Client");
 
-            User? admin = await _userManager.FindByEmailAsync("admin@pachecoClinic.pt");
+            User? admin = await _userManager.FindByEmailAsync("AdminPacheco@Pclinic.com");
 
             if (admin == null)
             {
+                string? password = _configuration["SeedAdmin:Password"];
                 admin = new User
                 {
                     FirstName = "Admin",
                     LastName = "PachecoClinic",
-                    Email = "admin@pachecoClinic.pt",
-                    UserName = "admin@pachecoClinic.pt",
-                    EmailConfirmed = true
+                    Email = "AdminPacheco@Pclinic.com",
+                    UserName = "AdminPacheco@Pclinic.com",
+                    EmailConfirmed = true,
+                    ProfileCompleted = true
                 };
 
                 IdentityResult result =
-                    await _userManager.CreateAsync(admin, "Admin123!");
+                    await _userManager.CreateAsync(admin, password);
 
                 if (result.Succeeded)
                 {
